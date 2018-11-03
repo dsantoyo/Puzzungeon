@@ -1,7 +1,9 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
 
@@ -10,11 +12,13 @@ import project.puzzungeon.screens.MainMenuScreen;
 public class Puzzungeon extends Game {
 	
 	public SpriteBatch batch;
+	public Skin skin;
 
 	//loads assets and calls first screen
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));
 		

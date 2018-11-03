@@ -4,6 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 
 import project.puzzungeon.Puzzungeon;
 
@@ -13,10 +18,14 @@ public class MainMenuScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	Texture img;
+	private Stage stage;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		
 	}
 	
 	//updates actors
@@ -27,11 +36,43 @@ public class MainMenuScreen implements Screen{
 	//draw actors
 	public void draw() {
 		
+		//simple layout:
+		//       Game Title
+		//
+		//login   new user  guest
+		//
+		//                   exit
+		
+		//create the actors
+		Label gameTitle = new Label("Puzzungeon", game.skin);
+		TextButton loginButton = new TextButton("Login", game.skin, "default");
+		TextButton newUserButton = new TextButton("New User", game.skin, "default");
+		TextButton guestButton = new TextButton("Guest", game.skin, "default");
+		TextButton exitButton = new TextButton("Exit", game.skin, "default");
+		
+		//use vg and hg to group the actors now. changes should be made to make it look better
+		VerticalGroup vg = new VerticalGroup();
+		vg.setFillParent(true);
+		vg.addActor(gameTitle);
+		
+		HorizontalGroup buttonRow1 = new HorizontalGroup();
+		buttonRow1.addActor(loginButton);
+		buttonRow1.addActor(newUserButton);
+		buttonRow1.addActor(guestButton);
+		vg.addActor(buttonRow1);
+		
+		HorizontalGroup buttonRow2 = new HorizontalGroup();
+		buttonRow2.addActor(exitButton);
+		vg.addActor(buttonRow2);
+		
+		//add actors onto the stage
+		stage.addActor(vg);
 	}
 	
 	@Override
 	public void show() {
 		img = new Texture("MainMenuScreen.png");
+		this.draw();
 	}
 
 	@Override
@@ -39,10 +80,8 @@ public class MainMenuScreen implements Screen{
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		game.batch.begin();
-		game.batch.draw(img, 0, 0);
-		game.batch.end();
-		
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
 	}
 
 	@Override
@@ -68,8 +107,8 @@ public class MainMenuScreen implements Screen{
 	@Override
 	public void dispose() {
 		
-		game.batch.dispose();
-		img.dispose();
+		//game.batch.dispose();
+		//img.dispose();
 		
 	}
 	
