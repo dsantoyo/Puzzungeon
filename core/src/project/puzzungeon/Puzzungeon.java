@@ -13,6 +13,7 @@ public class Puzzungeon extends Game {
 	
 	public SpriteBatch batch;
 	public Skin skin;
+	public Client client;
 
 	//loads assets and calls first screen
 	@Override

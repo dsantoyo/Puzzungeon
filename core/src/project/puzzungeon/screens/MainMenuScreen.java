@@ -1,11 +1,8 @@
 package project.puzzungeon.screens;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
@@ -50,18 +47,23 @@ public class MainMenuScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
-		loginButton.addListener(new ClickListener(){
-		            @Override 
+			loginButton.addListener(new ClickListener(){
+				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-		            	game.setScreen(new LoginScreen(game));
+						game.setScreen(new LoginScreen(game));
 		            }
 		        });
-		
-		
 		
 		TextButton newUserButton = new TextButton("New User", game.skin, "default");
 		TextButton guestButton = new TextButton("Guest", game.skin, "default");
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
+			exitButton.addListener(new ClickListener(){
+				@Override 
+				public void clicked(InputEvent event, float x, float y){
+					//Gdx.app.exit();
+					System.exit(0);
+				}
+			});
 		
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
