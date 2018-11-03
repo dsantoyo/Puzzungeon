@@ -1,30 +1,26 @@
 package project.puzzungeon.screens;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Puzzungeon;
 
-//First screen; 
-
-public class MainMenuScreen implements Screen{
+//login screen
+public class LoginScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
 	//constructor
-	public MainMenuScreen(Puzzungeon game) {
+	public LoginScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -42,25 +38,18 @@ public class MainMenuScreen implements Screen{
 		//simple layout:
 		//       Game Title
 		//
-		//login   new user  guest
-		//
+		//  username:        
+		//  password:     
+		//        Login
 		//                   exit
 		
 		//create the actors
 		Label gameTitle = new Label("Puzzungeon", game.skin);
-		
+		Label username = new Label("Username: ", game.skin);
+		Label password = new Label("Password: ", game.skin);
+		TextArea usernameInput = new TextArea("",game.skin);
+		TextArea passwordInput = new TextArea("",game.skin);
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
-		loginButton.addListener(new ClickListener(){
-		            @Override 
-		            public void clicked(InputEvent event, float x, float y){
-		            	game.setScreen(new LoginScreen(game));
-		            }
-		        });
-		
-		
-		
-		TextButton newUserButton = new TextButton("New User", game.skin, "default");
-		TextButton guestButton = new TextButton("Guest", game.skin, "default");
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
 		
 		//use vg and hg to group the actors now. changes should be made to make it look better
@@ -68,15 +57,23 @@ public class MainMenuScreen implements Screen{
 		vg.setFillParent(true);
 		vg.addActor(gameTitle);
 		
-		HorizontalGroup buttonRow1 = new HorizontalGroup();
-		buttonRow1.addActor(loginButton);
-		buttonRow1.addActor(newUserButton);
-		buttonRow1.addActor(guestButton);
-		vg.addActor(buttonRow1);
+		HorizontalGroup inputRow1 = new HorizontalGroup();
+		inputRow1.addActor(username);
+		inputRow1.addActor(usernameInput);
+		vg.addActor(inputRow1);
 		
-		HorizontalGroup buttonRow2 = new HorizontalGroup();
-		buttonRow2.addActor(exitButton);
-		vg.addActor(buttonRow2);
+		HorizontalGroup inputRow2 = new HorizontalGroup();
+		inputRow2.addActor(password);
+		inputRow2.addActor(passwordInput);
+		vg.addActor(inputRow2);
+		
+		HorizontalGroup inputRow3 = new HorizontalGroup();
+		inputRow3.addActor(loginButton);
+		vg.addActor(inputRow3);
+		
+		HorizontalGroup inputRow4 = new HorizontalGroup();
+		inputRow4.addActor(exitButton);
+		vg.addActor(inputRow4);
 		
 		//add actors onto the stage
 		stage.addActor(vg);
