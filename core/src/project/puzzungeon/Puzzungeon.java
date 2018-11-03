@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
+import project.server.Server;
 
 
 //main game class

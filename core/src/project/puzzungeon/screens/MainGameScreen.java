@@ -11,8 +11,6 @@ import project.puzzungeon.Puzzungeon;
 public class MainGameScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
-	Texture img;
-	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
@@ -30,7 +28,6 @@ public class MainGameScreen implements Screen{
 	
 	@Override
 	public void show() {
-		img = new Texture("MainMenuScreen.png");
 	}
 
 	@Override
@@ -39,7 +36,6 @@ public class MainGameScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.batch.begin();
-		game.batch.draw(img, 0, 0);
 		game.batch.end();
 		
 	}
@@ -68,7 +64,6 @@ public class MainGameScreen implements Screen{
 	public void dispose() {
 		
 		game.batch.dispose();
-		img.dispose();
 		
 	}
 	
