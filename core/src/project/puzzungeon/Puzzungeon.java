@@ -1,33 +1,37 @@
 package project.puzzungeon;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Puzzungeon extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+import project.puzzungeon.screens.MainMenuScreen;
+
+
+//main game class
+public class Puzzungeon extends Game {
 	
+	public SpriteBatch batch;
+
+	//loads assets and calls first screen
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		//move on the the main Menu screen
+		this.setScreen(new MainMenuScreen(this));
+		
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		super.render();
+		
 	}
 	
+	//disposes visual assets in order to free up memory 
+	//(called when switching screens and at end of program).
+	//Just a wrapper for AssetLoader’s dispose()
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+
 	}
+	
 }
