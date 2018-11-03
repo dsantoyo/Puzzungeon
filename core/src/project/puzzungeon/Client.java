@@ -21,7 +21,7 @@ public class Client {
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
-		clientUsername = "default username";
+		this.clientUsername = "default username";
 	}
 	
 	public void connect() {
@@ -31,13 +31,47 @@ public class Client {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			System.out.println("Connected to " + hostname + ":" + port);
+			//only store the last 3 messages on the client side
+			messageVec = new Vector<ChatMessage>(3);
+			messageVec.add(new ChatMessage("Hello ", clientUsername+"!"));
+			messageVec.add(new ChatMessage("", ""));
+			messageVec.add(new ChatMessage("", ""));
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
+		
+		//use a thread to receive new message from the server
+				new Thread(new Runnable(){
+					
+		            @Override
+		            public void run() {
+		            	
+		            	try {
+		            		while(true){
+		            			ChatMessage newMessage = (ChatMessage)ois.readObject();
+		                	
+		            			messageVec.remove(0);
+		            			messageVec.add(newMessage);
+		            		}
+		            	}catch(IOException ioe) {
+		            		System.out.println("ioe: " + ioe.getMessage());
+		            	}catch (ClassNotFoundException cnfe) {
+		            		System.out.println("cnfe: " + cnfe.getMessage());
+		            	}
+		            }
+		        }).start(); //start the thread;
+
+		
 	}
-	
-	public void setClientUsername(String username) {
-		this.clientUsername = username;
+	public void sendMessage(ChatMessage cm) {
+		//send message to serverthread
+        try {
+			oos.writeObject(cm);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+		
 	}
 }

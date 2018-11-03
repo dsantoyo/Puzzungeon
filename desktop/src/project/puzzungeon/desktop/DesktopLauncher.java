@@ -7,8 +7,8 @@ import project.puzzungeon.Puzzungeon;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1200;
-		config.height = 700;
+		config.width = 400;
+		config.height = 400;
 		new LwjglApplication(new Puzzungeon(), config);
 	}
 }

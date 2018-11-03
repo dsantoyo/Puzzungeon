@@ -34,9 +34,8 @@ public class ServerThread extends Thread{
 				
 				ChatMessage cm = (ChatMessage)ois.readObject();
 				if( cm != null) {
-					
 					//send new message to the server
-					//server.broadcast(cm);
+					server.broadcast(cm);
 				}
 			}
 		}catch(IOException ioe) {

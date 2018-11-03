@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
+import project.server.ChatMessage;
+
 public class Server {
 	
 	private Vector<ServerThread> serverThreads;
@@ -14,6 +16,11 @@ public class Server {
 
 	
 	public Server(int port) {
+		
+		messageVec = new Vector<ChatMessage>(3);
+		messageVec.add(new ChatMessage("", ""));
+		messageVec.add(new ChatMessage("", ""));
+		messageVec.add(new ChatMessage("", ""));
 		
 		InetAddress inetAddress;
 		try {
@@ -58,10 +65,10 @@ public class Server {
 		}
 	}
 	
-	/*
+
 	//get new message from serverthread and send to every client
 	public void broadcast(ChatMessage cm) {
-				
+		
 		if(cm != null) {
 			
 			//remove the oldest message
@@ -70,19 +77,18 @@ public class Server {
 			// add the newest message
 			messageVec.add(cm);
 			
-			//send the newest message to every client
+			
+			//sd the newest message to every client
 			for(ServerThread thread : serverThreads) {
 					thread.sendMessage(messageVec.get(2));
 			}
-			
 		}
+		
 	}
-	*/
+
 	public static void main(String [] args) {
 		
 		//hard-coded. need to be changed
 		new Server(6789);
-		
-        
 	}
 }

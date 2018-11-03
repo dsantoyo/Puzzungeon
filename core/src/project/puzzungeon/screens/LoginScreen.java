@@ -47,14 +47,19 @@ public class LoginScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
-		TextArea usernameInput = new TextArea("",game.skin);
-		TextArea passwordInput = new TextArea("",game.skin);
+		final TextArea usernameInput = new TextArea("",game.skin);
+		final TextArea passwordInput = new TextArea("",game.skin);
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					
+					//get username from usernameInput
+	                game.client.clientUsername = usernameInput.getText();
+	                
 					//set up connection to the server
 					game.client.connect();
+					game.setScreen(new WaitingScreen(game));
 				}
 			});
 		
