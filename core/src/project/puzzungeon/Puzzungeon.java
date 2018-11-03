@@ -20,6 +20,7 @@ public class Puzzungeon extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		client = new Client("localhost", 6789);
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));
 		

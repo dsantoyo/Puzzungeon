@@ -15,13 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import project.puzzungeon.Puzzungeon;
 
 //login screen
-public class LoginScreen implements Screen{
+public class WaitingScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
 	//constructor
-	public LoginScreen(Puzzungeon game) {
+	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -36,43 +36,21 @@ public class LoginScreen implements Screen{
 	public void draw() {
 		
 		//simple layout:
-		//       Game Title
+		//       Waiting
+		//        
+		//    (choose character ui)
 		//
-		//  username:        
-		//  password:     
-		//        Login
-		//                   exit
+		// (chat ui)
 		
 		//create the actors
-		Label gameTitle = new Label("Puzzungeon", game.skin);
-		Label username = new Label("Username: ", game.skin);
-		Label password = new Label("Password: ", game.skin);
-		TextArea usernameInput = new TextArea("",game.skin);
-		TextArea passwordInput = new TextArea("",game.skin);
-		TextButton loginButton = new TextButton("Login", game.skin, "default");
-			loginButton.addListener(new ClickListener(){
-				@Override 
-				public void clicked(InputEvent event, float x, float y){
-					//set up connection to the server
-					game.client.connect();
-				}
-			});
-		
-		
-		TextButton exitButton = new TextButton("Exit", game.skin, "default");
-			exitButton.addListener(new ClickListener(){
-				@Override 
-				public void clicked(InputEvent event, float x, float y){
-					Gdx.app.exit();
-					System.exit(0);
-				}
-			});
-		
+		Label gameTitle = new Label("Waiting", game.skin);
+				
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
 		vg.addActor(gameTitle);
 		
+		/*
 		HorizontalGroup inputRow1 = new HorizontalGroup();
 		inputRow1.addActor(username);
 		inputRow1.addActor(usernameInput);
@@ -90,7 +68,7 @@ public class LoginScreen implements Screen{
 		HorizontalGroup inputRow4 = new HorizontalGroup();
 		inputRow4.addActor(exitButton);
 		vg.addActor(inputRow4);
-		
+		*/
 		//add actors onto the stage
 		stage.addActor(vg);
 	}

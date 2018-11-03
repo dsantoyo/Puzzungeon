@@ -36,7 +36,7 @@ public class ServerThread extends Thread{
 				if( cm != null) {
 					
 					//send new message to the server
-					server.broadcast(cm);
+					//server.broadcast(cm);
 				}
 			}
 		}catch(IOException ioe) {

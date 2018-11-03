@@ -58,6 +58,7 @@ public class Server {
 		}
 	}
 	
+	/*
 	//get new message from serverthread and send to every client
 	public void broadcast(ChatMessage cm) {
 				
@@ -76,6 +77,7 @@ public class Server {
 			
 		}
 	}
+	*/
 	public static void main(String [] args) {
 		
 		//hard-coded. need to be changed

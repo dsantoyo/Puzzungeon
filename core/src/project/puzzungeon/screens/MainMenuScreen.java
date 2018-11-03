@@ -39,9 +39,9 @@ public class MainMenuScreen implements Screen{
 		//simple layout:
 		//       Game Title
 		//
-		//login   new user  guest
+		//login   new user   guest
 		//
-		//                   exit
+		//                    exit
 		
 		//create the actors
 		Label gameTitle = new Label("Puzzungeon", game.skin);
@@ -60,7 +60,7 @@ public class MainMenuScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					//Gdx.app.exit();
+					Gdx.app.exit();
 					System.exit(0);
 				}
 			});
