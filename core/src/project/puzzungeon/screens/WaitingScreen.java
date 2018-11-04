@@ -83,7 +83,8 @@ public class WaitingScreen implements Screen{
 		                else {
 		                	messageStr = inputBox.getText();// + ("\n"); 
 		                }
-		                               
+		                
+		                System.out.println("messageStr = " + messageStr);
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
 		                

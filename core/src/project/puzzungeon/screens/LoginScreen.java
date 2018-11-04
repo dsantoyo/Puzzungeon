@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Puzzungeon;
+import project.server.Password;
+import project.server.Username;
 
 //login screen
 public class LoginScreen implements Screen{
@@ -68,17 +70,18 @@ public class LoginScreen implements Screen{
 						//set up connection to the server
 						System.out.println("Trying to connect...");
 						game.client.connect();
-						System.out.println("connected!");
-						System.out.println("switching screens...");
+						game.client.sendUsername(new Username(usernameStr));
+					  game.client.sendPassword(new Password(passwordStr));
 						game.setScreen(new WaitingScreen(game));
-					}
+          }
 				}
 			});
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							game.client.clientUsername = "Guest";
+							game.client.client
+                = "Guest";
 							System.out.println("Trying to connect...");
 							game.client.connect();
 							System.out.println("connected!");

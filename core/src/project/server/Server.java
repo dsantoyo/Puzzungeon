@@ -97,6 +97,6 @@ public class Server {
 	public static void main(String [] args) {
 		
 		//hard-coded. need to be changed
-		new Server(6788);
+		new Server(6789);
 	}
 }
