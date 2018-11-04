@@ -57,13 +57,26 @@ public class LoginScreen implements Screen{
 					game.client.clientUsername = usernameInput.getText();
 					
 					//set up connection to the server
+					System.out.println("Trying to connect...");
 					game.client.connect();
+					System.out.println("connected!");
+					System.out.println("switching screens...");
 					game.setScreen(new WaitingScreen(game));
 					
 				}
 			});
-		
-		
+		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
+					guestButton.addListener(new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							game.client.clientUsername = "Guest";
+							System.out.println("Trying to connect...");
+							game.client.connect();
+							System.out.println("connected!");
+							System.out.println("switching screens...");
+							game.setScreen(new WaitingScreen(game));
+						}
+					});
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
 				@Override 
@@ -98,6 +111,7 @@ public class LoginScreen implements Screen{
 		
 		HorizontalGroup inputRow3 = new HorizontalGroup();
 		inputRow3.addActor(loginButton);
+		inputRow3.addActor(guestButton);
 		vg.addActor(inputRow3);
 		
 		HorizontalGroup inputRow4 = new HorizontalGroup();

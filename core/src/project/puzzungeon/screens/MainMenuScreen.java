@@ -25,7 +25,6 @@ public class MainMenuScreen implements Screen{
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		
 	}
 	
 	//updates actors
@@ -58,10 +57,22 @@ public class MainMenuScreen implements Screen{
 			newUserButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
+						
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
-		TextButton guestButton = new TextButton("Guest", game.skin, "default");
+		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
+					guestButton.addListener(new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							game.client.clientUsername = "Guest";
+							System.out.println("Trying to connect...");
+							game.client.connect();
+							System.out.println("connected!");
+					System.out.println("switching screens...");
+					game.setScreen(new WaitingScreen(game));
+						}
+					});
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
 			exitButton.addListener(new ClickListener(){
 				@Override 
@@ -70,7 +81,7 @@ public class MainMenuScreen implements Screen{
 					System.exit(0);
 				}
 			});
-		
+			
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
