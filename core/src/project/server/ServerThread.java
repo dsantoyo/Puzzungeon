@@ -60,6 +60,15 @@ public class ServerThread extends Thread{
 					//JDBCType database = new JDBCType();
 					//String errorMessage = database.errorMessage();
 				}
+				
+				//if a Player object is sent to this serverthread
+				if(object instanceof Player) {
+					Player player = (Player)object;
+					if(player != null) {
+						//send player to the server
+						server.addPlayer(player);
+					}
+				}
 								
 			}
 		}catch(IOException ioe) {

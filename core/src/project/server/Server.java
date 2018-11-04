@@ -7,8 +7,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import project.server.ChatMessage;
-
 public class Server {
 	
 	//each serverThread represents a connected client
@@ -16,9 +14,16 @@ public class Server {
 	
 	//a vector to store the last 3 messages on server (could be redundant)
 	private Vector<ChatMessage> messageVec;
+	
+	//a vector to store Player objects
+	private Vector<Player> playerVec;
+	
 	private boolean allConnected;
 	
 	public Server(int port) {
+		
+		//a vector to store Player objects
+		playerVec = new Vector<Player>();
 		
 		//a vector to store the last 3 messages on server (could be redundant)
 		messageVec = new Vector<ChatMessage>(3);
@@ -95,6 +100,15 @@ public class Server {
 			for(ServerThread thread : serverThreads) {
 					thread.sendMessage(messageVec.get(2));
 			}
+		}
+	}
+	
+	//get Player object from a new serverthread and store it in playerVec
+	public void addPlayer(Player player) {
+		if(player != null) {
+			playerVec.add(player);
+			System.out.println("player with username = " + player.username +" is added to the server");
+			System.out.println("now playerVec size = " + playerVec.size());
 		}
 	}
 

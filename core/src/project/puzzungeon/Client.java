@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import project.server.ChatMessage;
 import project.server.Password;
+import project.server.Player;
 import project.server.Username;
 
 public class Client {
@@ -49,6 +50,10 @@ public class Client {
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
+			
+			//send localPlayer to the server
+			localPlayer = new Player(clientUsername);
+			sendPlayer(localPlayer);
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
@@ -101,6 +106,16 @@ public class Client {
 		System.out.println("sendPassword() called with password = " + password.getPassword() );
         try {
 			oos.writeObject(password);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
+	
+	//send player from a client(front-end) to a serverthread(back-end)
+	public void sendPlayer(Player player) {
+		try {
+			oos.writeObject(player);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
