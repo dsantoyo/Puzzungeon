@@ -54,9 +54,11 @@ public class RegisterScreen implements Screen{
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					
+					
 					//get username from usernameInput
-					if(usernameInput.getText() != "") {
-						game.client.clientUsername = usernameInput.getText();
+					String username = usernameInput.getText();
+					if(!username.equals("")) {
+						//game.client.clientUsername = username;
 					}
 	                
 					//set up connection to the server
