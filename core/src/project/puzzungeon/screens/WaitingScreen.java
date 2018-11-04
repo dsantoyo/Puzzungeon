@@ -49,14 +49,23 @@ public class WaitingScreen implements Screen{
 		//    (chat ui)
 		
 		//create the actors
-		Label gameTitle = new Label("Waiting for other player...", game.skin);
-				
+		Label waiting = new Label("Waiting for other player...", game.skin);
+		
+		//waiting button (temporary)
+		final TextButton goToReady = new TextButton("Everyone's connected...", game.skin, "default");
+		
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
-		vg1.addActor(gameTitle);
 		
-		stage.addActor(vg1);
+		HorizontalGroup topRow1 = new HorizontalGroup();
+		topRow1.addActor(waiting);
+		vg1.addActor(topRow1);
+		
+		HorizontalGroup topRow2 = new HorizontalGroup();
+		topRow2.addActor(goToReady);
+		
+		stage.addActor(topRow2);
 		
 
 		// chatroom UI
