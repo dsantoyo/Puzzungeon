@@ -58,6 +58,7 @@ public class RegisterScreen implements Screen{
 				public void clicked(InputEvent event, float x, float y){
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
+					
 					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username and password.");
 					} else if (usernameStr.trim().isEmpty()) {
@@ -70,9 +71,9 @@ public class RegisterScreen implements Screen{
 						//set up connection to the server
 						System.out.println("Trying to connect...");
 						game.client.connect();
-            System.out.println("Connected!");
+						System.out.println("Connected!");
 						game.client.sendUsername(new Username(usernameStr));
-					  game.client.sendPassword(new Password(passwordStr));
+					    game.client.sendPassword(new Password(passwordStr));
 						game.setScreen(new WaitingScreen(game));
 					}
 				}
