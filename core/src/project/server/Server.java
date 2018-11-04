@@ -13,14 +13,14 @@ public class Server {
 	
 	private Vector<ServerThread> serverThreads;
 	private Vector<ChatMessage> messageVec;
-
+	private boolean allConnected;
 	
 	public Server(int port) {
-		
 		messageVec = new Vector<ChatMessage>(3);
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
+		allConnected = false;
 		
 		InetAddress inetAddress;
 		try {
@@ -50,6 +50,14 @@ public class Server {
 				
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
+				
+				if (serverThreads.size() > 2 && allConnected == false) {
+					System.out.println("Enough connections.");
+					allConnected = true;
+					for (int i = 0; i < serverThreads.size(); i++) {
+						serverThreads.get(i).sendConnNum(2);
+					}
+				}
 			}
 		}catch (IOException ioe) {
 			System.out.println("ioe:"+ioe.getMessage());
