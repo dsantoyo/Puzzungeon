@@ -55,7 +55,9 @@ public class LoginScreen implements Screen{
 				public void clicked(InputEvent event, float x, float y){
 					
 					//get username from usernameInput
-	                game.client.clientUsername = usernameInput.getText();
+					if(usernameInput.getText() == "") {
+						game.client.clientUsername = usernameInput.getText();
+					}
 	                
 					//set up connection to the server
 					game.client.connect();

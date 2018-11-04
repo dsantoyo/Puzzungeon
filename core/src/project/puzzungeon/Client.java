@@ -21,7 +21,7 @@ public class Client {
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
-		this.clientUsername = "default username";
+		this.clientUsername = "default";
 	}
 	
 	public void connect() {
