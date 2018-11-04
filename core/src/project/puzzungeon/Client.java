@@ -27,7 +27,9 @@ public class Client {
 	public void connect() {
 		
 		try {
+			System.out.println("Trying to connect to " + hostname + ":" + port);
 			s = new Socket(hostname,port);
+			System.out.println("connected to socket! Opening streams...");
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			System.out.println("Connected to " + hostname + ":" + port);
