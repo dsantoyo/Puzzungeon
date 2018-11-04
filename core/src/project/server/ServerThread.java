@@ -9,11 +9,14 @@ public class ServerThread extends Thread{
 
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
+	private Username username;
+	private Password password;
 	
 	private Server server;
 	
 	public ServerThread(Socket socket, Server server) {
 		this.server = server;
+		
 		
 		try {
 			
@@ -32,11 +35,29 @@ public class ServerThread extends Thread{
 		try {
 			while(true) {
 				
-				ChatMessage cm = (ChatMessage)ois.readObject();
-				if( cm != null) {
-					//send new message to the server
-					server.broadcast(cm);
+				Object object = ois.readObject();
+				//if a Chatmessage object is sent to the server
+				if(object instanceof ChatMessage) {
+					ChatMessage cm = (ChatMessage)object;
+					if( cm != null) {
+						//send new message to the server
+						server.broadcast(cm);
+					}
 				}
+				
+				//if an Username  object is sent to the server
+				if(object instanceof Username) {
+					username = (Username)object;
+					System.out.print(username.getUsername() + " has connected to the server");
+				}
+				
+				//if a Password onject is sent to the server
+				if(object instanceof Password) {
+					password = (Password)object;
+					System.out.print(" ,password = " + password.getPassword());
+				}
+				
+				
 			}
 		}catch(IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());

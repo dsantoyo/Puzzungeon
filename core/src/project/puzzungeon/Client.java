@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.Vector;
 
 import project.server.ChatMessage;
+import project.server.Password;
+import project.server.Username;
 
 public class Client {
 	
@@ -76,4 +78,28 @@ public class Client {
 		}
 		
 	}
+	public void sendUsername(Username username) {
+		System.out.println("sendUsername() called with username = " + username.getUsername() );
+		//send username to serverthread
+        try {
+			oos.writeObject(username);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+		
+	}
+	
+	public void sendPassword(Password password) {
+		System.out.println("sendPassword() called with password = " + password.getPassword() );
+		//send password to serverthread
+        try {
+			oos.writeObject(password);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+		
+	}
+	
 }
