@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Puzzungeon;
+import project.server.Password;
+import project.server.Username;
 
 //login screen
 public class LoginScreen implements Screen{
@@ -54,11 +56,21 @@ public class LoginScreen implements Screen{
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					
-					game.client.clientUsername = usernameInput.getText();
-					
+					//get username and password
+					String username = usernameInput.getText();
+					String password = passwordInput.getText();
+					if(!username.equals("")) {
+						game.client.clientUsername = username;
+					}
+	                
+
 					//set up connection to the server
 					System.out.println("Trying to connect...");
+					
 					game.client.connect();
+					game.client.sendUsername(new Username(username));
+					game.client.sendPassword(new Password(password));
+					
 					System.out.println("connected!");
 					System.out.println("switching screens...");
 					game.setScreen(new WaitingScreen(game));

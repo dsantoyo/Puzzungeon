@@ -15,13 +15,14 @@ public class Puzzungeon extends Game {
 	public SpriteBatch batch;
 	public Skin skin;
 	public Client client;
+	
 
 	//loads assets and calls first screen
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		client = new Client("localhost", 6781);
+		client = new Client("localhost", 6789);
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));
 	}
