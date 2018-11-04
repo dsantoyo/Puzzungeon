@@ -64,6 +64,14 @@ public class LoginScreen implements Screen{
 			});
 		
 		
+		TextButton backButton = new TextButton("Back", game.skin, "default");
+			backButton.addListener(new ClickListener(){
+				@Override 
+				public void clicked(InputEvent event, float x, float y){
+					game.setScreen(new MainMenuScreen(game));
+				}
+			});
+			
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
 			exitButton.addListener(new ClickListener(){
 				@Override 
@@ -93,6 +101,7 @@ public class LoginScreen implements Screen{
 		vg.addActor(inputRow3);
 		
 		HorizontalGroup inputRow4 = new HorizontalGroup();
+		inputRow4.addActor(backButton);
 		inputRow4.addActor(exitButton);
 		vg.addActor(inputRow4);
 		
