@@ -3,7 +3,9 @@ package project.puzzungeon.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -61,10 +63,16 @@ public class WaitingScreen implements Screen{
 		vg1.addActor(gameTitle);
 		
 		stage.addActor(vg1);
-		
 
 		// chatroom UI
 		final TextArea inputBox = new TextArea("",game.skin);
+		
+		/*
+		//when ENTER key is pressed, send message to the serverthread
+
+		*/
+		
+		
 		final TextButton sendButton  = new TextButton("Send", game.skin, "default");
 		
 		showMessage1 = new Label("",game.skin);
@@ -73,7 +81,7 @@ public class WaitingScreen implements Screen{
 		Label showDivider = new Label("-------------------------------------",game.skin);
 		
 		
-			//send button sends new message to the server
+			//when sednButton is clicked, send message to the serverthread
 				sendButton.addListener(new ClickListener(){
 		            @Override 
 		            public void clicked(InputEvent event, float x, float y){
