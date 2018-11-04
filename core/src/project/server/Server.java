@@ -11,17 +11,24 @@ import project.server.ChatMessage;
 
 public class Server {
 	
+	//each serverThread represents a connected client
 	private Vector<ServerThread> serverThreads;
+	
+	//a vector to store the last 3 messages on server (could be redundant)
 	private Vector<ChatMessage> messageVec;
 	private boolean allConnected;
 	
 	public Server(int port) {
+		
+		//a vector to store the last 3 messages on server (could be redundant)
 		messageVec = new Vector<ChatMessage>(3);
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
 		allConnected = false;
 		
+		//Display the priave IP of the server.
+		//Necessary information to build connection between different machines
 		InetAddress inetAddress;
 		try {
 			inetAddress = InetAddress.getLocalHost();
@@ -31,13 +38,12 @@ public class Server {
 			e.printStackTrace();
 		}
 		
-		ServerSocket ss = null;
 		
+		//Getting connection request from clients
+		ServerSocket ss = null;
 		try {
 			System.out.println("trying to bind to port " + port);
-			
 			ss = new ServerSocket(port);
-			
 			System.out.println("bound to port " + port);
 			
 			serverThreads = new Vector<ServerThread>();
@@ -46,11 +52,13 @@ public class Server {
 				Socket s = ss.accept();
 				System.out.println("Connection from " + s.getInetAddress());
 				
+				//assign the socket(connected to a client) to a serverThread
 				ServerThread st = new ServerThread(s, this);
 				
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
 				
+				/*
 				if (serverThreads.size() > 2 && allConnected == false) {
 					System.out.println("Enough connections.");
 					allConnected = true;
@@ -58,6 +66,7 @@ public class Server {
 						serverThreads.get(i).sendConnNum(2);
 					}
 				}
+				*/
 			}
 		}catch (IOException ioe) {
 			System.out.println("ioe:"+ioe.getMessage());
@@ -69,12 +78,10 @@ public class Server {
 			}catch (IOException ioe) {
 				System.out.println("ioe:"+ioe.getMessage());
 			}
-			
 		}
 	}
-	
 
-	//get new message from serverthread and send to every client
+	//get new message from a serverthread and send to every client
 	public void broadcast(ChatMessage cm) {
 		
 		if(cm != null) {
@@ -85,13 +92,11 @@ public class Server {
 			// add the newest message
 			messageVec.add(cm);
 			
-			
 			//sd the newest message to every client
 			for(ServerThread thread : serverThreads) {
 					thread.sendMessage(messageVec.get(2));
 			}
 		}
-		
 	}
 
 	public static void main(String [] args) {

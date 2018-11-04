@@ -26,6 +26,8 @@ public class Client {
 		this.clientUsername = "default";
 	}
 	
+	
+	//setting up connection between a client and the server
 	public void connect() {
 		
 		try {
@@ -35,9 +37,10 @@ public class Client {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			System.out.println("Connected to " + hostname + ":" + port);
+			
 			//only store the last 3 messages on the client side
 			messageVec = new Vector<ChatMessage>(3);
-			messageVec.add(new ChatMessage("Hello ", clientUsername+"!"));
+			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 				
@@ -54,7 +57,6 @@ public class Client {
 		            	try {
 		            		while(true){
 		            			ChatMessage newMessage = (ChatMessage)ois.readObject();
-		                	
 		            			messageVec.remove(0);
 		            			messageVec.add(newMessage);
 		            		}
@@ -68,38 +70,34 @@ public class Client {
 
 		
 	}
+	//send message from a client(front-end) to a serverthread(back-end)
 	public void sendMessage(ChatMessage cm) {
-		//send message to serverthread
         try {
 			oos.writeObject(cm);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
-		
 	}
+	//send username from a client(front-end) to a serverthread(back-end)
 	public void sendUsername(Username username) {
 		System.out.println("sendUsername() called with username = " + username.getUsername() );
-		//send username to serverthread
         try {
 			oos.writeObject(username);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
-		
 	}
 	
+	//send password from a client(front-end) to a serverthread(back-end)
 	public void sendPassword(Password password) {
 		System.out.println("sendPassword() called with password = " + password.getPassword() );
-		//send password to serverthread
         try {
 			oos.writeObject(password);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
-		
 	}
-	
 }

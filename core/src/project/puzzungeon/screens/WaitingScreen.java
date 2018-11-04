@@ -32,6 +32,10 @@ public class WaitingScreen implements Screen{
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		
+		
+		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.");
+		game.client.sendMessage(cm);
 	}
 	
 	//updates actors
