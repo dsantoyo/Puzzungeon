@@ -20,9 +20,11 @@ public class Client {
 	public Vector<ChatMessage> messageVec;
 	public String clientUsername;
 	
-	// not sure how to name these two
-	public Player playerOne;
-	public Player playerTwo;
+	//client's own player
+	public Player localPlayer;
+	
+	//the other player. constantly updated by the server
+	public Player otherPlayer;
 	
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
