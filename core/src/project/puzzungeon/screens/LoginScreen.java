@@ -47,6 +47,7 @@ public class LoginScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
+		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
 		final TextArea passwordInput = new TextArea("",game.skin);
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
@@ -54,6 +55,10 @@ public class LoginScreen implements Screen{
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					
+					String username = usernameInput.getText();
+					if (username == "" || username == null) {
+						error.setText("Please enter a new username!");
+					}
 					game.client.clientUsername = usernameInput.getText();
 					
 					//set up connection to the server
