@@ -1,21 +1,22 @@
 package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import project.server.ChatMessage;
 
 import project.puzzungeon.Puzzungeon;
+import project.server.ChatMessage;
 
 //waitroom screen
 public class WaitingScreen implements Screen{
@@ -56,56 +57,64 @@ public class WaitingScreen implements Screen{
 		
 		//create the actors
 		Label gameTitle = new Label("Waiting", game.skin);
-				
-		//use vg and hg to group the actors now. changes should be made to make it look better
-		VerticalGroup vg1 = new VerticalGroup();
-		vg1.setFillParent(true);
-		vg1.addActor(gameTitle);
-		
-		stage.addActor(vg1);
-
-		// chatroom UI
-		final TextArea inputBox = new TextArea("",game.skin);
-		
-		
-		//when ENTER key is pressed, send message to the serverthread
-
-		
-		
-		
-		final TextButton sendButton  = new TextButton("Send", game.skin, "default");
-		
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
 		Label showDivider = new Label("-------------------------------------",game.skin);
+				
+		// chatroom UI
+		final TextArea inputBox = new TextArea("",game.skin);
 		
-		
-			//when sednButton is clicked, send message to the serverthread
-				sendButton.addListener(new ClickListener(){
-		            @Override 
-		            public void clicked(InputEvent event, float x, float y){
-		            	
-		                String messageStr = new String();
-		                
+			//when ENTER key is pressed, send message to the serverthread
+			inputBox.setTextFieldListener(new TextFieldListener() {
+				@Override
+				public void keyTyped(TextField textField, char c) {
+					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						String messageStr = new String();
 		                //allow to send empty message
 		                if(inputBox.getText().length() == 0) {
 		                	messageStr = "";
 		                }
 		                else {
-		                	messageStr = inputBox.getText();// + ("\n"); 
+		                	messageStr = inputBox.getText();
+		                	//remove newline character
+		                	messageStr = messageStr.replace("\n", "");
 		                }
-		                
 		                System.out.println("messageStr = " + messageStr);
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
-		                
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
-		                
 		                game.client.sendMessage(cm);
-		            }
-		        });
+					}
+				}
+			});
 		
+		final TextButton sendButton  = new TextButton("Send", game.skin, "default");
+			//when sendButton is clicked, send message to the serverthread
+			sendButton.addListener(new ClickListener(){
+	            @Override 
+	            public void clicked(InputEvent event, float x, float y){
+	                String messageStr = new String();
+	                //allow to send empty message
+	                if(inputBox.getText().length() == 0) {
+	                	messageStr = "";
+	                }
+	                else {
+	                	messageStr = inputBox.getText();// + ("\n"); 
+	                }
+	                System.out.println("messageStr = " + messageStr);
+	                //clear inputbox after new message is sent
+	                inputBox.setText("");
+	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+	                game.client.sendMessage(cm);
+	            }
+	        });
+		
+		//use vg and hg to group the actors now. changes should be made to make it look better
+		VerticalGroup vg1 = new VerticalGroup();
+		vg1.setFillParent(true);
+		vg1.addActor(gameTitle);
+		stage.addActor(vg1);
 				
 		//5 rows for the bottom bar.
 		HorizontalGroup chatRow0 = new HorizontalGroup().bottom().left();
