@@ -118,6 +118,10 @@ public class RegisterScreen implements Screen{
 		inputRow4.addActor(exitButton);
 		vg.addActor(inputRow4);
 		
+		HorizontalGroup inputRow5 = new HorizontalGroup();
+		inputRow5.addActor(error);
+		vg.addActor(inputRow5);
+		
 		//add actors onto the stage
 		stage.addActor(vg);
 	}
