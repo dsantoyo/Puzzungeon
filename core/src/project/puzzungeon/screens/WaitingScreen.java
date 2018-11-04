@@ -62,7 +62,6 @@ public class WaitingScreen implements Screen{
 		showMessage3 = new Label("",game.skin);
 		Label showDivider = new Label("-------------------------------------",game.skin);
 				
-		// chatroom UI
 		final TextArea inputBox = new TextArea("",game.skin);
 		
 			//when ENTER key is pressed, send message to the serverthread
@@ -100,7 +99,7 @@ public class WaitingScreen implements Screen{
 	                	messageStr = "";
 	                }
 	                else {
-	                	messageStr = inputBox.getText();// + ("\n"); 
+	                	messageStr = inputBox.getText();
 	                }
 	                System.out.println("messageStr = " + messageStr);
 	                //clear inputbox after new message is sent
@@ -110,6 +109,7 @@ public class WaitingScreen implements Screen{
 	            }
 	        });
 		
+		// chatroom UI
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);

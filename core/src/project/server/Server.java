@@ -38,7 +38,6 @@ public class Server {
 			e.printStackTrace();
 		}
 		
-		
 		//Getting connection request from clients
 		ServerSocket ss = null;
 		try {
