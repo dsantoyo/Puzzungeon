@@ -54,7 +54,6 @@ public class LoginScreen implements Screen{
 			loginButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
 					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
