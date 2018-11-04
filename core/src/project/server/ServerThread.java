@@ -53,7 +53,8 @@ public class ServerThread extends Thread{
 					password = (Password)object;
 					System.out.print(" ,password = " + password.getPassword());
 					
-					
+					//JDBCType database = new JDBCType();
+					//String errorMessage = database.errorMessage();
 					
 				}
 								
