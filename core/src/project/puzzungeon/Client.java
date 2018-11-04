@@ -20,6 +20,10 @@ public class Client {
 	public Vector<ChatMessage> messageVec;
 	public String clientUsername;
 	
+	// not sure how to name these two
+	public Player playerOne;
+	public Player playerTwo;
+	
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
