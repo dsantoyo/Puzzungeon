@@ -55,19 +55,24 @@ public class LoginScreen implements Screen{
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					
-					String username = usernameInput.getText();
-					if (username == "" || username == null) {
-						error.setText("Please enter a new username!");
+					String usernameStr = usernameInput.getText();
+					String passwordStr = passwordInput.getText();
+					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
+						error.setText("Please enter a valid username and password.");
+					} else if (usernameStr.trim().isEmpty()) {
+						error.setText("Please enter a valid username!");
+					} else if (passwordStr.trim().isEmpty()){
+						error.setText("Please enter a valid password!");
+					} else {
+						game.client.clientUsername = usernameStr;
+						System.out.println("username: ." + usernameStr + ".");
+						//set up connection to the server
+						System.out.println("Trying to connect...");
+						game.client.connect();
+						System.out.println("connected!");
+						System.out.println("switching screens...");
+						game.setScreen(new WaitingScreen(game));
 					}
-					game.client.clientUsername = usernameInput.getText();
-					
-					//set up connection to the server
-					System.out.println("Trying to connect...");
-					game.client.connect();
-					System.out.println("connected!");
-					System.out.println("switching screens...");
-					game.setScreen(new WaitingScreen(game));
-					
 				}
 			});
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
@@ -123,6 +128,10 @@ public class LoginScreen implements Screen{
 		inputRow4.addActor(backButton);
 		inputRow4.addActor(exitButton);
 		vg.addActor(inputRow4);
+		
+		HorizontalGroup inputRow5 = new HorizontalGroup();
+		inputRow5.addActor(error);
+		vg.addActor(inputRow5);
 		
 		//add actors onto the stage
 		stage.addActor(vg);
