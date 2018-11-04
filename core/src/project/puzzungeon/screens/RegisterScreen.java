@@ -49,27 +49,32 @@ public class RegisterScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
+		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
 		final TextArea passwordInput = new TextArea("",game.skin);
 		TextButton RegisterButton = new TextButton("Register", game.skin, "default");
 		RegisterButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					
-					
-					//get username and password
-					String username = usernameInput.getText();
-					String password = passwordInput.getText();
-					if(!username.equals("")) {
-						game.client.clientUsername = username;
+					String usernameStr = usernameInput.getText();
+					String passwordStr = passwordInput.getText();
+					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
+						error.setText("Please enter a valid username and password.");
+					} else if (usernameStr.trim().isEmpty()) {
+						error.setText("Please enter a valid username!");
+					} else if (passwordStr.trim().isEmpty()){
+						error.setText("Please enter a valid password!");
+					} else {
+						game.client.clientUsername = usernameStr;
+						System.out.println("username: ." + usernameStr + ".");
+						//set up connection to the server
+						System.out.println("Trying to connect...");
+						game.client.connect();
+            System.out.println("Connected!");
+						game.client.sendUsername(new Username(usernameStr));
+					  game.client.sendPassword(new Password(passwordStr));
+						game.setScreen(new WaitingScreen(game));
 					}
-	                
-					//set up connection to the server
-					game.client.connect();
-					game.client.sendUsername(new Username(username));
-					game.client.sendPassword(new Password(password));
-					
-					game.setScreen(new WaitingScreen(game));
 				}
 			});
 		TextButton backButton = new TextButton("Back", game.skin, "default");

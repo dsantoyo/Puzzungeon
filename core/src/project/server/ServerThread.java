@@ -76,4 +76,13 @@ public class ServerThread extends Thread{
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
+	
+	public void sendConnNum(int num) {
+		try {
+			oos.writeInt(num);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
 }

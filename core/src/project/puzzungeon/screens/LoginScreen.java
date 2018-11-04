@@ -49,39 +49,39 @@ public class LoginScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
+		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
 		final TextArea passwordInput = new TextArea("",game.skin);
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					
-					//get username and password
-					String username = usernameInput.getText();
-					String password = passwordInput.getText();
-					if(!username.equals("")) {
-						game.client.clientUsername = username;
-					}
-	                
-
-					//set up connection to the server
-					System.out.println("Trying to connect...");
-					
-					game.client.connect();
-					game.client.sendUsername(new Username(username));
-					game.client.sendPassword(new Password(password));
-					
-					System.out.println("connected!");
-					System.out.println("switching screens...");
-					game.setScreen(new WaitingScreen(game));
-					
+					String usernameStr = usernameInput.getText();
+					String passwordStr = passwordInput.getText();
+					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
+						error.setText("Please enter a valid username and password.");
+					} else if (usernameStr.trim().isEmpty()) {
+						error.setText("Please enter a valid username!");
+					} else if (passwordStr.trim().isEmpty()){
+						error.setText("Please enter a valid password!");
+					} else {
+						game.client.clientUsername = usernameStr;
+						System.out.println("username: ." + usernameStr + ".");
+						//set up connection to the server
+						System.out.println("Trying to connect...");
+						game.client.connect();
+						game.client.sendUsername(new Username(usernameStr));
+					  game.client.sendPassword(new Password(passwordStr));
+						game.setScreen(new WaitingScreen(game));
+          }
 				}
 			});
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							game.client.clientUsername = "Guest";
+							game.client.client
+                = "Guest";
 							System.out.println("Trying to connect...");
 							game.client.connect();
 							System.out.println("connected!");
@@ -130,6 +130,10 @@ public class LoginScreen implements Screen{
 		inputRow4.addActor(backButton);
 		inputRow4.addActor(exitButton);
 		vg.addActor(inputRow4);
+		
+		HorizontalGroup inputRow5 = new HorizontalGroup();
+		inputRow5.addActor(error);
+		vg.addActor(inputRow5);
 		
 		//add actors onto the stage
 		stage.addActor(vg);
