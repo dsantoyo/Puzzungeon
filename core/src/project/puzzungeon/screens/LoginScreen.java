@@ -71,7 +71,7 @@ public class LoginScreen implements Screen{
 						System.out.println("Trying to connect...");
 						game.client.connect();
 						game.client.sendUsername(new Username(usernameStr));
-					  game.client.sendPassword(new Password(passwordStr));
+						game.client.sendPassword(new Password(passwordStr));
 						game.setScreen(new WaitingScreen(game));
           }
 				}
@@ -80,8 +80,7 @@ public class LoginScreen implements Screen{
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							game.client.client
-                = "Guest";
+							game.client.clientUsername = "Guest";
 							System.out.println("Trying to connect...");
 							game.client.connect();
 							System.out.println("connected!");
