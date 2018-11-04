@@ -49,7 +49,7 @@ public class WaitingScreen implements Screen{
 		//    (chat ui)
 		
 		//create the actors
-		Label gameTitle = new Label("Waiting", game.skin);
+		Label gameTitle = new Label("Waiting for other player...", game.skin);
 				
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();

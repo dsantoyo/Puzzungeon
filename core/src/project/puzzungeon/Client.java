@@ -54,7 +54,6 @@ public class Client {
 		            	try {
 		            		while(true){
 		            			ChatMessage newMessage = (ChatMessage)ois.readObject();
-		                	
 		            			messageVec.remove(0);
 		            			messageVec.add(newMessage);
 		            		}
