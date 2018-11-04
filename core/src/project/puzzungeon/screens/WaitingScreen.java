@@ -67,10 +67,10 @@ public class WaitingScreen implements Screen{
 		// chatroom UI
 		final TextArea inputBox = new TextArea("",game.skin);
 		
-		/*
+		
 		//when ENTER key is pressed, send message to the serverthread
 
-		*/
+		
 		
 		
 		final TextButton sendButton  = new TextButton("Send", game.skin, "default");
