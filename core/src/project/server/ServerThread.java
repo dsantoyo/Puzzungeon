@@ -45,19 +45,18 @@ public class ServerThread extends Thread{
 					}
 				}
 				
-				//if an Username  object is sent to the server
+				//if an Username object is sent to the server
 				if(object instanceof Username) {
 					username = (Username)object;
 					System.out.print(username.getUsername() + " has connected to the server");
-				}
-				
-				//if a Password onject is sent to the server
-				if(object instanceof Password) {
+					object = ois.readObject();
 					password = (Password)object;
 					System.out.print(" ,password = " + password.getPassword());
+					
+					
+					
 				}
-				
-				
+								
 			}
 		}catch(IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
