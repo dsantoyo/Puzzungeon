@@ -30,7 +30,9 @@ public class WaitingScreen implements Screen{
 	private Label showMessage2;
 	private Label showMessage3;
 	
+	//waiting ui
 	private Label waitingState;
+	private TextButton readyButton;
 	
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
@@ -114,7 +116,7 @@ public class WaitingScreen implements Screen{
 	        });
 			
 			
-			final TextButton readyButton  = new TextButton("Ready?", game.skin, "default");
+		readyButton  = new TextButton("Ready?", game.skin, "default");
 			//when readybutton is clicked, change localplayerstate(front-end)
 			//and update the playerVec on the server(back-end)
 			readyButton.addListener(new ClickListener(){
@@ -145,7 +147,11 @@ public class WaitingScreen implements Screen{
 		vg1.addActor(gameTitle);
 		vg1.addActor(localPlayerUsername);
 		vg1.addActor(waitingState);
+		
+		
+		readyButton.setVisible(false);
 		vg1.addActor(readyButton);
+		
 		stage.addActor(vg1);
 				
 		//5 rows for the bottom bar.
@@ -217,6 +223,11 @@ public class WaitingScreen implements Screen{
 	
 	
 	public void update() {
+		
+		//update the visibility of Ready button
+		if(game.client.otherPlayer.playerID != -1) {
+			readyButton.setVisible(true);
+		}
 		
 		//update waiting state
 		if(game.client.otherPlayer.playerID != -1) {
