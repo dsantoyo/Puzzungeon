@@ -83,12 +83,7 @@ public class WaitingScreen implements Screen{
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
 		                
-		                //////to be removed
-		                if(messageStr.equals("ready")) {
-		                	game.client.localPlayer.readyState = true;
-		                	game.client.sendPlayer();
-		                }
-		                ////////
+		                
 		                
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
 		                game.client.sendMessage(cm);
@@ -116,12 +111,37 @@ public class WaitingScreen implements Screen{
 	                game.client.sendMessage(cm);
 	            }
 	        });
+			
+			
+			final TextButton readyButton  = new TextButton("Ready?", game.skin, "default");
+			//when sendButton is clicked, send message to the serverthread
+			readyButton.addListener(new ClickListener(){
+	            @Override 
+	            public void clicked(InputEvent event, float x, float y){
+	            	
+	            	if(game.client.localPlayer.readyState == false) {
+	            		game.client.localPlayer.readyState = true;
+		                game.client.sendPlayer();
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready to play...");
+		                game.client.sendMessage(cm);
+		                readyButton.setText("Cancel?");
+	            	}
+	            	else {
+	            		game.client.localPlayer.readyState = false;
+		                game.client.sendPlayer();
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is not ready to play yet...");
+		                game.client.sendMessage(cm);
+		                readyButton.setText("Ready?");
+	            	}
+	            }
+	        });
 		
 		// chatroom UI
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
 		vg1.addActor(gameTitle);
+		vg1.addActor(readyButton);
 		stage.addActor(vg1);
 				
 		//5 rows for the bottom bar.

@@ -121,7 +121,7 @@ public class Server {
 		playerVec.set(playerID,player);
 
 		for(Player playertemp : playerVec) {
-			
+			System.out.println("server player " + playertemp.playerID + " ready state = " + playertemp.readyState);
 		}
 	}
 	
