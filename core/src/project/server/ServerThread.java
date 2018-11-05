@@ -16,9 +16,10 @@ public class ServerThread extends Thread{
 	private Player player;
 	private Server server;
 	
-	//the localPlayerID of this serverThread's client's localPlayer
-	//server uses this to know which player in server's playerVec is 
-	//this client's otherPlayer
+	/* the localPlayerID of this serverThread's client's localPlayer
+	 * server uses this to know which player in server's playerVec is 
+	 * this client's otherPlayer
+	 */
 	private int localPlayerID;
 	
 	//when a client tries to connect to the server,
@@ -67,8 +68,15 @@ public class ServerThread extends Thread{
 					object = ois.readObject();
 					password = (Password)object;
 					
-					//JDBCType database = new JDBCType();
-					//String errorMessage = database.errorMessage();
+
+					/*
+					   Back-end login/register features/validation should be done here
+					   
+					   
+					   //JDBCType database = new JDBCType();
+					    //String errorMessage = database.errorMessage();
+					*/
+					
 				}
 				
 				//if a Player object is sent to this serverthread
@@ -100,6 +108,11 @@ public class ServerThread extends Thread{
 		}
 	}
 
+
+/*   methods below are called by the server on every serverThread
+ *   to send updates from back-end(server/serverThreads) to front-end(client)
+ */
+	
 	//receive new message from the server and send to this serverthread's client
 	public void sendMessage(ChatMessage cm) {
 		
@@ -137,16 +150,16 @@ public class ServerThread extends Thread{
 	}
 	
 	//send otherPlayer from back-end to front-end
-		public void updateOtherPlayer(Player otherPlayer) {
+	public void updateOtherPlayer(Player otherPlayer) {
 			
-			try {
-				oos.writeObject(otherPlayer);
-				oos.flush();
-				oos.reset();
-			} catch (IOException ioe) {
-				System.out.println("ioe: " + ioe.getMessage());
-			}
+		try {
+			oos.writeObject(otherPlayer);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
 		}
+	}
 	
 	//return localPlayerID in this serverThread
 	public int getLocalPlayerID() {

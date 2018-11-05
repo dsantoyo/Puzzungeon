@@ -152,8 +152,9 @@ public class Server {
 
 		System.out.println("Server updated player: username = " + player.playerName +", playerID = " + player.playerID);
 		
-		//update front-end's otherPlayer
-		updateClientPlayer();
+		//when a player is updated in server's playerVec,
+		//also update front-end's otherPlayer
+		sendServerOtherPlayer();
 	}
 	
 	/* Get called when a serverThread wants to know if every player is ready to play
@@ -178,8 +179,10 @@ public class Server {
 		}
 	}
 	
-	//send otherPlayer from server's playerVec back to client
-	public void updateClientPlayer() {
+	/* For updating every client's otherPlayer 
+	 * Send corresponding player object in server's playerVec to each serverThread
+	 */
+	public void sendServerOtherPlayer() {
 		if(playerVec.size() == 2) {
 			for(ServerThread thread : serverThreads) {
 				int localPlayerID = thread.getLocalPlayerID();
