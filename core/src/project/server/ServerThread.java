@@ -83,6 +83,7 @@ public class ServerThread extends Thread{
 							//set up PlayerID on client side
 							localPlayerID = serverPlayerVecSize-1;
 							setLocalPlayerID(serverPlayerVecSize-1);
+							server.updateServerPlayer(player.playerID, player);
 						}
 						else {
 							//update player on the server
