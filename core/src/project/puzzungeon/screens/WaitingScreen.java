@@ -82,6 +82,14 @@ public class WaitingScreen implements Screen{
 		                System.out.println("messageStr = " + messageStr);
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
+		                
+		                //////to be removed
+		                if(messageStr.equals("ready")) {
+		                	game.client.localPlayer.readyState = true;
+		                	game.client.sendPlayer();
+		                }
+		                ////////
+		                
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
 		                game.client.sendMessage(cm);
 					}

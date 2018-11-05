@@ -15,15 +15,21 @@ The server sends the information the other player back to each client
 
 public class Player implements Serializable{
 	public static final long serialVersionUID = 1;
-	public Player(String username){
-		this.username = username;
-		this.playerID = 0;
+	
+	public Player(String playerName){
+		this.playerName = playerName;
+		this.playerID = -1;
+		this.readyState = false;
 	}
 	
-	public String username;
-	
+
+	public String playerName;
+		
 	//playerID = the index of the player in server's playerVec
 	public int playerID;
+	
+	
+	public Boolean readyState;
 	
 	//Avatar avatar ?
 	//Score score ?

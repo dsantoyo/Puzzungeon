@@ -53,7 +53,7 @@ public class Client {
 			
 			//send localPlayer to the server
 			localPlayer = new Player(clientUsername);
-			sendPlayer(localPlayer);
+			sendPlayer();
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
@@ -125,10 +125,15 @@ public class Client {
 	}
 	
 	//send player from a client(front-end) to a serverthread(back-end)
-	public void sendPlayer(Player player) {
+	public void sendPlayer() {
+		
+		System.out.println("player ready state in client = " + localPlayer.readyState);
 		try {
-			oos.writeObject(player);
+			oos.writeObject(localPlayer);
 			oos.flush();
+			
+			//discard any cached references. this shit took me 1.5 hours to debug...
+			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
