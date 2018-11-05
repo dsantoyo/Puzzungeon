@@ -95,8 +95,8 @@ public class Server {
 			
 			// add the newest message
 			messageVec.add(cm);
-			
-			//sd the newest message to every client
+			System.out.println("Server new message: " + cm.getUsername()+" "+cm.getMessage());
+			//send the newest message to every client
 			for(ServerThread thread : serverThreads) {
 					thread.sendMessage(messageVec.get(2));
 			}
@@ -109,8 +109,9 @@ public class Server {
 		if(player != null) {
 			player.playerID = playerVec.size();
 			playerVec.add(player);
-			System.out.println("new player with username = " + player.playerName +" and playerID = " + player.playerID + " is added");
-			System.out.println("now playerVec size = " + playerVec.size());
+			
+			System.out.println("Server new player: username = " + player.playerName +", playerID = " + player.playerID);
+			System.out.println("now serverplayerVec size is " + playerVec.size());
 		}
 		return playerVec.size();
 	}
@@ -119,9 +120,14 @@ public class Server {
 	public void updateServerPlayer(int playerID, Player player) {
 		playerVec.set(playerID,player);
 
-		for(Player playertemp : playerVec) {
-			System.out.println("player " + playertemp.playerID + " ready state = " + playertemp.readyState);
-		}
+		System.out.println("Server updated player: username = " + player.playerName +", playerID = " + player.playerID);
+		
+		//for(Player playertemp : playerVec) {
+		//	System.out.println("player " + playertemp.playerID + " ready state = " + playertemp.readyState);
+		//}
+		
+		//update front-end's otherPlayer
+		updateClientPlayer();
 	}
 	
 	//check the readyState of every player on the server
@@ -140,6 +146,21 @@ public class Server {
 		//broadcast the overall ready state to every serverThread
 		for(ServerThread thread : serverThreads) {
 				thread.broadCastReadyState(allReady);
+		}
+	}
+	
+	//send otherPlayer from server's playerVec back to client
+	public void updateClientPlayer() {
+		if(playerVec.size() == 2) {
+			for(ServerThread thread : serverThreads) {
+				int localPlayerID = thread.getLocalPlayerID();
+				if(localPlayerID == 0) {
+					thread.updateOtherPlayer(playerVec.get(1));
+				}
+				else {
+					thread.updateOtherPlayer(playerVec.get(0));
+				}
+			}
 		}
 	}
 	

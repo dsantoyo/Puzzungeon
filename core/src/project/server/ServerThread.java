@@ -16,6 +16,11 @@ public class ServerThread extends Thread{
 	private Player player;
 	private Server server;
 	
+	//the localPlayerID of this serverThread's client's localPlayer
+	//server uses this to know which player in server's playerVec is 
+	//this client's otherPlayer
+	private int localPlayerID;
+	
 	//when a client tries to connect to the server,
 	//ServerThread constructor will be called by the server 
 	public ServerThread(Socket socket, Server server) {
@@ -33,6 +38,7 @@ public class ServerThread extends Thread{
 		}
 	}
 	
+
 	public void run() {
 		
 		//keep checking if any object is sent from the client
@@ -57,10 +63,9 @@ public class ServerThread extends Thread{
 				//if an Username/Password combination is sent to this serverthread
 				if(object instanceof Username) {
 					username = (Username)object;
-					System.out.println("front-end sent username = " + username.getUsername());
+					
 					object = ois.readObject();
 					password = (Password)object;
-					System.out.println("front-end sent password = " + password.getPassword());
 					
 					//JDBCType database = new JDBCType();
 					//String errorMessage = database.errorMessage();
@@ -76,6 +81,7 @@ public class ServerThread extends Thread{
 							//send player to the server and read its playerVec size
 							int serverPlayerVecSize = server.addServerPlayer(player);
 							//set up PlayerID on client side
+							localPlayerID = serverPlayerVecSize-1;
 							setLocalPlayerID(serverPlayerVecSize-1);
 						}
 						else {
@@ -92,7 +98,7 @@ public class ServerThread extends Thread{
 			System.out.println("cnfe: " + cnfe.getMessage());
 		}
 	}
-	
+
 	//receive new message from the server and send to this serverthread's client
 	public void sendMessage(ChatMessage cm) {
 		
@@ -104,6 +110,7 @@ public class ServerThread extends Thread{
 		}
 	}
 	
+	//get called after a client wants to add a new player to the server
 	//set up PlayerID on client side(front-end). ID = index-1 in server's playerVec(back-end)
 	public void setLocalPlayerID(int ID) {
 		try {
@@ -126,5 +133,22 @@ public class ServerThread extends Thread{
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
+	}
+	
+	//send otherPlayer from back-end to front-end
+		public void updateOtherPlayer(Player otherPlayer) {
+			
+			try {
+				oos.writeObject(otherPlayer);
+				oos.flush();
+				oos.reset();
+			} catch (IOException ioe) {
+				System.out.println("ioe: " + ioe.getMessage());
+			}
+		}
+	
+	//return localPlayerID in this serverThread
+	public int getLocalPlayerID() {
+		return localPlayerID;
 	}
 }

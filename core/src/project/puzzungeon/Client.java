@@ -84,14 +84,23 @@ public class Client {
 		            			if(object instanceof Integer) {
 		            				Integer integer = (Integer)object;
 		            				localPlayer.playerID = integer.intValue();
-		            				System.out.println("localPlayerID = " + localPlayer.playerID);
 		            			}
 		            			
 		            			//if the serverThread sends the readyState of player1 AND player2
 		            			if(object instanceof ReadyState) {
-		            				System.out.println("update ReadyState");
 		            				ReadyState rs = (ReadyState)object;
 		            				bothPlayerReady = rs.getReadyState();
+		            			}
+		            			
+		            			//if the serverThread sends back otherPlayer
+		            			if(object instanceof Player) {
+		            				otherPlayer = (Player)object;
+		            				System.out.println();
+		            				System.out.println("Client: Player updated by Server.");
+		            				System.out.println("Client: localPlayer is "+localPlayer.playerName);
+		            				System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
+		            				System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
+		            				System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
 		            			}
 		            			
 		            		}
@@ -118,7 +127,6 @@ public class Client {
 	
 	//send username from a client(front-end) to a serverthread(back-end)
 	public void sendUsername(Username username) {
-		System.out.println("sendUsername() called with username = " + username.getUsername() );
         try {
 			oos.writeObject(username);
 			oos.flush();
@@ -129,7 +137,6 @@ public class Client {
 	
 	//send password from a client(front-end) to a serverthread(back-end)
 	public void sendPassword(Password password) {
-		System.out.println("sendPassword() called with password = " + password.getPassword() );
         try {
 			oos.writeObject(password);
 			oos.flush();
@@ -140,8 +147,6 @@ public class Client {
 	
 	//send/update a player from a client(front-end) to a serverthread(back-end)
 	public void updatePlayer() {
-		
-		System.out.println("player ready state in client = " + localPlayer.readyState);
 		try {
 			oos.writeObject(localPlayer);
 			oos.flush();
