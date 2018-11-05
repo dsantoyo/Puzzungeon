@@ -140,7 +140,7 @@ public class WaitingScreen implements Screen{
 	            }
 	        });
 		
-		// chatroom UI
+		//chatroom UI
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
@@ -224,13 +224,12 @@ public class WaitingScreen implements Screen{
 	
 	public void update() {
 		
-		//update the visibility of Ready button
 		if(game.client.otherPlayer.playerID != -1) {
+			
+			//update the visibility of Ready button
 			readyButton.setVisible(true);
-		}
-		
-		//update waiting state
-		if(game.client.otherPlayer.playerID != -1) {
+			
+			//update waiting state
 			waitingState.setText("Player2: " + game.client.otherPlayer.playerName);
 		}
 		

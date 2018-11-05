@@ -46,6 +46,20 @@ public class Server {
 		//Getting connection request from clients
 		ServerSocket ss = null;
 		try {
+			
+			/*
+			//use this to find an available port automatically
+			  
+			//find an available port
+			System.out.println("finding a free port...");
+			ss = new ServerSocket(0);
+			int port = ss.getLocalPort();
+			System.out.println("server bound to port: " + port); 
+			
+			*/
+			
+			
+			//connect server to a hard-coded port
 			System.out.println("trying to bind to port " + port);
 			ss = new ServerSocket(port);
 			System.out.println("bound to port " + port);
@@ -85,8 +99,17 @@ public class Server {
 		}
 	}
 
-	//get new message from a serverthread and send to every client
-	public void broadcast(ChatMessage cm) {
+/*
+ *  Evey Server method below is called by a serverThread,
+ *	when this serverThread wants the server to do something
+ */
+	
+	
+	/*  Get new message from a serverThread
+	 *  Update this new message to server's messageVec
+	 *  Broadcast this new message to every serverThread
+	 */
+	public void broadcastMessage(ChatMessage cm) {
 		
 		if(cm != null) {
 			
@@ -96,15 +119,18 @@ public class Server {
 			// add the newest message
 			messageVec.add(cm);
 			System.out.println("Server new message: " + cm.getUsername()+" "+cm.getMessage());
-			//send the newest message to every client
+			//send the newest message to every serverThread
 			for(ServerThread thread : serverThreads) {
 					thread.sendMessage(messageVec.get(2));
 			}
 		}
 	}
 	
-	//get Player object from a new serverthread and store it in playerVec
-	// returns the size of playerVec on the server
+	/* For adding a new player onto the server.
+	 * Get a Player object from a new serverThread and store it in server's playerVec
+	 * Use the size of playerVec on the server after the addition as playerID
+	 * Send this playerID back to front-end
+	 */
 	public int addServerPlayer(Player player) {
 		if(player != null) {
 			player.playerID = playerVec.size();
@@ -113,25 +139,29 @@ public class Server {
 			System.out.println("Server new player: username = " + player.playerName +", playerID = " + player.playerID);
 			System.out.println("now serverplayerVec size is " + playerVec.size());
 		}
-		return playerVec.size();
+		return player.playerID;
 	}
 	
-	//reading player object from serverthread and update it in server's playerVec
+	
+	/* For updating an existing server on the server.
+	 * Get player object from a serverthread and update it in server's playerVec
+	 * User playerID to acees its counterpart in server's playerVec
+	 */
 	public void updateServerPlayer(int playerID, Player player) {
 		playerVec.set(playerID,player);
 
 		System.out.println("Server updated player: username = " + player.playerName +", playerID = " + player.playerID);
 		
-		//for(Player playertemp : playerVec) {
-		//	System.out.println("player " + playertemp.playerID + " ready state = " + playertemp.readyState);
-		//}
-		
-		//update front-end's otherPlayer
-		updateClientPlayer();
+		//when a player is updated in server's playerVec,
+		//also update front-end's otherPlayer
+		sendServerOtherPlayer();
 	}
 	
-	//check the readyState of every player on the server
-	public void checkReadyState() {
+	/* Get called when a serverThread wants to know if every player is ready to play
+	 * Check the readyState of every player on the server
+	 * Call every serverThread to to update ove
+	 */
+	public void checkAllReadyState() {
 		
 		Boolean allReady = true;
 		
@@ -145,12 +175,14 @@ public class Server {
 		}
 		//broadcast the overall ready state to every serverThread
 		for(ServerThread thread : serverThreads) {
-				thread.broadCastReadyState(allReady);
+				thread.broadcastReadyState(allReady);
 		}
 	}
 	
-	//send otherPlayer from server's playerVec back to client
-	public void updateClientPlayer() {
+	/* For updating every client's otherPlayer 
+	 * Send corresponding player object in server's playerVec to each serverThread
+	 */
+	public void sendServerOtherPlayer() {
 		if(playerVec.size() == 2) {
 			for(ServerThread thread : serverThreads) {
 				int localPlayerID = thread.getLocalPlayerID();
