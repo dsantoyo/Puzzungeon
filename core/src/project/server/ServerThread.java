@@ -65,8 +65,9 @@ public class ServerThread extends Thread{
 				if(object instanceof Player) {
 					Player player = (Player)object;
 					if(player != null) {
-						//send player to the server
-						server.addPlayer(player);
+						//send player to the server and read its playerVec size
+						int serverPlayerVecSize = server.addPlayer(player);
+						sendServerPlayerVecSize(serverPlayerVecSize);
 					}
 				}
 								
@@ -89,9 +90,10 @@ public class ServerThread extends Thread{
 		}
 	}
 	
-	public void sendConnNum(int num) {
+	public void sendServerPlayerVecSize(int size) {
 		try {
-			oos.writeInt(num);
+			Integer sizeInt = new Integer(size); 
+			oos.writeObject(sizeInt);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());

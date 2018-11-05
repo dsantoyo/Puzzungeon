@@ -67,9 +67,21 @@ public class Client {
 		            	
 		            	try {
 		            		while(true){
-		            			ChatMessage newMessage = (ChatMessage)ois.readObject();
-		            			messageVec.remove(0);
-		            			messageVec.add(newMessage);
+		            			Object object = ois.readObject();
+		            			
+		            			//if the serverThread sends a ChatMessage to the client
+		            			if(object instanceof ChatMessage) {
+		            				ChatMessage newMessage = (ChatMessage)object;
+		            				messageVec.remove(0);
+		            				messageVec.add(newMessage);
+		            			}
+		            			//if the serverThread sends the size of server PlayerVec to the client
+		            			if(object instanceof Integer) {
+		            				Integer integer = (Integer)object;
+		            				localPlayer.playerID = integer.intValue();
+		            				System.out.println("localPlayerID = " + localPlayer.playerID);
+		            			}
+		            			
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("ioe: " + ioe.getMessage());

@@ -104,12 +104,14 @@ public class Server {
 	}
 	
 	//get Player object from a new serverthread and store it in playerVec
-	public void addPlayer(Player player) {
+	// returns the size of playerVec on the server
+	public int addPlayer(Player player) {
 		if(player != null) {
 			playerVec.add(player);
 			System.out.println("player with username = " + player.username +" is added to the server");
 			System.out.println("now playerVec size = " + playerVec.size());
 		}
+		return playerVec.size();
 	}
 
 	public static void main(String [] args) {

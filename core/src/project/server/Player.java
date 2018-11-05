@@ -21,6 +21,8 @@ public class Player implements Serializable{
 	}
 	
 	public String username;
+	
+	//playerID = the index of the player in server's playerVec
 	public int playerID;
 	
 	//Avatar avatar ?
