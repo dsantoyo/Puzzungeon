@@ -57,10 +57,10 @@ public class ServerThread extends Thread{
 				//if an Username/Password combination is sent to this serverthread
 				if(object instanceof Username) {
 					username = (Username)object;
-					System.out.print(username.getUsername() + " has connected to the server");
+					System.out.println("front-end sent username = " + username.getUsername());
 					object = ois.readObject();
 					password = (Password)object;
-					System.out.print(", password = " + password.getPassword());
+					System.out.println("front-end sent password = " + password.getPassword());
 					
 					//JDBCType database = new JDBCType();
 					//String errorMessage = database.errorMessage();
@@ -69,12 +69,10 @@ public class ServerThread extends Thread{
 				//if a Player object is sent to this serverthread
 				if(object instanceof Player) {
 					player = (Player)object;
-					
 					if(player != null) {
 						
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
-							
 							//send player to the server and read its playerVec size
 							int serverPlayerVecSize = server.addServerPlayer(player);
 							//set up PlayerID on client side
@@ -120,7 +118,6 @@ public class ServerThread extends Thread{
 	//send ReadyState from this serverthread to the client
 	public void broadCastReadyState(Boolean readyState) {
 		
-		System.out.println("sendReadyState() called");
 		try {
 			ReadyState rs = new ReadyState(readyState);
 			oos.writeObject(rs);

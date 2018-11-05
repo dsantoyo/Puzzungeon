@@ -18,7 +18,7 @@ public class Server {
 	//a vector to store Player objects
 	private Vector<Player> playerVec;
 	
-	private boolean allConnected;
+	//private boolean allConnected;
 	
 	public Server(int port) {
 		
@@ -30,7 +30,7 @@ public class Server {
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
-		allConnected = false;
+		//allConnected = false;
 		
 		//Display the priave IP of the server.
 		//Necessary information to build connection between different machines
@@ -109,7 +109,7 @@ public class Server {
 		if(player != null) {
 			player.playerID = playerVec.size();
 			playerVec.add(player);
-			System.out.println("player with username = " + player.playerName +" is added to the server");
+			System.out.println("new player with username = " + player.playerName +" and playerID = " + player.playerID + " is added");
 			System.out.println("now playerVec size = " + playerVec.size());
 		}
 		return playerVec.size();
@@ -120,7 +120,7 @@ public class Server {
 		playerVec.set(playerID,player);
 
 		for(Player playertemp : playerVec) {
-			System.out.println("server player " + playertemp.playerID + " ready state = " + playertemp.readyState);
+			System.out.println("player " + playertemp.playerID + " ready state = " + playertemp.readyState);
 		}
 	}
 	

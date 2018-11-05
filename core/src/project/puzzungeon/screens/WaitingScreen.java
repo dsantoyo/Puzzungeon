@@ -36,7 +36,6 @@ public class WaitingScreen implements Screen{
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		
-		
 		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.");
 		game.client.sendMessage(cm);
 	}
@@ -79,11 +78,9 @@ public class WaitingScreen implements Screen{
 		                	//remove newline character
 		                	messageStr = messageStr.replace("\n", "");
 		                }
-		                System.out.println("messageStr = " + messageStr);
+		               
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
-		                
-		                
 		                
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
 		                game.client.sendMessage(cm);
@@ -104,7 +101,7 @@ public class WaitingScreen implements Screen{
 	                else {
 	                	messageStr = inputBox.getText();
 	                }
-	                System.out.println("messageStr = " + messageStr);
+	                
 	                //clear inputbox after new message is sent
 	                inputBox.setText("");
 	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
