@@ -46,7 +46,7 @@ public class ServerThread extends Thread{
 			while(true) {
 				
 				//call the server to check overall ready state for both players
-				server.checkReadyState();
+				server.checkAllReadyState();
 				
 				//sending object from client(front-end) to this serverthread(back-end)
 				Object object = ois.readObject();
@@ -56,7 +56,7 @@ public class ServerThread extends Thread{
 					ChatMessage cm = (ChatMessage)object;
 					if( cm != null) {
 						//send new message to the server
-						server.broadcast(cm);
+						server.broadcastMessage(cm);
 					}
 				}
 				
@@ -81,8 +81,8 @@ public class ServerThread extends Thread{
 							//send player to the server and read its playerVec size
 							int serverPlayerVecSize = server.addServerPlayer(player);
 							//set up PlayerID on client side
-							localPlayerID = serverPlayerVecSize-1;
-							setLocalPlayerID(serverPlayerVecSize-1);
+							localPlayerID = serverPlayerVecSize;
+							setLocalPlayerID(serverPlayerVecSize);
 							server.updateServerPlayer(player.playerID, player);
 						}
 						else {
@@ -124,7 +124,7 @@ public class ServerThread extends Thread{
 	}
 	
 	//send ReadyState from this serverthread to the client
-	public void broadCastReadyState(Boolean readyState) {
+	public void broadcastReadyState(Boolean readyState) {
 		
 		try {
 			ReadyState rs = new ReadyState(readyState);
