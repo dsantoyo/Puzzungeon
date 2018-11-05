@@ -115,7 +115,6 @@ public class Server {
 		return playerVec.size();
 	}
 	
-	
 	//reading player object from serverthread and update it in server's playerVec
 	public void updateServerPlayer(int playerID, Player player) {
 		playerVec.set(playerID,player);
@@ -125,10 +124,8 @@ public class Server {
 		}
 	}
 	
+	//check the readyState of every player on the server
 	public void checkReadyState() {
-		
-		System.out.println("checkReadyState()");
-		
 		
 		Boolean allReady = true;
 		
@@ -140,7 +137,7 @@ public class Server {
 		if(playerVec.size() < 2) {
 			allReady = false;
 		}
-		//sd the newest message to every client
+		//broadcast the overall ready state to every serverThread
 		for(ServerThread thread : serverThreads) {
 				thread.broadCastReadyState(allReady);
 		}

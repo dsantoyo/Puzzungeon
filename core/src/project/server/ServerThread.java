@@ -39,8 +39,8 @@ public class ServerThread extends Thread{
 		try {
 			while(true) {
 				
+				//call the server to check overall ready state for both players
 				server.checkReadyState();
-				
 				
 				//sending object from client(front-end) to this serverthread(back-end)
 				Object object = ois.readObject();
@@ -74,10 +74,11 @@ public class ServerThread extends Thread{
 						
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
+							
 							//send player to the server and read its playerVec size
 							int serverPlayerVecSize = server.addServerPlayer(player);
+							//set up PlayerID on client side
 							setLocalPlayerID(serverPlayerVecSize-1);
-							
 						}
 						else {
 							//update player on the server
@@ -105,6 +106,7 @@ public class ServerThread extends Thread{
 		}
 	}
 	
+	//set up PlayerID on client side(front-end). ID = index-1 in server's playerVec(back-end)
 	public void setLocalPlayerID(int ID) {
 		try {
 			Integer IDInt = new Integer(ID); 

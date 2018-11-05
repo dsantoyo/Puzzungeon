@@ -29,6 +29,7 @@ public class Player implements Serializable{
 	public int playerID;
 	
 	
+	// is this player ready to play the game?
 	public Boolean readyState;
 	
 	//Avatar avatar ?

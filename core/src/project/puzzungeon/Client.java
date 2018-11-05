@@ -21,7 +21,9 @@ public class Client {
 	public String hostname;
 	public Vector<ChatMessage> messageVec;
 	public String clientUsername;
-	public Boolean allReady;
+	
+	//the ready state of player1 AND player2. Updated by the server
+	public Boolean bothPlayerReady;
 	
 	//client's own player
 	public Player localPlayer;
@@ -29,13 +31,13 @@ public class Client {
 	//the other player. constantly updated by the server
 	public Player otherPlayer;
 	
+	//constructor
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
 		this.clientUsername = "default";
-		this.allReady = false;
+		this.bothPlayerReady = false;
 	}
-	
 	
 	//setting up connection between a client and the server
 	public void connect() {
@@ -54,15 +56,15 @@ public class Client {
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 			
-			//send localPlayer to the server
+			//add localPlayer to the server
 			localPlayer = new Player(clientUsername);
-			sendPlayer();
+			updatePlayer();
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 		
-		//use a thread to receive new message from the server
+		//use a thread to receive objects from the assigned erverThread
 				new Thread(new Runnable(){
 					
 		            @Override
@@ -85,10 +87,11 @@ public class Client {
 		            				System.out.println("localPlayerID = " + localPlayer.playerID);
 		            			}
 		            			
+		            			//if the serverThread sends the readyState of player1 AND player2
 		            			if(object instanceof ReadyState) {
 		            				System.out.println("update ReadyState");
 		            				ReadyState rs = (ReadyState)object;
-		            				allReady = rs.getReadyState();
+		            				bothPlayerReady = rs.getReadyState();
 		            			}
 		            			
 		            		}
@@ -102,6 +105,7 @@ public class Client {
 
 		
 	}
+	
 	//send message from a client(front-end) to a serverthread(back-end)
 	public void sendMessage(ChatMessage cm) {
         try {
@@ -111,6 +115,7 @@ public class Client {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
+	
 	//send username from a client(front-end) to a serverthread(back-end)
 	public void sendUsername(Username username) {
 		System.out.println("sendUsername() called with username = " + username.getUsername() );
@@ -133,8 +138,8 @@ public class Client {
 		}
 	}
 	
-	//send player from a client(front-end) to a serverthread(back-end)
-	public void sendPlayer() {
+	//send/update a player from a client(front-end) to a serverthread(back-end)
+	public void updatePlayer() {
 		
 		System.out.println("player ready state in client = " + localPlayer.readyState);
 		try {

@@ -114,21 +114,22 @@ public class WaitingScreen implements Screen{
 			
 			
 			final TextButton readyButton  = new TextButton("Ready?", game.skin, "default");
-			//when sendButton is clicked, send message to the serverthread
+			//when readybutton is clicked, change localplayerstate(front-end)
+			//and update the playerVec on the server(back-end)
 			readyButton.addListener(new ClickListener(){
 	            @Override 
 	            public void clicked(InputEvent event, float x, float y){
 	            	
 	            	if(game.client.localPlayer.readyState == false) {
 	            		game.client.localPlayer.readyState = true;
-		                game.client.sendPlayer();
+		                game.client.updatePlayer();
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready");
 		                game.client.sendMessage(cm);
 		                readyButton.setText("Cancel?");
 	            	}
 	            	else {
 	            		game.client.localPlayer.readyState = false;
-		                game.client.sendPlayer();
+		                game.client.updatePlayer();
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "isn't ready anymore");
 		                game.client.sendMessage(cm);
 		                readyButton.setText("Ready?");
@@ -212,14 +213,16 @@ public class WaitingScreen implements Screen{
 
 	}
 	
+	//update chatroom
 	public void updateChat() {
 		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 	}
+	
+	//check if every player is ready
 	public void checkAllReady() {
-		//System.out.println("checkAllReady called with game.client.allReady = " + game.client.allReady);
-		if(game.client.allReady) {
+		if(game.client.bothPlayerReady) {
 			game.setScreen(new MainGameScreen(game));
 		}
 	}
