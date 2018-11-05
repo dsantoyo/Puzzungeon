@@ -13,6 +13,7 @@ public class ServerThread extends Thread{
 	private ObjectOutputStream oos;
 	private Username username;
 	private Password password;
+	private Player player;
 	private Server server;
 	
 	//when a client tries to connect to the server,
@@ -38,6 +39,10 @@ public class ServerThread extends Thread{
 		try {
 			while(true) {
 				
+				//call the server to check overall ready state for both players
+				server.checkReadyState();
+				
+				//sending object from client(front-end) to this serverthread(back-end)
 				Object object = ois.readObject();
 				
 				//if a Chatmessage object is sent to this serverthread
@@ -60,6 +65,27 @@ public class ServerThread extends Thread{
 					//JDBCType database = new JDBCType();
 					//String errorMessage = database.errorMessage();
 				}
+				
+				//if a Player object is sent to this serverthread
+				if(object instanceof Player) {
+					player = (Player)object;
+					
+					if(player != null) {
+						
+						//if a new player is being added to the server
+						if(player.playerID == -1) {
+							
+							//send player to the server and read its playerVec size
+							int serverPlayerVecSize = server.addServerPlayer(player);
+							//set up PlayerID on client side
+							setLocalPlayerID(serverPlayerVecSize-1);
+						}
+						else {
+							//update player on the server
+							server.updateServerPlayer(player.playerID, player);
+						}
+					}
+				}
 								
 			}
 		}catch(IOException ioe) {
@@ -80,10 +106,26 @@ public class ServerThread extends Thread{
 		}
 	}
 	
-	public void sendConnNum(int num) {
+	//set up PlayerID on client side(front-end). ID = index-1 in server's playerVec(back-end)
+	public void setLocalPlayerID(int ID) {
 		try {
-			oos.writeInt(num);
+			Integer IDInt = new Integer(ID); 
+			oos.writeObject(IDInt);
 			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
+	
+	//send ReadyState from this serverthread to the client
+	public void broadCastReadyState(Boolean readyState) {
+		
+		System.out.println("sendReadyState() called");
+		try {
+			ReadyState rs = new ReadyState(readyState);
+			oos.writeObject(rs);
+			oos.flush();
+			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}

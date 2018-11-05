@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import project.server.ChatMessage;
 import project.server.Password;
+import project.server.Player;
+import project.server.ReadyState;
 import project.server.Username;
 
 public class Client {
@@ -20,16 +22,22 @@ public class Client {
 	public Vector<ChatMessage> messageVec;
 	public String clientUsername;
 	
-	// not sure how to name these two
-	public Player playerOne;
-	public Player playerTwo;
+	//the ready state of player1 AND player2. Updated by the server
+	public Boolean bothPlayerReady;
 	
+	//client's own player
+	public Player localPlayer;
+	
+	//the other player. constantly updated by the server
+	public Player otherPlayer;
+	
+	//constructor
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
 		this.clientUsername = "default";
+		this.bothPlayerReady = false;
 	}
-	
 	
 	//setting up connection between a client and the server
 	public void connect() {
@@ -47,12 +55,16 @@ public class Client {
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
+			
+			//add localPlayer to the server
+			localPlayer = new Player(clientUsername);
+			updatePlayer();
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 		
-		//use a thread to receive new message from the server
+		//use a thread to receive objects from the assigned erverThread
 				new Thread(new Runnable(){
 					
 		            @Override
@@ -60,9 +72,28 @@ public class Client {
 		            	
 		            	try {
 		            		while(true){
-		            			ChatMessage newMessage = (ChatMessage)ois.readObject();
-		            			messageVec.remove(0);
-		            			messageVec.add(newMessage);
+		            			Object object = ois.readObject();
+		            			
+		            			//if the serverThread sends a ChatMessage to the client
+		            			if(object instanceof ChatMessage) {
+		            				ChatMessage newMessage = (ChatMessage)object;
+		            				messageVec.remove(0);
+		            				messageVec.add(newMessage);
+		            			}
+		            			//if the serverThread sends the size of server PlayerVec to the client
+		            			if(object instanceof Integer) {
+		            				Integer integer = (Integer)object;
+		            				localPlayer.playerID = integer.intValue();
+		            				System.out.println("localPlayerID = " + localPlayer.playerID);
+		            			}
+		            			
+		            			//if the serverThread sends the readyState of player1 AND player2
+		            			if(object instanceof ReadyState) {
+		            				System.out.println("update ReadyState");
+		            				ReadyState rs = (ReadyState)object;
+		            				bothPlayerReady = rs.getReadyState();
+		            			}
+		            			
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("ioe: " + ioe.getMessage());
@@ -74,6 +105,7 @@ public class Client {
 
 		
 	}
+	
 	//send message from a client(front-end) to a serverthread(back-end)
 	public void sendMessage(ChatMessage cm) {
         try {
@@ -83,6 +115,7 @@ public class Client {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
+	
 	//send username from a client(front-end) to a serverthread(back-end)
 	public void sendUsername(Username username) {
 		System.out.println("sendUsername() called with username = " + username.getUsername() );
@@ -100,6 +133,20 @@ public class Client {
         try {
 			oos.writeObject(password);
 			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
+	
+	//send/update a player from a client(front-end) to a serverthread(back-end)
+	public void updatePlayer() {
+		
+		System.out.println("player ready state in client = " + localPlayer.readyState);
+		try {
+			oos.writeObject(localPlayer);
+			oos.flush();
+			//discard any cached references. this shit took me 1.5 hours to debug...
+			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}

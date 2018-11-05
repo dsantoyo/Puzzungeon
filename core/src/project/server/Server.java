@@ -7,8 +7,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import project.server.ChatMessage;
-
 public class Server {
 	
 	//each serverThread represents a connected client
@@ -16,9 +14,16 @@ public class Server {
 	
 	//a vector to store the last 3 messages on server (could be redundant)
 	private Vector<ChatMessage> messageVec;
+	
+	//a vector to store Player objects
+	private Vector<Player> playerVec;
+	
 	private boolean allConnected;
 	
 	public Server(int port) {
+		
+		//a vector to store Player objects
+		playerVec = new Vector<Player>();
 		
 		//a vector to store the last 3 messages on server (could be redundant)
 		messageVec = new Vector<ChatMessage>(3);
@@ -97,7 +102,47 @@ public class Server {
 			}
 		}
 	}
+	
+	//get Player object from a new serverthread and store it in playerVec
+	// returns the size of playerVec on the server
+	public int addServerPlayer(Player player) {
+		if(player != null) {
+			player.playerID = playerVec.size();
+			playerVec.add(player);
+			System.out.println("player with username = " + player.playerName +" is added to the server");
+			System.out.println("now playerVec size = " + playerVec.size());
+		}
+		return playerVec.size();
+	}
+	
+	//reading player object from serverthread and update it in server's playerVec
+	public void updateServerPlayer(int playerID, Player player) {
+		playerVec.set(playerID,player);
 
+		for(Player playertemp : playerVec) {
+			System.out.println("server player " + playertemp.playerID + " ready state = " + playertemp.readyState);
+		}
+	}
+	
+	//check the readyState of every player on the server
+	public void checkReadyState() {
+		
+		Boolean allReady = true;
+		
+		for(Player playerIterate : playerVec) {
+			if(!playerIterate.readyState) {
+				allReady = false;
+			}
+		}
+		if(playerVec.size() < 2) {
+			allReady = false;
+		}
+		//broadcast the overall ready state to every serverThread
+		for(ServerThread thread : serverThreads) {
+				thread.broadCastReadyState(allReady);
+		}
+	}
+	
 	public static void main(String [] args) {
 		
 		//hard-coded. need to be changed

@@ -82,6 +82,9 @@ public class WaitingScreen implements Screen{
 		                System.out.println("messageStr = " + messageStr);
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
+		                
+		                
+		                
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
 		                game.client.sendMessage(cm);
 					}
@@ -108,12 +111,38 @@ public class WaitingScreen implements Screen{
 	                game.client.sendMessage(cm);
 	            }
 	        });
+			
+			
+			final TextButton readyButton  = new TextButton("Ready?", game.skin, "default");
+			//when readybutton is clicked, change localplayerstate(front-end)
+			//and update the playerVec on the server(back-end)
+			readyButton.addListener(new ClickListener(){
+	            @Override 
+	            public void clicked(InputEvent event, float x, float y){
+	            	
+	            	if(game.client.localPlayer.readyState == false) {
+	            		game.client.localPlayer.readyState = true;
+		                game.client.updatePlayer();
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready");
+		                game.client.sendMessage(cm);
+		                readyButton.setText("Cancel?");
+	            	}
+	            	else {
+	            		game.client.localPlayer.readyState = false;
+		                game.client.updatePlayer();
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "isn't ready anymore");
+		                game.client.sendMessage(cm);
+		                readyButton.setText("Ready?");
+	            	}
+	            }
+	        });
 		
 		// chatroom UI
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
 		vg1.addActor(gameTitle);
+		vg1.addActor(readyButton);
 		stage.addActor(vg1);
 				
 		//5 rows for the bottom bar.
@@ -155,6 +184,7 @@ public class WaitingScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		updateChat();
+		checkAllReady();
 		stage.draw();
 	}
 
@@ -183,9 +213,17 @@ public class WaitingScreen implements Screen{
 
 	}
 	
+	//update chatroom
 	public void updateChat() {
 		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+	}
+	
+	//check if every player is ready
+	public void checkAllReady() {
+		if(game.client.bothPlayerReady) {
+			game.setScreen(new MainGameScreen(game));
+		}
 	}
 }
