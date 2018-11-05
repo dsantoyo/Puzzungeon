@@ -30,6 +30,10 @@ public class WaitingScreen implements Screen{
 	private Label showMessage2;
 	private Label showMessage3;
 	
+	//waiting ui
+	private Label waitingState;
+	private TextButton readyButton;
+	
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
@@ -55,7 +59,9 @@ public class WaitingScreen implements Screen{
 		//    (chat ui)
 		
 		//create the actors
-		Label gameTitle = new Label("Waiting", game.skin);
+		Label gameTitle = new Label("Puzzungeon", game.skin);
+		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
+		waitingState = new Label("Waiting for another player...", game.skin);
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
@@ -110,7 +116,7 @@ public class WaitingScreen implements Screen{
 	        });
 			
 			
-			final TextButton readyButton  = new TextButton("Ready?", game.skin, "default");
+		readyButton  = new TextButton("Ready?", game.skin, "default");
 			//when readybutton is clicked, change localplayerstate(front-end)
 			//and update the playerVec on the server(back-end)
 			readyButton.addListener(new ClickListener(){
@@ -139,7 +145,13 @@ public class WaitingScreen implements Screen{
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
 		vg1.addActor(gameTitle);
+		vg1.addActor(localPlayerUsername);
+		vg1.addActor(waitingState);
+		
+		
+		readyButton.setVisible(false);
 		vg1.addActor(readyButton);
+		
 		stage.addActor(vg1);
 				
 		//5 rows for the bottom bar.
@@ -180,8 +192,7 @@ public class WaitingScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
-		updateChat();
-		checkAllReady();
+		update();
 		stage.draw();
 	}
 
@@ -210,15 +221,26 @@ public class WaitingScreen implements Screen{
 
 	}
 	
-	//update chatroom
-	public void updateChat() {
+	
+	public void update() {
+		
+		//update the visibility of Ready button
+		if(game.client.otherPlayer.playerID != -1) {
+			readyButton.setVisible(true);
+		}
+		
+		//update waiting state
+		if(game.client.otherPlayer.playerID != -1) {
+			waitingState.setText("Player2: " + game.client.otherPlayer.playerName);
+		}
+		
+		//update chatroom
 		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
-	}
-	
-	//check if every player is ready
-	public void checkAllReady() {
+		
+		
+		//check if every player is ready
 		if(game.client.bothPlayerReady) {
 			game.setScreen(new MainGameScreen(game));
 		}

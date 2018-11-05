@@ -58,6 +58,7 @@ public class Client {
 			
 			//add localPlayer to the server
 			localPlayer = new Player(clientUsername);
+			otherPlayer = new Player("default");
 			updatePlayer();
 				
 		} catch (IOException ioe) {
