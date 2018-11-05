@@ -81,6 +81,7 @@ public class RegisterScreen implements Screen{
 						game.client.sendUsername(new Username(usernameStr));
 					    game.client.sendPassword(new Password(passwordStr));
 						game.setScreen(new WaitingScreen(game));
+					    
 					}
 				}
 			});

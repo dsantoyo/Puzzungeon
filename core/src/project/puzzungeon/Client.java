@@ -9,6 +9,7 @@ import java.util.Vector;
 import project.server.ChatMessage;
 import project.server.Password;
 import project.server.Player;
+import project.server.ReadyState;
 import project.server.Username;
 
 public class Client {
@@ -20,6 +21,7 @@ public class Client {
 	public String hostname;
 	public Vector<ChatMessage> messageVec;
 	public String clientUsername;
+	public Boolean allReady;
 	
 	//client's own player
 	public Player localPlayer;
@@ -31,6 +33,7 @@ public class Client {
 		this.hostname = hostname;
 		this.port = port;
 		this.clientUsername = "default";
+		this.allReady = false;
 	}
 	
 	
@@ -82,6 +85,12 @@ public class Client {
 		            				System.out.println("localPlayerID = " + localPlayer.playerID);
 		            			}
 		            			
+		            			if(object instanceof ReadyState) {
+		            				System.out.println("update ReadyState");
+		            				ReadyState rs = (ReadyState)object;
+		            				allReady = rs.getReadyState();
+		            			}
+		            			
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("ioe: " + ioe.getMessage());
@@ -131,7 +140,6 @@ public class Client {
 		try {
 			oos.writeObject(localPlayer);
 			oos.flush();
-			
 			//discard any cached references. this shit took me 1.5 hours to debug...
 			oos.reset();
 		} catch (IOException ioe) {

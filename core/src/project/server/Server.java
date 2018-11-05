@@ -125,6 +125,27 @@ public class Server {
 		}
 	}
 	
+	public void checkReadyState() {
+		
+		System.out.println("checkReadyState()");
+		
+		
+		Boolean allReady = true;
+		
+		for(Player playerIterate : playerVec) {
+			if(!playerIterate.readyState) {
+				allReady = false;
+			}
+		}
+		if(playerVec.size() < 2) {
+			allReady = false;
+		}
+		//sd the newest message to every client
+		for(ServerThread thread : serverThreads) {
+				thread.broadCastReadyState(allReady);
+		}
+	}
+	
 	public static void main(String [] args) {
 		
 		//hard-coded. need to be changed

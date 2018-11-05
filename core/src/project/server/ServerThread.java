@@ -39,8 +39,11 @@ public class ServerThread extends Thread{
 		try {
 			while(true) {
 				
-				Object object = ois.readObject();
+				server.checkReadyState();
 				
+				
+				//sending object from client(front-end) to this serverthread(back-end)
+				Object object = ois.readObject();
 				
 				//if a Chatmessage object is sent to this serverthread
 				if(object instanceof ChatMessage) {
@@ -107,6 +110,20 @@ public class ServerThread extends Thread{
 			Integer IDInt = new Integer(ID); 
 			oos.writeObject(IDInt);
 			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
+	
+	//send ReadyState from this serverthread to the client
+	public void broadCastReadyState(Boolean readyState) {
+		
+		System.out.println("sendReadyState() called");
+		try {
+			ReadyState rs = new ReadyState(readyState);
+			oos.writeObject(rs);
+			oos.flush();
+			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
