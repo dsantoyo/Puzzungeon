@@ -7,9 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import project.puzzungeon.Puzzungeon;
 
@@ -19,11 +22,12 @@ public class MainMenuScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
+	private Table table;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 	}
 	
@@ -77,6 +81,22 @@ public class MainMenuScreen implements Screen{
 				}
 			});
 			
+		/*	
+		//use table to display actors.
+		table = new Table();
+		table.setBounds(0, 0, Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		
+		table.add(gameTitle).expandX().colspan(3);
+		table.row();
+		table.add(loginButton);
+		table.add(newUserButton);
+		table.add(guestButton);
+		table.add(exitButton).bottom().right();
+		
+		table.debug();
+		stage.addActor(table);
+		*/
+		
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
@@ -106,7 +126,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		table.setWidth(Puzzungeon.WIDTH);
 	}
 
 	@Override

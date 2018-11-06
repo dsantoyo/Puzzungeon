@@ -16,6 +16,8 @@ public class Puzzungeon extends Game {
 	public Skin skin;
 	public Client client;
 	
+	public static final int WIDTH = 400;
+	public static final int HEIGHT = 400;
 
 	//loads assets and calls first screen
 	@Override

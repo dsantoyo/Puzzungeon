@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -14,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
@@ -136,6 +140,22 @@ public class WaitingScreen implements Screen{
 	            	}
 	            }
 	        });
+			
+		//controls instructions
+		String instructions1Str = "Each player has one half of the puzzle."
+				+ " Complete both of your sides to escape the Puzzungeon!";
+		String instructions2Str = "Drag and Drop the puzzle pieces.";
+		String instructions3Str = "You may have some of the other player’s"
+				+ " pieces, and vice versa. Use the teleporter to send puzzle"
+				+ " pieces to the other player!";
+		Label instruct1 = new Label(instructions1Str, game.skin, "default");
+		Label instruct2 = new Label(instructions2Str, game.skin, "default");
+		Label instruct3 = new Label(instructions3Str, game.skin, "default");
+		Image mouse = new Image(new Texture(Gdx.files.internal("mouse-cursor-icon.png")));
+		mouse.setScale(0.5f);
+		Image teleporter = new Image(new Texture(Gdx.files.internal("teleporter.png")));
+		instruct1.setWrap(true);
+		instruct3.setWrap(true);
 		
 		//chatroom UI
 		//use vg and hg to group the actors now. changes should be made to make it look better
@@ -149,6 +169,19 @@ public class WaitingScreen implements Screen{
 		readyButton.setVisible(false);
 		vg1.addActor(readyButton);
 		
+		//controls instructions widget setup
+		VerticalGroup instructs = new VerticalGroup();
+		HorizontalGroup line2 = new HorizontalGroup();
+		line2.rowAlign(Align.center);
+		line2.addActor(mouse);
+		line2.addActor(instruct2);
+		instructs.addActor(instruct1);
+		instructs.addActor(line2);
+		instructs.addActor(instruct3);
+		instructs.addActor(teleporter);
+		vg1.addActor(instructs);
+		
+		//add vertical group of instructions and UI to stage
 		stage.addActor(vg1);
 				
 		//5 rows for the bottom bar.
