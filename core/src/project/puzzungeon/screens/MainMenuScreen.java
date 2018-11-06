@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -23,11 +24,15 @@ public class MainMenuScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
+	private Boolean displayDialog;
+	private Dialog gameFullDialog;
+	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		displayDialog = false;
 	}
 	
 	//construct stage
@@ -74,6 +79,9 @@ public class MainMenuScreen implements Screen{
 							game.client.sendUsername(new Username("guest"));
 							game.client.sendPassword(new Password("guest"));
 							game.client.sendLoginRegister(new LoginRegister("guest"));
+							
+							displayDialog = true;
+							
 						}
 					});
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
@@ -85,6 +93,14 @@ public class MainMenuScreen implements Screen{
 				}
 			});
 			
+			
+		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
+			    public void result(Object obj) {}};
+
+		gameFullDialog.text("We already have 2 players.");
+		gameFullDialog.button("Got it", false); //sends "false" as the result
+			
+		
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
@@ -139,8 +155,20 @@ public class MainMenuScreen implements Screen{
 	}
 	
 	public void checkClientLoginState() {
-		if(game.client.loginState) {
-			game.setScreen(new WaitingScreen(game));
+
+		if(displayDialog == true) {
+			
+			if(game.client.loginState) {
+				game.setScreen(new WaitingScreen(game));
+			}
+			
+			if(!game.client.loginState) {
+				if(game.client.loginStateMessage.equals("Game is Full.")) {
+					game.client.loginStateMessage = "";
+					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+			}
 		}
 	}
 	

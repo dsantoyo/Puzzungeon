@@ -59,18 +59,13 @@ public class LoginScreen implements Screen{
 		
 		
 		loginFailDialog = new Dialog("Failed to log in", game.skin, "dialog") {
-		    public void result(Object obj) {
-		        
-		    }
-		};
+		    public void result(Object obj) {}};
 		loginFailDialog.text("Check username/password.");
 		loginFailDialog.button("Got it", false); //sends "false" as the result
 		
+		
 		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
-		    public void result(Object obj) {
-		        
-		    }
-		};
+		    public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
@@ -110,32 +105,30 @@ public class LoginScreen implements Screen{
 						game.client.sendLoginRegister(new LoginRegister("login"));
 						
 						displayDialog = true;
-						
 					}
 				}
 			});
 			
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
-					guestButton.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							game.client.clientUsername = "Guest";
-              
-							
-							if(!game.client.ConnectState) {
-								//set up connection to the server
-								System.out.println("Trying to connect...");
-								game.client.connect();
-							}
-							
-							game.client.sendUsername(new Username("guest"));
-							game.client.sendPassword(new Password("guest"));
-							game.client.sendLoginRegister(new LoginRegister("guest"));
-							
-							displayDialog = true;
-							
+				guestButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						game.client.clientUsername = "Guest";
+          
+						
+						if(!game.client.ConnectState) {
+							//set up connection to the server
+							System.out.println("Trying to connect...");
+							game.client.connect();
 						}
-					});
+						
+						game.client.sendUsername(new Username("guest"));
+						game.client.sendPassword(new Password("guest"));
+						game.client.sendLoginRegister(new LoginRegister("guest"));
+						
+						displayDialog = true;
+					}
+				});
 					
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -224,7 +217,6 @@ public class LoginScreen implements Screen{
 	
 	public void checkClientLoginState() {
 		
-		
 		if(displayDialog == true) {
 			
 			if(game.client.loginState) {
@@ -233,16 +225,16 @@ public class LoginScreen implements Screen{
 			
 			if(!game.client.loginState) {
 				if(game.client.loginStateMessage.equals("Check username/password")) {
+					game.client.loginStateMessage = "";
 					loginFailDialog.show(stage);
 					displayDialog = false;
 				}
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
+					game.client.loginStateMessage = "";
 					gameFullDialog.show(stage);
 					displayDialog = false;
 				}
 			}
-		}
-		
-		
+		}	
 	}
 }

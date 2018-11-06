@@ -41,7 +41,6 @@ public class ServerThread extends Thread{
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
-	
 
 	public void run() {
 		
@@ -74,7 +73,6 @@ public class ServerThread extends Thread{
 					object = ois.readObject();
 					loginRegister = (LoginRegister)object;
 					
-					
 					String usernameStr = username.getUsername();
 					String passswordStr = password.getPassword();
 					String loginRegisterStr = loginRegister.getloginRegister();
@@ -92,12 +90,14 @@ public class ServerThread extends Thread{
 					*/	
 
 					System.out.println("trying to login...");
-					System.out.println("current player0 name on server: " + server.playerVec.get(0).playerName);
-					System.out.println("current player0 id on server: " + server.playerVec.get(0).playerID);
-					System.out.println("current player1 name on server: " + server.playerVec.get(1).playerName);
-					System.out.println("current player1 id on server: " + server.playerVec.get(1).playerID);
+					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
+					System.out.println("serverThread: current player0 id on server: " + server.playerVec.get(0).playerID);
+					System.out.println("serverThread: current player1 name on server: " + server.playerVec.get(1).playerName);
+					System.out.println("serverThread: current player1 id on server: " + server.playerVec.get(1).playerID);
 					
-					//send server validation result from this serverthread back to its client					
+					//send server validation result from this serverthread back to its client
+					
+					// from loginScreen
 					if (loginRegisterStr.equals("login") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
 							System.out.println("serverthread: denied. Check username/password");
@@ -108,7 +108,7 @@ public class ServerThread extends Thread{
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}	
 					}
-					
+					// from registerScreen
 					else if (loginRegisterStr.equals("register") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
 							System.out.println("serverthread: denied. Failed to register.");
@@ -130,7 +130,7 @@ public class ServerThread extends Thread{
 							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
 						}
 					}
-					else {
+					else { // allow the client to login
 						try {
 							clientLoginState = true;
 							oos.writeObject(new LoginResult(true, "Login/Register done"));
@@ -147,6 +147,7 @@ public class ServerThread extends Thread{
 					player = (Player)object;
 					if(player != null) {
 						serverThreadPlayerName = player.playerName;
+						
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
@@ -192,7 +193,6 @@ public class ServerThread extends Thread{
 	
 	//receive new message from the server and send to this serverthread's client
 	public void sendMessage(ChatMessage cm) {
-		
 		try {
 			oos.writeObject(cm);
 			oos.flush();
@@ -215,7 +215,6 @@ public class ServerThread extends Thread{
 	
 	//send ReadyState from this serverthread to the client
 	public void broadcastReadyState(Boolean readyState) {
-		
 		try {
 			ReadyState rs = new ReadyState(readyState);
 			oos.writeObject(rs);
@@ -228,7 +227,6 @@ public class ServerThread extends Thread{
 	
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
-			
 		try {
 			oos.writeObject(otherPlayer);
 			oos.flush();
@@ -242,7 +240,4 @@ public class ServerThread extends Thread{
 	public int getServerThreadPlayerID() {
 		return serverThreadPlayerID;
 	}
-	
-	
- 
 }
