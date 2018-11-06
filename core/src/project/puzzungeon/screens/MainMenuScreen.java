@@ -78,7 +78,7 @@ public class MainMenuScreen implements Screen{
 								if(!game.client.connect()) {
 									System.out.println("Unable to connect to the server");
 									displayDialog = true;
-									game.client = new Client("localhost", 6789);
+									game.client = new Client(game.serverAddress, game.serverPort);
 								}
 								else {
 									game.client.sendUsername(new Username("guest"));

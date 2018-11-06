@@ -16,13 +16,16 @@ public class Puzzungeon extends Game {
 	public Skin skin;
 	public Client client;
 	
+	public String serverAddress = "localhost";
+	public int serverPort = 6789;
+	
 
 	//loads assets and calls first screen
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		client = new Client("localhost", 6789);
+		client = new Client(serverAddress, serverPort);
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));
 	}
