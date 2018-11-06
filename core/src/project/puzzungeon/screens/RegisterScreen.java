@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.LoginRegister;
 import project.server.Password;
@@ -27,6 +28,7 @@ public class RegisterScreen implements Screen{
 	private Boolean displayDialog;
 	private Dialog gameFullDialog;
 	private Dialog registerFailDialog;
+	private Dialog connectionFailDialog;
 	
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
@@ -72,24 +74,37 @@ public class RegisterScreen implements Screen{
 									error.setText("Please enter a valid password!");
 								} 
 								else {
-									
-	
+							
 									game.client.clientUsername = usernameStr;
 									System.out.println("username: ." + usernameStr + ".");
 									
 									//set up connection to the server
-									
-									if(!game.client.ConnectState) {
+
+									if(!game.client.connectState) {
+										//set up connection to the server
 										System.out.println("Trying to connect...");
-										game.client.connect();
+										if(!game.client.connect()) {
+											System.out.println("Unable to connect to the server");
+											displayDialog = true;
+											game.client = new Client("localhost", 6789);
+										}
+										else {
+											//send username and password to back-end
+											game.client.sendUsername(new Username(usernameStr));
+											game.client.sendPassword(new Password(passwordStr));
+											game.client.sendLoginRegister(new LoginRegister("register"));
+											displayDialog = true;
+										}
+									}
+									else {
+										//send username and password to back-end
+										game.client.sendUsername(new Username(usernameStr));
+										game.client.sendPassword(new Password(passwordStr));
+										game.client.sendLoginRegister(new LoginRegister("register"));
+										displayDialog = true;
 									}
 									
-									//send username and password to back-end
-									game.client.sendUsername(new Username(usernameStr));
-									game.client.sendPassword(new Password(passwordStr));
-									game.client.sendLoginRegister(new LoginRegister("register"));
 									
-									displayDialog = true;
 								}
 							}
 						});
@@ -122,6 +137,12 @@ public class RegisterScreen implements Screen{
 				    public void result(Object obj) {}};
 				gameFullDialog.text("We already have 2 players.");
 				gameFullDialog.button("Got it", false); //sends "false" as the result
+				
+				connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
+				    public void result(Object obj) {}};
+
+				connectionFailDialog.text("Couldn't connect to the server");
+				connectionFailDialog.button("Got it", false); //sends "false" as the result
 				
 				
 				//use vg and hg to group the actors now. changes should be made to make it look better
@@ -208,6 +229,10 @@ public class RegisterScreen implements Screen{
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
 					game.client.loginStateMessage = "";
 					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+				if(!game.client.connectState) {
+					connectionFailDialog.show(stage);
 					displayDialog = false;
 				}
 			}
