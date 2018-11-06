@@ -74,9 +74,13 @@ public class ServerThread extends Thread{
 					loginRegister = (LoginRegister)object;
 					
 					
-					String usernameSgtr = username.getUsername();
+					String usernameStr = username.getUsername();
 					String passswordStr = password.getPassword();
 					String loginRegisterStr = loginRegister.getloginRegister();
+					
+					System.out.println("serverThread: username = "+ usernameStr);
+					System.out.println("serverThread: password = "+ passswordStr);
+					System.out.println("serverThread: login/register = "+ loginRegisterStr);
 					
 					/*
 					   Back-end login/register features/validation should be done here
