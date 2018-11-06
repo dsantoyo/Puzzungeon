@@ -16,7 +16,7 @@ public class Server {
 	private Vector<ChatMessage> messageVec;
 	
 	//a vector to store Player objects
-	private Vector<Player> playerVec;
+	public Vector<Player> playerVec;
 	
 	//private boolean allConnected;
 	
@@ -204,6 +204,10 @@ public class Server {
 	}
 	
 	public Boolean isGameFull() {
+		
+		System.out.println("server: isGameFull(); called");
+		System.out.println(playerVec.get(0).playerID);
+		System.out.println(playerVec.get(1).playerID);
 		
 		return ((playerVec.get(0).playerID != -1) && (playerVec.get(1).playerID != -1));
 	}

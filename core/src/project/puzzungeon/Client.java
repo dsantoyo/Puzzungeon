@@ -103,15 +103,17 @@ public class Client {
 		            				bothPlayerReady = rs.getReadyState();
 		            			}
 		            			
-		            			//if the serverThread sends back otherPlayer
-		            			if(object instanceof Player) {
-		            				otherPlayer = (Player)object;
-		            				System.out.println();
-		            				System.out.println("Client: Player updated by Server.");
-		            				System.out.println("Client: localPlayer is "+localPlayer.playerName);
-		            				System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
-		            				System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
-		            				System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            			if(loginState) {
+		            				//if the serverThread sends back otherPlayer
+		            				if(object instanceof Player) {
+		            					otherPlayer = (Player)object;
+		            					System.out.println();
+		            					System.out.println("Client: Player updated by Server.");
+		            					System.out.println("Client: localPlayer is "+localPlayer.playerName);
+		            					System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
+		            					System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
+		            					System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            				}
 		            			}
 		            			
 		            			//if the serverThread sends back login result

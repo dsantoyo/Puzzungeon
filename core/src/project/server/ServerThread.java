@@ -90,10 +90,16 @@ public class ServerThread extends Thread{
 					    //String errorMessage = database.errorMessage();
 					*/	
 
+					System.out.println("trying to login...");
+					System.out.println("current player0 name on server: " + server.playerVec.get(0).playerName);
+					System.out.println("current player0 id on server: " + server.playerVec.get(0).playerID);
+					System.out.println("current player1 name on server: " + server.playerVec.get(1).playerName);
+					System.out.println("current player1 id on server: " + server.playerVec.get(1).playerID);
 					
 					//send server validation result from this serverthread back to its client					
 					if (loginRegisterStr.equals("login") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
+							System.out.println("serverthread: denied. Check username/password");
 							oos.writeObject(new LoginResult(false, "Check username/password"));
 							oos.flush();
 							oos.reset();
@@ -104,6 +110,7 @@ public class ServerThread extends Thread{
 					
 					else if (loginRegisterStr.equals("register") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
+							System.out.println("serverthread: denied. Failed to register.");
 							oos.writeObject(new LoginResult(false, "Failed to register."));
 							oos.flush();
 							oos.reset();
@@ -114,6 +121,7 @@ public class ServerThread extends Thread{
 					
 					else if (server.isGameFull()) { // is 2 players are already in the game
 						try {
+							System.out.println("serverthread: denied. game is full.");
 							oos.writeObject(new LoginResult(false, "Game is Full."));
 							oos.flush();
 							oos.reset();
