@@ -81,7 +81,6 @@ public class MainMenuScreen implements Screen{
 									game.client = new Client("localhost", 6789);
 								}
 								else {
-									
 									game.client.sendUsername(new Username("guest"));
 									game.client.sendPassword(new Password("guest"));
 									game.client.sendLoginRegister(new LoginRegister("guest"));
@@ -94,7 +93,6 @@ public class MainMenuScreen implements Screen{
 								game.client.sendLoginRegister(new LoginRegister("guest"));
 								displayDialog = true;
 							}
-							
 						}
 					});
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");

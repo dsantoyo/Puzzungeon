@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.LoginRegister;
 import project.server.Password;
@@ -28,6 +29,7 @@ public class LoginScreen implements Screen{
 	
 	private Dialog loginFailDialog;
 	private Dialog gameFullDialog;
+	private Dialog connectionFailDialog;
 	
 	
 	//constructor
@@ -68,6 +70,12 @@ public class LoginScreen implements Screen{
 		    public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
+		
+		connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+
+		connectionFailDialog.text("Couldn't connect to the server");
+		connectionFailDialog.button("Got it", false); //sends "false" as the result
 		
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
@@ -114,19 +122,28 @@ public class LoginScreen implements Screen{
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						game.client.clientUsername = "Guest";
-          
-						
+			              
 						if(!game.client.connectState) {
 							//set up connection to the server
 							System.out.println("Trying to connect...");
-							game.client.connect();
+							if(!game.client.connect()) {
+								System.out.println("Unable to connect to the server");
+								displayDialog = true;
+								game.client = new Client("localhost", 6789);
+							}
+							else {
+								game.client.sendUsername(new Username("guest"));
+								game.client.sendPassword(new Password("guest"));
+								game.client.sendLoginRegister(new LoginRegister("guest"));
+								displayDialog = true;
+							}
 						}
-						
-						game.client.sendUsername(new Username("guest"));
-						game.client.sendPassword(new Password("guest"));
-						game.client.sendLoginRegister(new LoginRegister("guest"));
-						
-						displayDialog = true;
+						else {
+							game.client.sendUsername(new Username("guest"));
+							game.client.sendPassword(new Password("guest"));
+							game.client.sendLoginRegister(new LoginRegister("guest"));
+							displayDialog = true;
+						}
 					}
 				});
 					
@@ -232,6 +249,10 @@ public class LoginScreen implements Screen{
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
 					game.client.loginStateMessage = "";
 					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+				if(!game.client.connectState) {
+					connectionFailDialog.show(stage);
 					displayDialog = false;
 				}
 			}
