@@ -54,9 +54,15 @@ public class Client {
 		try {
 			System.out.println("Trying to connect to " + hostname + ":" + port);
 			s = new Socket(hostname,port);
-			System.out.println("connected to socket! Opening streams...");
+			
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
+			
+			
+			//try to read from the socket to test connection
+			System.out.println("Testing if the connection is established");
+			Object TestObject = ois.readObject();
+			
 			ConnectState = true;
 			System.out.println("Connected to " + hostname + ":" + port);
 			
@@ -72,7 +78,9 @@ public class Client {
 			//updatePlayer();
 				
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("Client: connection() ioe: " + ioe.getMessage());
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println("Client: connection() ioe: " + cnfe.getMessage());
 		}
 		
 		//use a thread to receive objects from the assigned serverThread
@@ -137,9 +145,9 @@ public class Client {
 		            			
 		            		}
 		            	}catch(IOException ioe) {
-		            		System.out.println("client: thread ioe: " + ioe.getMessage());
+		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
 		            	}catch (ClassNotFoundException cnfe) {
-		            		System.out.println("client: thread cnfe: " + cnfe.getMessage());
+		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());
 		            	}
 		            }
 		        }).start(); //start the thread;
