@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.Vector;
 
 import project.server.ChatMessage;
+import project.server.LoginRegister;
 import project.server.Password;
 import project.server.Player;
 import project.server.ReadyState;
@@ -144,6 +145,17 @@ public class Client {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
+	
+	
+	//send loginRegister from a client(front-end) to a serverthread(back-end)
+		public void sendLoginRegister(LoginRegister loginRegister) {
+	        try {
+				oos.writeObject(loginRegister);
+				oos.flush();
+			} catch (IOException ioe) {
+				System.out.println("ioe: " + ioe.getMessage());
+			}
+		}
 	
 	//send/update a player from a client(front-end) to a serverthread(back-end)
 	public void updatePlayer() {
