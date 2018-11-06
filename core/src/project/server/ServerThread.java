@@ -20,7 +20,8 @@ public class ServerThread extends Thread{
 	 * server uses this to know which player in server's playerVec is 
 	 * this client's otherPlayer
 	 */
-	private int localPlayerID;
+	private int serverThreadPlayerID;
+	private String serverThreadPlayerName;
 	
 	//when a client tries to connect to the server,
 	//ServerThread constructor will be called by the server 
@@ -75,22 +76,21 @@ public class ServerThread extends Thread{
 					   
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
-					*/
-					
+					*/	
 				}
 				
 				//if a Player object is sent to this serverthread
 				if(object instanceof Player) {
 					player = (Player)object;
 					if(player != null) {
-						
+						serverThreadPlayerName = player.playerName;
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
-							int serverPlayerVecSize = server.addServerPlayer(player);
+							int newID = server.addServerPlayer(player);
 							//set up PlayerID on client side
-							localPlayerID = serverPlayerVecSize;
-							setLocalPlayerID(serverPlayerVecSize);
+							serverThreadPlayerID = newID;
+							setLocalPlayerID(newID);
 							server.updateServerPlayer(player.playerID, player);
 						}
 						else {
@@ -103,6 +103,17 @@ public class ServerThread extends Thread{
 			}
 		}catch(IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
+			
+			//if the connection to this severthread is lost
+			//reset corresponding player object in server's playerVec
+			//send a "has left" message
+			//remove this serverThread from server's serverThreads vector
+			server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+			server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+			server.serverThreads.remove(this);
+			
+			//need to work on this
+			
 		}catch(ClassNotFoundException cnfe) {
 			System.out.println("cnfe: " + cnfe.getMessage());
 		}
@@ -162,7 +173,7 @@ public class ServerThread extends Thread{
 	}
 	
 	//return localPlayerID in this serverThread
-	public int getLocalPlayerID() {
-		return localPlayerID;
+	public int getServerThreadPlayerID() {
+		return serverThreadPlayerID;
 	}
 }

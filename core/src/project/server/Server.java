@@ -10,7 +10,7 @@ import java.util.Vector;
 public class Server {
 	
 	//each serverThread represents a connected client
-	private Vector<ServerThread> serverThreads;
+	public Vector<ServerThread> serverThreads;
 	
 	//a vector to store the last 3 messages on server (could be redundant)
 	private Vector<ChatMessage> messageVec;
@@ -24,6 +24,8 @@ public class Server {
 		
 		//a vector to store Player objects
 		playerVec = new Vector<Player>();
+		playerVec.add(new Player("default"));
+		playerVec.add(new Player("default"));
 		
 		//a vector to store the last 3 messages on server (could be redundant)
 		messageVec = new Vector<ChatMessage>(3);
@@ -75,7 +77,7 @@ public class Server {
 				
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
-				
+				System.out.println("serverThreads size = " + serverThreads.size());
 				/*
 				if (serverThreads.size() > 2 && allConnected == false) {
 					System.out.println("Enough connections.");
@@ -133,11 +135,17 @@ public class Server {
 	 */
 	public int addServerPlayer(Player player) {
 		if(player != null) {
-			player.playerID = playerVec.size();
-			playerVec.add(player);
+			
+			//find an available spot in playerVec
+			for(int i = 0; i < 2; i++) {
+				if(playerVec.get(i).playerID == -1) {
+					player.playerID = i;
+					playerVec.set(i, player);
+					break;
+				}
+			}
 			
 			System.out.println("Server new player: username = " + player.playerName +", playerID = " + player.playerID);
-			System.out.println("now serverplayerVec size is " + playerVec.size());
 		}
 		return player.playerID;
 	}
@@ -170,9 +178,7 @@ public class Server {
 				allReady = false;
 			}
 		}
-		if(playerVec.size() < 2) {
-			allReady = false;
-		}
+
 		//broadcast the overall ready state to every serverThread
 		for(ServerThread thread : serverThreads) {
 				thread.broadcastReadyState(allReady);
@@ -185,7 +191,7 @@ public class Server {
 	public void sendServerOtherPlayer() {
 		if(playerVec.size() == 2) {
 			for(ServerThread thread : serverThreads) {
-				int localPlayerID = thread.getLocalPlayerID();
+				int localPlayerID = thread.getServerThreadPlayerID();
 				if(localPlayerID == 0) {
 					thread.updateOtherPlayer(playerVec.get(1));
 				}
