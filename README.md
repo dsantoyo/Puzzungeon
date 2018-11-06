@@ -1,7 +1,7 @@
 # Puzzungeon
 CSCI201 Final Project
 
-## Using the Issue tab on GitHub
+## Use the "Issues" tab on GitHub
 
 When you find a bug or see something that needs to be done, open a new issue and assign it to anyone who might know how to do it. Make a comment on an issue and label it as "in-progress" if you decide to pick it up. Close the issue if you've finished it.
 
