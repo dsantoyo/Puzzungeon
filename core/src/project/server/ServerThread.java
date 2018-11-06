@@ -102,6 +102,13 @@ public class ServerThread extends Thread{
 			}
 		}catch(IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
+			
+			//if the connection to this severthread is lost
+			server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+			//server.serverThreads.remove(this);
+			
+			//need to work on this
+			
 		}catch(ClassNotFoundException cnfe) {
 			System.out.println("cnfe: " + cnfe.getMessage());
 		}

@@ -233,6 +233,15 @@ public class WaitingScreen implements Screen{
 			waitingState.setText("Player2: " + game.client.otherPlayer.playerName);
 		}
 		
+		if(game.client.otherPlayer.playerID == -1) {
+			
+			//update the visibility of Ready button
+			readyButton.setVisible(false);
+			
+			//update waiting state
+			waitingState.setText("Waiting for another player...");
+		}
+		
 		//update chatroom
 		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());

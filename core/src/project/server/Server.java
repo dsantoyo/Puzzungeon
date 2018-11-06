@@ -10,7 +10,7 @@ import java.util.Vector;
 public class Server {
 	
 	//each serverThread represents a connected client
-	private Vector<ServerThread> serverThreads;
+	public Vector<ServerThread> serverThreads;
 	
 	//a vector to store the last 3 messages on server (could be redundant)
 	private Vector<ChatMessage> messageVec;
@@ -77,7 +77,7 @@ public class Server {
 				
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
-				
+				System.out.println("serverThreads size = " + serverThreads.size());
 				/*
 				if (serverThreads.size() > 2 && allConnected == false) {
 					System.out.println("Enough connections.");
