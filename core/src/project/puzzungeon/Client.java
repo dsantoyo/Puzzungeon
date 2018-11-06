@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import project.server.ChatMessage;
 import project.server.LoginRegister;
+import project.server.LoginResult;
 import project.server.Password;
 import project.server.Player;
 import project.server.ReadyState;
@@ -26,6 +27,9 @@ public class Client {
 	//the ready state of player1 AND player2. Updated by the server
 	public Boolean bothPlayerReady;
 	
+	public Boolean loginState;
+	public Boolean ConnectState;
+	
 	//client's own player
 	public Player localPlayer;
 	
@@ -38,6 +42,8 @@ public class Client {
 		this.port = port;
 		this.clientUsername = "default";
 		this.bothPlayerReady = false;
+		this.loginState = false;
+		this.ConnectState = false;
 	}
 	
 	//setting up connection between a client and the server
@@ -49,6 +55,7 @@ public class Client {
 			System.out.println("connected to socket! Opening streams...");
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
+			ConnectState = true;
 			System.out.println("Connected to " + hostname + ":" + port);
 			
 			//only store the last 3 messages on the client side
@@ -58,15 +65,15 @@ public class Client {
 			messageVec.add(new ChatMessage("", ""));
 			
 			//add localPlayer to the server
-			localPlayer = new Player(clientUsername);
-			otherPlayer = new Player("default");
-			updatePlayer();
+			//localPlayer = new Player(clientUsername);
+			//otherPlayer = new Player("default");
+			//updatePlayer();
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 		
-		//use a thread to receive objects from the assigned erverThread
+		//use a thread to receive objects from the assigned serverThread
 				new Thread(new Runnable(){
 					
 		            @Override
@@ -104,11 +111,30 @@ public class Client {
 		            				System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
 		            				System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
 		            			}
+		            			
+		            			//if the serverThread sends back login result
+		            			if(object instanceof LoginResult) {
+		            				
+		            				LoginResult rs = (LoginResult)object;
+		            				loginState = rs.getLoginResult();
+		            				System.out.println("Client: update loginState = "+loginState);
+		            				if(!loginState) {
+		            					System.out.println("failed to log in");
+		            				}
+		            				else {
+		            					localPlayer = new Player(clientUsername);
+		            					otherPlayer = new Player("default");
+		            					updatePlayer();
+		            					System.out.println("logged in ");
+		            				}
+		            			}
+		            			
+		            			
 		            		}
 		            	}catch(IOException ioe) {
-		            		System.out.println("ioe: " + ioe.getMessage());
+		            		System.out.println("client: thread ioe: " + ioe.getMessage());
 		            	}catch (ClassNotFoundException cnfe) {
-		            		System.out.println("cnfe: " + cnfe.getMessage());
+		            		System.out.println("client: thread cnfe: " + cnfe.getMessage());
 		            	}
 		            }
 		        }).start(); //start the thread;
@@ -122,7 +148,7 @@ public class Client {
 			oos.writeObject(cm);
 			oos.flush();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("client: sendMessage() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -132,7 +158,7 @@ public class Client {
 			oos.writeObject(username);
 			oos.flush();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("client: sendUsername() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -142,7 +168,7 @@ public class Client {
 			oos.writeObject(password);
 			oos.flush();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("client: sendPassword() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -153,7 +179,7 @@ public class Client {
 				oos.writeObject(loginRegister);
 				oos.flush();
 			} catch (IOException ioe) {
-				System.out.println("ioe: " + ioe.getMessage());
+				System.out.println("client: sendLoginRegister ioe: " + ioe.getMessage());
 			}
 		}
 	
@@ -165,7 +191,7 @@ public class Client {
 			//discard any cached references. this shit took me 1.5 hours to debug...
 			oos.reset();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("client: updatePlayer() ioe: " + ioe.getMessage());
 		}
 	}
 }

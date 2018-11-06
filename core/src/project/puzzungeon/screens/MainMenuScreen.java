@@ -12,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Puzzungeon;
+import project.server.LoginRegister;
+import project.server.Password;
+import project.server.Username;
 
 //First screen; 
 
@@ -64,8 +67,9 @@ public class MainMenuScreen implements Screen{
 							System.out.println("Trying to connect...");
 							game.client.connect();
 							System.out.println("connected!");
-					System.out.println("switching screens...");
-					game.setScreen(new WaitingScreen(game));
+							game.client.sendUsername(new Username("guest"));
+							game.client.sendPassword(new Password("guest"));
+							game.client.sendLoginRegister(new LoginRegister("guest"));
 						}
 					});
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
@@ -101,6 +105,7 @@ public class MainMenuScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
+		checkClientLoginState();
 		stage.draw();
 	}
 
@@ -127,6 +132,12 @@ public class MainMenuScreen implements Screen{
 	@Override
 	public void dispose() {
 
+	}
+	
+	public void checkClientLoginState() {
+		if(game.client.loginState) {
+			game.setScreen(new WaitingScreen(game));
+		}
 	}
 	
 }

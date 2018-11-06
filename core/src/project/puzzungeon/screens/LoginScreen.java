@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -23,11 +24,17 @@ public class LoginScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
+	private Boolean displayErrorDialog;
+	
+	private Dialog errorDialog;
+	
+	
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		displayErrorDialog = false;
 	}
 	@Override
 	public void show() {
@@ -47,6 +54,16 @@ public class LoginScreen implements Screen{
 		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
 		final TextArea passwordInput = new TextArea("",game.skin);
+		
+		
+		errorDialog = new Dialog("Failed to log in", game.skin, "dialog") {
+		    public void result(Object obj) {
+		        
+		    }
+		};
+		errorDialog.text("Check username/password");
+		errorDialog.button("Got it", false); //sends "false" as the result
+		
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
@@ -71,14 +88,18 @@ public class LoginScreen implements Screen{
 						System.out.println("username: ." + usernameStr + ".");
 						
 						//set up connection to the server
-						System.out.println("Trying to connect...");
-						game.client.connect();
+						
+						if(!game.client.ConnectState) {
+							System.out.println("Trying to connect...");
+							game.client.connect();
+						}
 						
 						//send username and password to back-end
 						game.client.sendUsername(new Username(usernameStr));
 						game.client.sendPassword(new Password(passwordStr));
 						game.client.sendLoginRegister(new LoginRegister("login"));
-						game.setScreen(new WaitingScreen(game));
+												
+						displayErrorDialog = true;
 					}
 				}
 			});
@@ -89,12 +110,17 @@ public class LoginScreen implements Screen{
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
               
-							//set up connection to the server
-							System.out.println("Trying to connect...");
-							game.client.connect();
-							System.out.println("connected!");
-							System.out.println("switching screens...");
-							game.setScreen(new WaitingScreen(game));
+							
+							if(!game.client.ConnectState) {
+								//set up connection to the server
+								System.out.println("Trying to connect...");
+								game.client.connect();
+							}
+							
+							game.client.sendUsername(new Username("guest"));
+							game.client.sendPassword(new Password("guest"));
+							game.client.sendLoginRegister(new LoginRegister("guest"));
+							
 						}
 					});
 					
@@ -154,6 +180,7 @@ public class LoginScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
+		checkClientLoginState();
 		stage.draw();
 	}
 
@@ -182,4 +209,15 @@ public class LoginScreen implements Screen{
 
 	}
 	
+	public void checkClientLoginState() {
+		
+		if(!game.client.loginState && displayErrorDialog) {
+			errorDialog.show(stage);
+			displayErrorDialog = false;
+		}
+		
+		if(game.client.loginState) {
+			game.setScreen(new WaitingScreen(game));
+		}
+	}
 }

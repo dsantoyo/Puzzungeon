@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -23,10 +24,14 @@ public class RegisterScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
+	private Dialog errorDialog;
+	private Boolean displayErrorDialog;
+	
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
+		displayErrorDialog = false;
 		Gdx.input.setInputProcessor(stage);
 	}
 	
@@ -66,18 +71,23 @@ public class RegisterScreen implements Screen{
 							} 
 							else {
 								
+
 								game.client.clientUsername = usernameStr;
 								System.out.println("username: ." + usernameStr + ".");
+								
 								//set up connection to the server
-								System.out.println("Trying to connect...");
-								game.client.connect();
-								System.out.println("Connected!");
+								
+								if(!game.client.ConnectState) {
+									System.out.println("Trying to connect...");
+									game.client.connect();
+								}
+								
 								//send username and password to back-end
 								game.client.sendUsername(new Username(usernameStr));
-							    game.client.sendPassword(new Password(passwordStr));
-							    game.client.sendLoginRegister(new LoginRegister("register"));
-								game.setScreen(new WaitingScreen(game));
-							    
+								game.client.sendPassword(new Password(passwordStr));
+								game.client.sendLoginRegister(new LoginRegister("register"));
+								
+								displayErrorDialog = true;
 							}
 						}
 					});
@@ -96,6 +106,15 @@ public class RegisterScreen implements Screen{
 							System.exit(0);
 						}
 					});
+					
+					
+				errorDialog = new Dialog("Failed to register", game.skin, "dialog") {
+				    public void result(Object obj) {
+				        
+				    }
+				};
+				errorDialog.text("Use other username/password");
+				errorDialog.button("Got it", false); //sends "false" as the result
 				
 				//use vg and hg to group the actors now. changes should be made to make it look better
 				VerticalGroup vg = new VerticalGroup();
@@ -135,6 +154,7 @@ public class RegisterScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
+		checkClientLoginState();
 		stage.draw();
 	}
 
@@ -161,6 +181,18 @@ public class RegisterScreen implements Screen{
 	@Override
 	public void dispose() {
 
+	}
+	
+	public void checkClientLoginState() {
+		
+		if(!game.client.loginState && displayErrorDialog) {
+			errorDialog.show(stage);
+			displayErrorDialog = false;
+		}
+		
+		if(game.client.loginState) {
+			game.setScreen(new WaitingScreen(game));
+		}
 	}
 	
 }
