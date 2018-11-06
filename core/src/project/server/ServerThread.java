@@ -89,13 +89,29 @@ public class ServerThread extends Thread{
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
 					*/	
+
 					
-					
-					//if login fails
-					if (loginRegisterStr.equals("login") && (!false)) {
-						
+					//send database result from this serverthread back to its client					
+					if (usernameStr.equals("fail")) { // this condition has to be changed
+						try {
 							
+							oos.writeObject(new LoginResult(false));
+							oos.flush();
+						} catch (IOException ioe) {
+							System.out.println("ioe: " + ioe.getMessage());
+						}	
 					}
+					else {
+						try {
+							
+							oos.writeObject(new LoginResult(true));
+							oos.flush();
+						} catch (IOException ioe) {
+							System.out.println("ioe: " + ioe.getMessage());
+						}
+					}
+					
+					
 				}
 				
 				//if a Player object is sent to this serverthread
@@ -195,4 +211,7 @@ public class ServerThread extends Thread{
 	public int getServerThreadPlayerID() {
 		return serverThreadPlayerID;
 	}
+	
+	
+ 
 }

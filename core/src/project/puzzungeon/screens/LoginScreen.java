@@ -71,14 +71,18 @@ public class LoginScreen implements Screen{
 						System.out.println("username: ." + usernameStr + ".");
 						
 						//set up connection to the server
-						System.out.println("Trying to connect...");
-						game.client.connect();
+						
+						if(!game.client.ConnectState) {
+							System.out.println("Trying to connect...");
+							game.client.connect();
+						}
 						
 						//send username and password to back-end
 						game.client.sendUsername(new Username(usernameStr));
 						game.client.sendPassword(new Password(passwordStr));
 						game.client.sendLoginRegister(new LoginRegister("login"));
-						game.setScreen(new WaitingScreen(game));
+												
+						
 					}
 				}
 			});
@@ -94,7 +98,11 @@ public class LoginScreen implements Screen{
 							game.client.connect();
 							System.out.println("connected!");
 							System.out.println("switching screens...");
-							game.setScreen(new WaitingScreen(game));
+							
+							game.client.sendUsername(new Username("guest"));
+							game.client.sendPassword(new Password("guest"));
+							game.client.sendLoginRegister(new LoginRegister("guest"));
+							
 						}
 					});
 					
@@ -154,6 +162,7 @@ public class LoginScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
+		checkClientLoginState();
 		stage.draw();
 	}
 
@@ -182,4 +191,9 @@ public class LoginScreen implements Screen{
 
 	}
 	
+	public void checkClientLoginState() {
+		if(game.client.loginState) {
+			game.setScreen(new WaitingScreen(game));
+		}
+	}
 }
