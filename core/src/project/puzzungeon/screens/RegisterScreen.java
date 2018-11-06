@@ -58,22 +58,30 @@ public class RegisterScreen implements Screen{
 				public void clicked(InputEvent event, float x, float y){
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
+					
+					//front-end input format validation
 					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username and password.");
-					} else if (usernameStr.trim().isEmpty()) {
+					} 
+					else if (usernameStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username!");
-					} else if (passwordStr.trim().isEmpty()){
+					} 
+					else if (passwordStr.trim().isEmpty()){
 						error.setText("Please enter a valid password!");
-					} else {
+					} 
+					else {
+						
 						game.client.clientUsername = usernameStr;
 						System.out.println("username: ." + usernameStr + ".");
 						//set up connection to the server
 						System.out.println("Trying to connect...");
 						game.client.connect();
-            System.out.println("Connected!");
+						System.out.println("Connected!");
+						//send username and password to back-end
 						game.client.sendUsername(new Username(usernameStr));
-					  game.client.sendPassword(new Password(passwordStr));
+					    game.client.sendPassword(new Password(passwordStr));
 						game.setScreen(new WaitingScreen(game));
+					    
 					}
 				}
 			});
@@ -116,6 +124,10 @@ public class RegisterScreen implements Screen{
 		inputRow4.addActor(backButton);
 		inputRow4.addActor(exitButton);
 		vg.addActor(inputRow4);
+		
+		HorizontalGroup inputRow5 = new HorizontalGroup();
+		inputRow5.addActor(error);
+		vg.addActor(inputRow5);
 		
 		//add actors onto the stage
 		stage.addActor(vg);

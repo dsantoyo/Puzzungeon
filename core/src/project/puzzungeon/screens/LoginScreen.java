@@ -52,35 +52,48 @@ public class LoginScreen implements Screen{
 		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
 		final TextArea passwordInput = new TextArea("",game.skin);
+		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
+					
+					//front-end input format validation
 					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username and password.");
-					} else if (usernameStr.trim().isEmpty()) {
+					} 
+					else if (usernameStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username!");
-					} else if (passwordStr.trim().isEmpty()){
+					} 
+					else if (passwordStr.trim().isEmpty()){
 						error.setText("Please enter a valid password!");
-					} else {
+					} 
+					else {
+						
 						game.client.clientUsername = usernameStr;
 						System.out.println("username: ." + usernameStr + ".");
+						
 						//set up connection to the server
 						System.out.println("Trying to connect...");
 						game.client.connect();
+						
+						//send username and password to back-end
 						game.client.sendUsername(new Username(usernameStr));
 						game.client.sendPassword(new Password(passwordStr));
 						game.setScreen(new WaitingScreen(game));
-          }
+					}
 				}
 			});
+			
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
+              
+							//set up connection to the server
 							System.out.println("Trying to connect...");
 							game.client.connect();
 							System.out.println("connected!");
@@ -88,6 +101,7 @@ public class LoginScreen implements Screen{
 							game.setScreen(new WaitingScreen(game));
 						}
 					});
+					
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
 				@Override 

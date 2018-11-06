@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import project.server.ChatMessage;
 import project.server.Password;
+import project.server.Player;
+import project.server.ReadyState;
 import project.server.Username;
 
 public class Client {
@@ -20,12 +22,24 @@ public class Client {
 	public Vector<ChatMessage> messageVec;
 	public String clientUsername;
 	
+	//the ready state of player1 AND player2. Updated by the server
+	public Boolean bothPlayerReady;
+	
+	//client's own player
+	public Player localPlayer;
+	
+	//the other player. constantly updated by the server
+	public Player otherPlayer;
+	
+	//constructor
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
 		this.clientUsername = "default";
+		this.bothPlayerReady = false;
 	}
 	
+	//setting up connection between a client and the server
 	public void connect() {
 		
 		try {
@@ -35,17 +49,23 @@ public class Client {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			System.out.println("Connected to " + hostname + ":" + port);
+			
 			//only store the last 3 messages on the client side
 			messageVec = new Vector<ChatMessage>(3);
-			messageVec.add(new ChatMessage("Hello ", clientUsername+"!"));
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
+			messageVec.add(new ChatMessage("", ""));
+			
+			//add localPlayer to the server
+			localPlayer = new Player(clientUsername);
+			otherPlayer = new Player("default");
+			updatePlayer();
 				
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 		
-		//use a thread to receive new message from the server
+		//use a thread to receive objects from the assigned erverThread
 				new Thread(new Runnable(){
 					
 		            @Override
@@ -53,9 +73,36 @@ public class Client {
 		            	
 		            	try {
 		            		while(true){
-		            			ChatMessage newMessage = (ChatMessage)ois.readObject();
-		            			messageVec.remove(0);
-		            			messageVec.add(newMessage);
+		            			Object object = ois.readObject();
+		            			
+		            			//if the serverThread sends a ChatMessage to the client
+		            			if(object instanceof ChatMessage) {
+		            				ChatMessage newMessage = (ChatMessage)object;
+		            				messageVec.remove(0);
+		            				messageVec.add(newMessage);
+		            			}
+		            			//if the serverThread sends the size of server PlayerVec to the client
+		            			if(object instanceof Integer) {
+		            				Integer integer = (Integer)object;
+		            				localPlayer.playerID = integer.intValue();
+		            			}
+		            			
+		            			//if the serverThread sends the readyState of player1 AND player2
+		            			if(object instanceof ReadyState) {
+		            				ReadyState rs = (ReadyState)object;
+		            				bothPlayerReady = rs.getReadyState();
+		            			}
+		            			
+		            			//if the serverThread sends back otherPlayer
+		            			if(object instanceof Player) {
+		            				otherPlayer = (Player)object;
+		            				System.out.println();
+		            				System.out.println("Client: Player updated by Server.");
+		            				System.out.println("Client: localPlayer is "+localPlayer.playerName);
+		            				System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
+		            				System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
+		            				System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            			}
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("ioe: " + ioe.getMessage());
@@ -67,38 +114,46 @@ public class Client {
 
 		
 	}
+	
+	//send message from a client(front-end) to a serverthread(back-end)
 	public void sendMessage(ChatMessage cm) {
-		//send message to serverthread
         try {
 			oos.writeObject(cm);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
-		
 	}
+	
+	//send username from a client(front-end) to a serverthread(back-end)
 	public void sendUsername(Username username) {
-		System.out.println("sendUsername() called with username = " + username.getUsername() );
-		//send username to serverthread
         try {
 			oos.writeObject(username);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
-		
 	}
 	
+	//send password from a client(front-end) to a serverthread(back-end)
 	public void sendPassword(Password password) {
-		System.out.println("sendPassword() called with password = " + password.getPassword() );
-		//send password to serverthread
         try {
 			oos.writeObject(password);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
-		
 	}
 	
+	//send/update a player from a client(front-end) to a serverthread(back-end)
+	public void updatePlayer() {
+		try {
+			oos.writeObject(localPlayer);
+			oos.flush();
+			//discard any cached references. this shit took me 1.5 hours to debug...
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
 }
