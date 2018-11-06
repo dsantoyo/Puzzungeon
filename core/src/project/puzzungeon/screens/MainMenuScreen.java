@@ -27,13 +27,9 @@ public class MainMenuScreen implements Screen{
 		Gdx.input.setInputProcessor(stage);
 	}
 	
-	//updates actors
-	public void act() {
-		
-	}
-	
-	//draw actors
-	public void draw() {
+	//construct stage
+	@Override
+	public void show() {
 		
 		//simple layout:
 		//       Game Title
@@ -99,15 +95,9 @@ public class MainMenuScreen implements Screen{
 		//add actors onto the stage
 		stage.addActor(vg);
 	}
-	
-	@Override
-	public void show() {
-		this.draw();
-	}
 
 	@Override
 	public void render(float delta) {
-		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());

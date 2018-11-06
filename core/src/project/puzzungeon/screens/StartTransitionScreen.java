@@ -3,39 +3,28 @@ package project.puzzungeon.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 
 import project.puzzungeon.Puzzungeon;
 
-//Main Gameplay screen
-public class MainGameScreen implements Screen{
+public class StartTransitionScreen implements Screen {
 
-	Puzzungeon game; //reference to the game
+	Puzzungeon game;
 	private Stage stage;
 	
-	//constructor
-	public MainGameScreen(Puzzungeon game) {
+	public StartTransitionScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 	}
-
+	
 	@Override
 	public void show() {
-		//create the actors
-		Label gameTitle = new Label("Main Game Screen", game.skin);
-		VerticalGroup vg1 = new VerticalGroup();
-		vg1.setFillParent(true);
-		vg1.addActor(gameTitle);
-		stage.addActor(vg1);
+		
 	}
 
 	@Override
 	public void render(float delta) {
-		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
@@ -45,30 +34,32 @@ public class MainGameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void pause() {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void resume() {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void hide() {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dispose() {
-		
-		game.batch.dispose();
+		// TODO Auto-generated method stub
 		
 	}
-	
 
 }

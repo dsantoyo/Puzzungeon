@@ -44,13 +44,9 @@ public class WaitingScreen implements Screen{
 		game.client.sendMessage(cm);
 	}
 	
-	//updates actors
-	public void act() {
-	}
-	
-	//draw actors
-	public void draw() {
-		
+	@Override
+	public void show() {
+
 		//simple layout:
 		//       Waiting
 		//        
@@ -180,11 +176,6 @@ public class WaitingScreen implements Screen{
 		
 		//add bottom bar to the stage
 		stage.addActor(Chatroom);
-	}
-	
-	@Override
-	public void show() {
-		this.draw();
 	}
 
 	@Override

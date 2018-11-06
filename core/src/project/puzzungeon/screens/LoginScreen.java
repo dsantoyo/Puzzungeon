@@ -28,15 +28,9 @@ public class LoginScreen implements Screen{
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 	}
-	
-	//updates actors
-	public void act() {
-		
-	}
-	
-	//draw actors
-	public void draw() {
-		
+	@Override
+	public void show() {
+
 		//simple layout:
 		//       Game Title
 		//
@@ -150,11 +144,6 @@ public class LoginScreen implements Screen{
 		
 		//add actors onto the stage
 		stage.addActor(vg);
-	}
-	
-	@Override
-	public void show() {
-		this.draw();
 	}
 
 	@Override
