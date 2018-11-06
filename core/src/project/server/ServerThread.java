@@ -94,20 +94,20 @@ public class ServerThread extends Thread{
 					//send database result from this serverthread back to its client					
 					if (usernameStr.equals("fail")) { // this condition has to be changed
 						try {
-							
 							oos.writeObject(new LoginResult(false));
 							oos.flush();
+							oos.reset();
 						} catch (IOException ioe) {
-							System.out.println("ioe: " + ioe.getMessage());
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}	
 					}
 					else {
 						try {
-							
 							oos.writeObject(new LoginResult(true));
 							oos.flush();
+							oos.reset();
 						} catch (IOException ioe) {
-							System.out.println("ioe: " + ioe.getMessage());
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}
 					}
 					
@@ -137,7 +137,7 @@ public class ServerThread extends Thread{
 								
 			}
 		}catch(IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: run() ioe: " + ioe.getMessage());
 			
 			//if the connection to this severthread is lost
 			//reset corresponding player object in server's playerVec
@@ -150,7 +150,7 @@ public class ServerThread extends Thread{
 			//need to work on this
 			
 		}catch(ClassNotFoundException cnfe) {
-			System.out.println("cnfe: " + cnfe.getMessage());
+			System.out.println("serverthread: run() cnfe: " + cnfe.getMessage());
 		}
 	}
 
@@ -166,7 +166,7 @@ public class ServerThread extends Thread{
 			oos.writeObject(cm);
 			oos.flush();
 		}catch(IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: sendMessage() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -178,7 +178,7 @@ public class ServerThread extends Thread{
 			oos.writeObject(IDInt);
 			oos.flush();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: setLocalPlayerID() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -191,7 +191,7 @@ public class ServerThread extends Thread{
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: broadcastReadyState() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -203,7 +203,7 @@ public class ServerThread extends Thread{
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: updateOtherPlayer() ioe: " + ioe.getMessage());
 		}
 	}
 	

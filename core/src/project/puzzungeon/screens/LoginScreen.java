@@ -28,6 +28,7 @@ public class LoginScreen implements Screen{
 	
 	private Dialog errorDialog;
 	
+	
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
@@ -109,11 +110,12 @@ public class LoginScreen implements Screen{
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
               
-							//set up connection to the server
-							System.out.println("Trying to connect...");
-							game.client.connect();
-							System.out.println("connected!");
-							System.out.println("switching screens...");
+							
+							if(!game.client.ConnectState) {
+								//set up connection to the server
+								System.out.println("Trying to connect...");
+								game.client.connect();
+							}
 							
 							game.client.sendUsername(new Username("guest"));
 							game.client.sendPassword(new Password("guest"));
