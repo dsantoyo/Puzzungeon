@@ -89,6 +89,13 @@ public class ServerThread extends Thread{
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
 					*/	
+					
+					
+					//if login fails
+					if (loginRegisterStr.equals("login") && (!false)) {
+						
+							
+					}
 				}
 				
 				//if a Player object is sent to this serverthread
