@@ -105,7 +105,8 @@ public class ServerThread extends Thread{
 			
 			//if the connection to this severthread is lost
 			server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-			//server.serverThreads.remove(this);
+			server.broadcastMessage(new ChatMessage("(to be implemented)", " has left."));
+			server.serverThreads.remove(this);
 			
 			//need to work on this
 			
