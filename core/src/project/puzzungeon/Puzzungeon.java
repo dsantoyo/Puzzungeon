@@ -30,7 +30,6 @@ public class Puzzungeon extends Game {
 	@Override
 	public void render () {
 		super.render();
-		
 	}
 	
 	//disposes visual assets in order to free up memory 
