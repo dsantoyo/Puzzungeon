@@ -9,7 +9,7 @@ import project.puzzungeon.Puzzungeon;
 
 public class StartTransitionScreen implements Screen {
 
-	Puzzungeon game;
+	Puzzungeon game; //reference to main game object
 	private Stage stage;
 	
 	public StartTransitionScreen(Puzzungeon game) {
@@ -29,7 +29,6 @@ public class StartTransitionScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		
 	}
 
 	@Override
