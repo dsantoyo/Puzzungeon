@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -23,11 +24,16 @@ public class LoginScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
+	private Boolean displayErrorDialog;
+	
+	private Dialog errorDialog;
+	
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		displayErrorDialog = false;
 	}
 	@Override
 	public void show() {
@@ -47,6 +53,16 @@ public class LoginScreen implements Screen{
 		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
 		final TextArea passwordInput = new TextArea("",game.skin);
+		
+		
+		errorDialog = new Dialog("Failed to log in", game.skin, "dialog") {
+		    public void result(Object obj) {
+		        
+		    }
+		};
+		errorDialog.text("Check username/password");
+		errorDialog.button("Got it", false); //sends "false" as the result
+		
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
@@ -82,7 +98,7 @@ public class LoginScreen implements Screen{
 						game.client.sendPassword(new Password(passwordStr));
 						game.client.sendLoginRegister(new LoginRegister("login"));
 												
-						
+						displayErrorDialog = true;
 					}
 				}
 			});
@@ -192,6 +208,12 @@ public class LoginScreen implements Screen{
 	}
 	
 	public void checkClientLoginState() {
+		
+		if(!game.client.loginState && displayErrorDialog) {
+			errorDialog.show(stage);
+			displayErrorDialog = false;
+		}
+		
 		if(game.client.loginState) {
 			game.setScreen(new WaitingScreen(game));
 		}
