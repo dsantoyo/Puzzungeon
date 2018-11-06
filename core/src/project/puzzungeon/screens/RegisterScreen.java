@@ -79,7 +79,7 @@ public class RegisterScreen implements Screen{
 									
 									//set up connection to the server
 									
-									if(!game.client.ConnectState) {
+									if(!game.client.connectState) {
 										System.out.println("Trying to connect...");
 										game.client.connect();
 									}

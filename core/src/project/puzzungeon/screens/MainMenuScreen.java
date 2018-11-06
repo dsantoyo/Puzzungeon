@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.LoginRegister;
 import project.server.Password;
@@ -26,6 +27,7 @@ public class MainMenuScreen implements Screen{
 	
 	private Boolean displayDialog;
 	private Dialog gameFullDialog;
+	private Dialog connectionFailDialog;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
@@ -70,17 +72,28 @@ public class MainMenuScreen implements Screen{
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
               
-							if(!game.client.ConnectState) {
+							if(!game.client.connectState) {
 								//set up connection to the server
 								System.out.println("Trying to connect...");
-								game.client.connect();
+								if(!game.client.connect()) {
+									System.out.println("Unable to connect to the server");
+									displayDialog = true;
+									game.client = new Client("localhost", 6789);
+								}
+								else {
+									
+									game.client.sendUsername(new Username("guest"));
+									game.client.sendPassword(new Password("guest"));
+									game.client.sendLoginRegister(new LoginRegister("guest"));
+									displayDialog = true;
+								}
 							}
-							
-							game.client.sendUsername(new Username("guest"));
-							game.client.sendPassword(new Password("guest"));
-							game.client.sendLoginRegister(new LoginRegister("guest"));
-							
-							displayDialog = true;
+							else {
+								game.client.sendUsername(new Username("guest"));
+								game.client.sendPassword(new Password("guest"));
+								game.client.sendLoginRegister(new LoginRegister("guest"));
+								displayDialog = true;
+							}
 							
 						}
 					});
@@ -99,6 +112,13 @@ public class MainMenuScreen implements Screen{
 
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
+		
+		
+		connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+
+		connectionFailDialog.text("Couldn't connect to the server");
+		connectionFailDialog.button("Got it", false); //sends "false" as the result
 			
 		
 		//use vg and hg to group the actors now. changes should be made to make it look better
@@ -166,6 +186,10 @@ public class MainMenuScreen implements Screen{
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
 					game.client.loginStateMessage = "";
 					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+				if(!game.client.connectState) {
+					connectionFailDialog.show(stage);
 					displayDialog = false;
 				}
 			}

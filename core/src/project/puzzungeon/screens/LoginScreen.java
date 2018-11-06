@@ -94,7 +94,7 @@ public class LoginScreen implements Screen{
 						
 						//set up connection to the server
 						
-						if(!game.client.ConnectState) {
+						if(!game.client.connectState) {
 							System.out.println("Trying to connect...");
 							game.client.connect();
 						}
@@ -116,7 +116,7 @@ public class LoginScreen implements Screen{
 						game.client.clientUsername = "Guest";
           
 						
-						if(!game.client.ConnectState) {
+						if(!game.client.connectState) {
 							//set up connection to the server
 							System.out.println("Trying to connect...");
 							game.client.connect();

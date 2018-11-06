@@ -29,7 +29,7 @@ public class Client {
 	
 	public Boolean loginState;
 	public String loginStateMessage;
-	public Boolean ConnectState;
+	public Boolean connectState;
 	
 	//client's own player
 	public Player localPlayer;
@@ -45,11 +45,11 @@ public class Client {
 		this.bothPlayerReady = false;
 		this.loginState = false;
 		this.loginStateMessage = "";
-		this.ConnectState = false;
+		this.connectState = false;
 	}
 	
 	//setting up connection between a client and the server
-	public void connect() {
+	public Boolean connect() {
 		
 		try {
 			System.out.println("Trying to connect to " + hostname + ":" + port);
@@ -63,7 +63,7 @@ public class Client {
 			System.out.println("Testing if the connection is established");
 			Object TestObject = ois.readObject();
 			
-			ConnectState = true;
+			connectState = true;
 			System.out.println("Connected to " + hostname + ":" + port);
 			
 			//only store the last 3 messages on the client side
@@ -79,8 +79,9 @@ public class Client {
 				
 		} catch (IOException ioe) {
 			System.out.println("Client: connection() ioe: " + ioe.getMessage());
+			return false;
 		} catch (ClassNotFoundException cnfe) {
-			System.out.println("Client: connection() ioe: " + cnfe.getMessage());
+			System.out.println("Client: connection() cnfe: " + cnfe.getMessage());
 		}
 		
 		//use a thread to receive objects from the assigned serverThread
@@ -152,7 +153,7 @@ public class Client {
 		            }
 		        }).start(); //start the thread;
 
-		
+		return true;
 	}
 	
 	//send message from a client(front-end) to a serverthread(back-end)
