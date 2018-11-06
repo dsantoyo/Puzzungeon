@@ -29,14 +29,12 @@ public class LoginScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
+	//shared by different methods
 	private Boolean displayDialog;
-	
 	private Dialog loginFailDialog;
 	private Dialog gameFullDialog;
 	private Dialog connectionFailDialog;
-	
 	private TextArea passwordInput;
-	
 	
 	//constructor
 	public LoginScreen(Puzzungeon game) {
@@ -49,15 +47,9 @@ public class LoginScreen implements Screen{
 	@Override
 	public void show() {
 
-		//simple layout:
-		//       Game Title
-		//
-		//  username:        
-		//  password:     
-		//        Login
-		//                   exit
-		
-		//create the actors
+/****************************************************************************************
+ *                             start: actors functionality
+ ****************************************************************************************/
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
@@ -69,8 +61,6 @@ public class LoginScreen implements Screen{
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
 						String usernameInputStr = new String();
-						
-						
 		                if(usernameInput.getText().length() == 0) {
 		                	usernameInputStr = "";
 		                }
@@ -79,14 +69,11 @@ public class LoginScreen implements Screen{
 		                	//remove newline character
 		                	usernameInputStr = usernameInputStr.replace("\n", "");
 		                }
-		               
 		                usernameInput.setText(usernameInputStr);
 		                stage.setKeyboardFocus(passwordInput);
 					}
 				}
 			});
-		
-		
 		
 		passwordInput = new TextArea("",game.skin);
 			//when ENTER key is pressed,
@@ -95,8 +82,6 @@ public class LoginScreen implements Screen{
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
 						String passwordInputStr = new String();
-						
-						
 		                if(passwordInput.getText().length() == 0) {
 		                	passwordInputStr = "";
 		                }
@@ -105,11 +90,9 @@ public class LoginScreen implements Screen{
 		                	//remove newline character
 		                	passwordInputStr = passwordInputStr.replace("\n", "");
 		                }
-		               
 		                passwordInput.setText(passwordInputStr);
 		                String usernameStr = usernameInput.getText();
 						String passwordStr = passwordInput.getText();
-						
 						//front-end input format validation
 						if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 							error.setText("Please enter a valid username and password.");
@@ -121,12 +104,9 @@ public class LoginScreen implements Screen{
 							error.setText("Please enter a valid password!");
 						} 
 						else {
-							
 							game.client.clientUsername = usernameStr;
 							System.out.println("username: ." + usernameStr + ".");
-							
 							//set up connection to the server
-							
 							if(!game.client.connectState) {
 								//set up connection to the server
 								System.out.println("Trying to connect...");
@@ -151,17 +131,14 @@ public class LoginScreen implements Screen{
 								displayDialog = true;
 							}
 						}
-		                
 					}
 				}
 			});
-		
 		
 		loginFailDialog = new Dialog("Failed to log in", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		loginFailDialog.text("Check username/password.");
 		loginFailDialog.button("Got it", false); //sends "false" as the result
-		
 		
 		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
 		    public void result(Object obj) {}};
@@ -170,10 +147,8 @@ public class LoginScreen implements Screen{
 		
 		connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
 		    public void result(Object obj) {}};
-
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
-		
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
@@ -181,7 +156,6 @@ public class LoginScreen implements Screen{
 				public void clicked(InputEvent event, float x, float y){
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
-					
 					//front-end input format validation
 					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username and password.");
@@ -193,12 +167,9 @@ public class LoginScreen implements Screen{
 						error.setText("Please enter a valid password!");
 					} 
 					else {
-						
 						game.client.clientUsername = usernameStr;
 						System.out.println("username: ." + usernameStr + ".");
-						
 						//set up connection to the server
-						
 						if(!game.client.connectState) {
 							//set up connection to the server
 							System.out.println("Trying to connect...");
@@ -231,7 +202,6 @@ public class LoginScreen implements Screen{
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						game.client.clientUsername = "Guest";
-			              
 						if(!game.client.connectState) {
 							//set up connection to the server
 							System.out.println("Trying to connect...");
@@ -273,6 +243,13 @@ public class LoginScreen implements Screen{
 				}
 			});
 		
+/****************************************************************************************
+*                             end: actors functionality
+****************************************************************************************/
+			
+/****************************************************************************************
+*                             start: actors layout
+****************************************************************************************/
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
@@ -304,6 +281,10 @@ public class LoginScreen implements Screen{
 		
 		//add actors onto the stage
 		stage.addActor(vg);
+		
+/****************************************************************************************
+*                             end: actors layout
+****************************************************************************************/
 	}
 
 	@Override

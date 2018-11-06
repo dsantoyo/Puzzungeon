@@ -24,13 +24,10 @@ public class WaitingScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
-	
-	//chat ui
+	//shared by different methods
 	private Label showMessage1;
 	private Label showMessage2;
 	private Label showMessage3;
-	
-	//waiting ui
 	private Label waitingState;
 	private TextButton readyButton;
 	
@@ -46,26 +43,20 @@ public class WaitingScreen implements Screen{
 	
 	@Override
 	public void show() {
-
-		//simple layout:
-		//       Waiting
-		//        
-		//    (choose character ui)
-		//
-		//    (chat ui)
+/****************************************************************************************
+*                             start: actors functionality
+****************************************************************************************/
 		
 		//create the actors
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
-
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
 		Label showDivider = new Label("-------------------------------------",game.skin);
 				
 		final TextArea inputBox = new TextArea("",game.skin);
-		
 			//when ENTER key is pressed, send message to the serverthread
 			inputBox.setTextFieldListener(new TextFieldListener() {
 				@Override
@@ -81,10 +72,8 @@ public class WaitingScreen implements Screen{
 		                	//remove newline character
 		                	messageStr = messageStr.replace("\n", "");
 		                }
-		               
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
-		                
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
 		                game.client.sendMessage(cm);
 					}
@@ -104,14 +93,12 @@ public class WaitingScreen implements Screen{
 	                else {
 	                	messageStr = inputBox.getText();
 	                }
-	                
 	                //clear inputbox after new message is sent
 	                inputBox.setText("");
 	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
 	                game.client.sendMessage(cm);
 	            }
 	        });
-			
 			
 		readyButton  = new TextButton("Ready?", game.skin, "default");
 			//when readybutton is clicked, change localplayerstate(front-end)
@@ -137,6 +124,13 @@ public class WaitingScreen implements Screen{
 	            }
 	        });
 		
+/****************************************************************************************
+*                             end: actors functionality
+****************************************************************************************/
+			
+/****************************************************************************************
+*                             start: actors layout
+****************************************************************************************/
 		//chatroom UI
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
@@ -144,7 +138,6 @@ public class WaitingScreen implements Screen{
 		vg1.addActor(gameTitle);
 		vg1.addActor(localPlayerUsername);
 		vg1.addActor(waitingState);
-		
 		
 		readyButton.setVisible(false);
 		vg1.addActor(readyButton);
@@ -176,6 +169,10 @@ public class WaitingScreen implements Screen{
 		
 		//add bottom bar to the stage
 		stage.addActor(Chatroom);
+		
+/****************************************************************************************
+*                             end: actors functionality
+****************************************************************************************/
 	}
 
 	@Override
