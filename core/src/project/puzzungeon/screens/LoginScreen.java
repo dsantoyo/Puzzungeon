@@ -92,7 +92,7 @@ public class LoginScreen implements Screen{
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
-							
+              
 							//set up connection to the server
 							System.out.println("Trying to connect...");
 							game.client.connect();

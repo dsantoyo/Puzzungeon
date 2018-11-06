@@ -62,6 +62,7 @@ public class WaitingScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
+
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);

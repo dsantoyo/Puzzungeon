@@ -103,7 +103,6 @@ public class Client {
 		            				System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
 		            				System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
 		            			}
-		            			
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("ioe: " + ioe.getMessage());
