@@ -16,6 +16,7 @@ public class ServerThread extends Thread{
 	private LoginRegister loginRegister;
 	private Player player;
 	private Server server;
+	private Boolean clientLoginState;
 	
 	/* the localPlayerID of this serverThread's client's localPlayer
 	 * server uses this to know which player in server's playerVec is 
@@ -131,6 +132,7 @@ public class ServerThread extends Thread{
 					}
 					else {
 						try {
+							clientLoginState = true;
 							oos.writeObject(new LoginResult(true, "Login/Register done"));
 							oos.flush();
 							oos.reset();
@@ -169,8 +171,11 @@ public class ServerThread extends Thread{
 			//reset corresponding player object in server's playerVec
 			//send a "has left" message
 			//remove this serverThread from server's serverThreads vector
-			server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-			server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+			
+			if(clientLoginState) {
+				server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+				server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+			}
 			server.serverThreads.remove(this);
 			
 			//need to work on this

@@ -24,9 +24,10 @@ public class LoginScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
-	private Boolean displayErrorDialog;
+	private Boolean displayDialog;
 	
-	private Dialog errorDialog;
+	private Dialog loginFailDialog;
+	private Dialog gameFullDialog;
 	
 	
 	//constructor
@@ -34,7 +35,8 @@ public class LoginScreen implements Screen{
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		displayErrorDialog = false;
+		displayDialog = false;
+		
 	}
 	@Override
 	public void show() {
@@ -56,12 +58,21 @@ public class LoginScreen implements Screen{
 		final TextArea passwordInput = new TextArea("",game.skin);
 		
 		
-		errorDialog = new Dialog("Failed to log in", game.skin, "dialog") {
+		loginFailDialog = new Dialog("Failed to log in", game.skin, "dialog") {
 		    public void result(Object obj) {
 		        
 		    }
 		};
-		errorDialog.button("Got it", false); //sends "false" as the result
+		loginFailDialog.text("Check username/password.");
+		loginFailDialog.button("Got it", false); //sends "false" as the result
+		
+		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
+		    public void result(Object obj) {
+		        
+		    }
+		};
+		gameFullDialog.text("We already have 2 players.");
+		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
@@ -97,8 +108,9 @@ public class LoginScreen implements Screen{
 						game.client.sendUsername(new Username(usernameStr));
 						game.client.sendPassword(new Password(passwordStr));
 						game.client.sendLoginRegister(new LoginRegister("login"));
-												
-						displayErrorDialog = true;
+						
+						displayDialog = true;
+						
 					}
 				}
 			});
@@ -119,6 +131,8 @@ public class LoginScreen implements Screen{
 							game.client.sendUsername(new Username("guest"));
 							game.client.sendPassword(new Password("guest"));
 							game.client.sendLoginRegister(new LoginRegister("guest"));
+							
+							displayDialog = true;
 							
 						}
 					});
@@ -210,14 +224,25 @@ public class LoginScreen implements Screen{
 	
 	public void checkClientLoginState() {
 		
-		if(!game.client.loginState && displayErrorDialog) {
-			errorDialog.text(game.client.loginStateMessage);
-			errorDialog.show(stage);
-			displayErrorDialog = false;
+		
+		if(displayDialog == true) {
+			
+			if(game.client.loginState) {
+				game.setScreen(new WaitingScreen(game));
+			}
+			
+			if(!game.client.loginState) {
+				if(game.client.loginStateMessage.equals("Check username/password")) {
+					loginFailDialog.show(stage);
+					displayDialog = false;
+				}
+				if(game.client.loginStateMessage.equals("Game is Full.")) {
+					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+			}
 		}
 		
-		if(game.client.loginState) {
-			game.setScreen(new WaitingScreen(game));
-		}
+		
 	}
 }
