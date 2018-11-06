@@ -64,9 +64,13 @@ public class MainMenuScreen implements Screen{
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
-							System.out.println("Trying to connect...");
-							game.client.connect();
-							System.out.println("connected!");
+              
+							if(!game.client.ConnectState) {
+								//set up connection to the server
+								System.out.println("Trying to connect...");
+								game.client.connect();
+							}
+							
 							game.client.sendUsername(new Username("guest"));
 							game.client.sendPassword(new Password("guest"));
 							game.client.sendLoginRegister(new LoginRegister("guest"));
