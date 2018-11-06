@@ -103,16 +103,28 @@ public class LoginScreen implements Screen{
 						//set up connection to the server
 						
 						if(!game.client.connectState) {
+							//set up connection to the server
 							System.out.println("Trying to connect...");
-							game.client.connect();
+							if(!game.client.connect()) {
+								System.out.println("Unable to connect to the server");
+								displayDialog = true;
+								game.client = new Client("localhost", 6789);
+							}
+							else {
+								//send username and password to back-end
+								game.client.sendUsername(new Username(usernameStr));
+								game.client.sendPassword(new Password(passwordStr));
+								game.client.sendLoginRegister(new LoginRegister("login"));
+								displayDialog = true;
+							}
 						}
-						
-						//send username and password to back-end
-						game.client.sendUsername(new Username(usernameStr));
-						game.client.sendPassword(new Password(passwordStr));
-						game.client.sendLoginRegister(new LoginRegister("login"));
-						
-						displayDialog = true;
+						else {
+							//send username and password to back-end
+							game.client.sendUsername(new Username(usernameStr));
+							game.client.sendPassword(new Password(passwordStr));
+							game.client.sendLoginRegister(new LoginRegister("login"));
+							displayDialog = true;
+						}
 					}
 				}
 			});
