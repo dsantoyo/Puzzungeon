@@ -13,6 +13,7 @@ public class ServerThread extends Thread{
 	private ObjectOutputStream oos;
 	private Username username;
 	private Password password;
+	private LoginRegister loginRegister;
 	private Player player;
 	private Server server;
 	
@@ -69,7 +70,14 @@ public class ServerThread extends Thread{
 					object = ois.readObject();
 					password = (Password)object;
 					
-
+					object = ois.readObject();
+					loginRegister = (LoginRegister)object;
+					
+					
+					String usernameSgtr = username.getUsername();
+					String passswordStr = password.getPassword();
+					String loginRegisterStr = loginRegister.getloginRegister();
+					
 					/*
 					   Back-end login/register features/validation should be done here
 					   
