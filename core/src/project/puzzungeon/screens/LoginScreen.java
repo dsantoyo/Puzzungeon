@@ -2,6 +2,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,11 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
+import project.server.ChatMessage;
 import project.server.LoginRegister;
 import project.server.Password;
 import project.server.Username;
@@ -30,6 +34,8 @@ public class LoginScreen implements Screen{
 	private Dialog loginFailDialog;
 	private Dialog gameFullDialog;
 	private Dialog connectionFailDialog;
+	
+	private TextArea passwordInput;
 	
 	
 	//constructor
@@ -57,7 +63,98 @@ public class LoginScreen implements Screen{
 		Label password = new Label("Password: ", game.skin);
 		final Label error = new Label("", game.skin);
 		final TextArea usernameInput = new TextArea("",game.skin);
-		final TextArea passwordInput = new TextArea("",game.skin);
+			//when ENTER key is pressed,
+			usernameInput.setTextFieldListener(new TextFieldListener() {
+				@Override
+				public void keyTyped(TextField textField, char c) {
+					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						String usernameInputStr = new String();
+						
+						
+		                if(usernameInput.getText().length() == 0) {
+		                	usernameInputStr = "";
+		                }
+		                else {
+		                	usernameInputStr = usernameInput.getText();
+		                	//remove newline character
+		                	usernameInputStr = usernameInputStr.replace("\n", "");
+		                }
+		               
+		                usernameInput.setText(usernameInputStr);
+		                stage.setKeyboardFocus(passwordInput);
+					}
+				}
+			});
+		
+		
+		
+		passwordInput = new TextArea("",game.skin);
+			//when ENTER key is pressed,
+			passwordInput.setTextFieldListener(new TextFieldListener() {
+				@Override
+				public void keyTyped(TextField textField, char c) {
+					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						String passwordInputStr = new String();
+						
+						
+		                if(passwordInput.getText().length() == 0) {
+		                	passwordInputStr = "";
+		                }
+		                else {
+		                	passwordInputStr = passwordInput.getText();
+		                	//remove newline character
+		                	passwordInputStr = passwordInputStr.replace("\n", "");
+		                }
+		               
+		                passwordInput.setText(passwordInputStr);
+		                String usernameStr = usernameInput.getText();
+						String passwordStr = passwordInput.getText();
+						
+						//front-end input format validation
+						if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
+							error.setText("Please enter a valid username and password.");
+						} 
+						else if (usernameStr.trim().isEmpty()) {
+							error.setText("Please enter a valid username!");
+						} 
+						else if (passwordStr.trim().isEmpty()){
+							error.setText("Please enter a valid password!");
+						} 
+						else {
+							
+							game.client.clientUsername = usernameStr;
+							System.out.println("username: ." + usernameStr + ".");
+							
+							//set up connection to the server
+							
+							if(!game.client.connectState) {
+								//set up connection to the server
+								System.out.println("Trying to connect...");
+								if(!game.client.connect()) {
+									System.out.println("Unable to connect to the server");
+									displayDialog = true;
+									game.client = new Client(game.serverAddress, game.serverPort);
+								}
+								else {
+									//send username and password to back-end
+									game.client.sendUsername(new Username(usernameStr));
+									game.client.sendPassword(new Password(passwordStr));
+									game.client.sendLoginRegister(new LoginRegister("login"));
+									displayDialog = true;
+								}
+							}
+							else {
+								//send username and password to back-end
+								game.client.sendUsername(new Username(usernameStr));
+								game.client.sendPassword(new Password(passwordStr));
+								game.client.sendLoginRegister(new LoginRegister("login"));
+								displayDialog = true;
+							}
+						}
+		                
+					}
+				}
+			});
 		
 		
 		loginFailDialog = new Dialog("Failed to log in", game.skin, "dialog") {
