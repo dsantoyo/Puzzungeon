@@ -24,9 +24,10 @@ public class LoginScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
-	private Boolean displayErrorDialog;
+	private Boolean displayDialog;
 	
-	private Dialog errorDialog;
+	private Dialog loginFailDialog;
+	private Dialog gameFullDialog;
 	
 	
 	//constructor
@@ -34,7 +35,8 @@ public class LoginScreen implements Screen{
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		displayErrorDialog = false;
+		displayDialog = false;
+		
 	}
 	@Override
 	public void show() {
@@ -56,13 +58,16 @@ public class LoginScreen implements Screen{
 		final TextArea passwordInput = new TextArea("",game.skin);
 		
 		
-		errorDialog = new Dialog("Failed to log in", game.skin, "dialog") {
-		    public void result(Object obj) {
-		        
-		    }
-		};
-		errorDialog.text("Check username/password");
-		errorDialog.button("Got it", false); //sends "false" as the result
+		loginFailDialog = new Dialog("Failed to log in", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+		loginFailDialog.text("Check username/password.");
+		loginFailDialog.button("Got it", false); //sends "false" as the result
+		
+		
+		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+		gameFullDialog.text("We already have 2 players.");
+		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
@@ -98,31 +103,32 @@ public class LoginScreen implements Screen{
 						game.client.sendUsername(new Username(usernameStr));
 						game.client.sendPassword(new Password(passwordStr));
 						game.client.sendLoginRegister(new LoginRegister("login"));
-												
-						displayErrorDialog = true;
+						
+						displayDialog = true;
 					}
 				}
 			});
 			
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
-					guestButton.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							game.client.clientUsername = "Guest";
-              
-							
-							if(!game.client.ConnectState) {
-								//set up connection to the server
-								System.out.println("Trying to connect...");
-								game.client.connect();
-							}
-							
-							game.client.sendUsername(new Username("guest"));
-							game.client.sendPassword(new Password("guest"));
-							game.client.sendLoginRegister(new LoginRegister("guest"));
-							
+				guestButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						game.client.clientUsername = "Guest";
+          
+						
+						if(!game.client.ConnectState) {
+							//set up connection to the server
+							System.out.println("Trying to connect...");
+							game.client.connect();
 						}
-					});
+						
+						game.client.sendUsername(new Username("guest"));
+						game.client.sendPassword(new Password("guest"));
+						game.client.sendLoginRegister(new LoginRegister("guest"));
+						
+						displayDialog = true;
+					}
+				});
 					
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -211,13 +217,24 @@ public class LoginScreen implements Screen{
 	
 	public void checkClientLoginState() {
 		
-		if(!game.client.loginState && displayErrorDialog) {
-			errorDialog.show(stage);
-			displayErrorDialog = false;
-		}
-		
-		if(game.client.loginState) {
-			game.setScreen(new WaitingScreen(game));
-		}
+		if(displayDialog == true) {
+			
+			if(game.client.loginState) {
+				game.setScreen(new WaitingScreen(game));
+			}
+			
+			if(!game.client.loginState) {
+				if(game.client.loginStateMessage.equals("Check username/password")) {
+					game.client.loginStateMessage = "";
+					loginFailDialog.show(stage);
+					displayDialog = false;
+				}
+				if(game.client.loginStateMessage.equals("Game is Full.")) {
+					game.client.loginStateMessage = "";
+					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+			}
+		}	
 	}
 }

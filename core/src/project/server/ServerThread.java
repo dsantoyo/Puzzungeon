@@ -16,6 +16,7 @@ public class ServerThread extends Thread{
 	private LoginRegister loginRegister;
 	private Player player;
 	private Server server;
+	private Boolean clientLoginState;
 	
 	/* the localPlayerID of this serverThread's client's localPlayer
 	 * server uses this to know which player in server's playerVec is 
@@ -40,7 +41,6 @@ public class ServerThread extends Thread{
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
-	
 
 	public void run() {
 		
@@ -73,7 +73,6 @@ public class ServerThread extends Thread{
 					object = ois.readObject();
 					loginRegister = (LoginRegister)object;
 					
-					
 					String usernameStr = username.getUsername();
 					String passswordStr = password.getPassword();
 					String loginRegisterStr = loginRegister.getloginRegister();
@@ -90,28 +89,57 @@ public class ServerThread extends Thread{
 					    //String errorMessage = database.errorMessage();
 					*/	
 
+					System.out.println("trying to login...");
+					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
+					System.out.println("serverThread: current player0 id on server: " + server.playerVec.get(0).playerID);
+					System.out.println("serverThread: current player1 name on server: " + server.playerVec.get(1).playerName);
+					System.out.println("serverThread: current player1 id on server: " + server.playerVec.get(1).playerID);
 					
-					//send database result from this serverthread back to its client					
-					if (usernameStr.equals("fail")) { // this condition has to be changed
+					//send server validation result from this serverthread back to its client
+					
+					// from loginScreen
+					if (loginRegisterStr.equals("login") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
-							oos.writeObject(new LoginResult(false));
+							System.out.println("serverthread: denied. Check username/password");
+							oos.writeObject(new LoginResult(false, "Check username/password"));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}	
 					}
-					else {
+					// from registerScreen
+					else if (loginRegisterStr.equals("register") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
-							oos.writeObject(new LoginResult(true));
+							System.out.println("serverthread: denied. Failed to register.");
+							oos.writeObject(new LoginResult(false, "Failed to register."));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
+						}	
+					}
+					
+					else if (server.isGameFull()) { // is 2 players are already in the game
+						try {
+							System.out.println("serverthread: denied. game is full.");
+							oos.writeObject(new LoginResult(false, "Game is Full."));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
+						}
+					}
+					else { // allow the client to login
+						try {
+							clientLoginState = true;
+							oos.writeObject(new LoginResult(true, "Login/Register done"));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}
-					}
-					
-					
+					}				
 				}
 				
 				//if a Player object is sent to this serverthread
@@ -119,6 +147,7 @@ public class ServerThread extends Thread{
 					player = (Player)object;
 					if(player != null) {
 						serverThreadPlayerName = player.playerName;
+						
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
@@ -143,8 +172,11 @@ public class ServerThread extends Thread{
 			//reset corresponding player object in server's playerVec
 			//send a "has left" message
 			//remove this serverThread from server's serverThreads vector
-			server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-			server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+			
+			if(clientLoginState) {
+				server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+				server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+			}
 			server.serverThreads.remove(this);
 			
 			//need to work on this
@@ -161,7 +193,6 @@ public class ServerThread extends Thread{
 	
 	//receive new message from the server and send to this serverthread's client
 	public void sendMessage(ChatMessage cm) {
-		
 		try {
 			oos.writeObject(cm);
 			oos.flush();
@@ -184,7 +215,6 @@ public class ServerThread extends Thread{
 	
 	//send ReadyState from this serverthread to the client
 	public void broadcastReadyState(Boolean readyState) {
-		
 		try {
 			ReadyState rs = new ReadyState(readyState);
 			oos.writeObject(rs);
@@ -197,7 +227,6 @@ public class ServerThread extends Thread{
 	
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
-			
 		try {
 			oos.writeObject(otherPlayer);
 			oos.flush();
@@ -211,7 +240,4 @@ public class ServerThread extends Thread{
 	public int getServerThreadPlayerID() {
 		return serverThreadPlayerID;
 	}
-	
-	
- 
 }

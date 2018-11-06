@@ -16,9 +16,10 @@ public class Server {
 	private Vector<ChatMessage> messageVec;
 	
 	//a vector to store Player objects
-	private Vector<Player> playerVec;
+	public Vector<Player> playerVec;
 	
 	//private boolean allConnected;
+	
 	
 	public Server(int port) {
 		
@@ -77,7 +78,7 @@ public class Server {
 				
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
-				System.out.println("serverThreads size = " + serverThreads.size());
+				System.out.println("server: serverThreads size: " + serverThreads.size());
 				/*
 				if (serverThreads.size() > 2 && allConnected == false) {
 					System.out.println("Enough connections.");
@@ -200,6 +201,15 @@ public class Server {
 				}
 			}
 		}
+	}
+	
+	public Boolean isGameFull() {
+		
+		System.out.println("server: isGameFull(); called");
+		System.out.println(playerVec.get(0).playerID);
+		System.out.println(playerVec.get(1).playerID);
+		
+		return ((playerVec.get(0).playerID != -1) && (playerVec.get(1).playerID != -1));
 	}
 	
 	public static void main(String [] args) {

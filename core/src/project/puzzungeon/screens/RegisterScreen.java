@@ -24,14 +24,15 @@ public class RegisterScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
-	private Dialog errorDialog;
-	private Boolean displayErrorDialog;
+	private Boolean displayDialog;
+	private Dialog gameFullDialog;
+	private Dialog registerFailDialog;
 	
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
-		displayErrorDialog = false;
+		displayDialog = false;
 		Gdx.input.setInputProcessor(stage);
 	}
 	
@@ -52,45 +53,47 @@ public class RegisterScreen implements Screen{
 				final Label error = new Label("", game.skin);
 				final TextArea usernameInput = new TextArea("",game.skin);
 				final TextArea passwordInput = new TextArea("",game.skin);
+				
 				TextButton RegisterButton = new TextButton("Register", game.skin, "default");
-				RegisterButton.addListener(new ClickListener(){
-						@Override 
-						public void clicked(InputEvent event, float x, float y){
-							String usernameStr = usernameInput.getText();
-							String passwordStr = passwordInput.getText();
-							
-							//front-end input format validation
-							if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
-								error.setText("Please enter a valid username and password.");
-							} 
-							else if (usernameStr.trim().isEmpty()) {
-								error.setText("Please enter a valid username!");
-							} 
-							else if (passwordStr.trim().isEmpty()){
-								error.setText("Please enter a valid password!");
-							} 
-							else {
+					RegisterButton.addListener(new ClickListener(){
+							@Override 
+							public void clicked(InputEvent event, float x, float y){
+								String usernameStr = usernameInput.getText();
+								String passwordStr = passwordInput.getText();
 								
-
-								game.client.clientUsername = usernameStr;
-								System.out.println("username: ." + usernameStr + ".");
-								
-								//set up connection to the server
-								
-								if(!game.client.ConnectState) {
-									System.out.println("Trying to connect...");
-									game.client.connect();
+								//front-end input format validation
+								if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
+									error.setText("Please enter a valid username and password.");
+								} 
+								else if (usernameStr.trim().isEmpty()) {
+									error.setText("Please enter a valid username!");
+								} 
+								else if (passwordStr.trim().isEmpty()){
+									error.setText("Please enter a valid password!");
+								} 
+								else {
+									
+	
+									game.client.clientUsername = usernameStr;
+									System.out.println("username: ." + usernameStr + ".");
+									
+									//set up connection to the server
+									
+									if(!game.client.ConnectState) {
+										System.out.println("Trying to connect...");
+										game.client.connect();
+									}
+									
+									//send username and password to back-end
+									game.client.sendUsername(new Username(usernameStr));
+									game.client.sendPassword(new Password(passwordStr));
+									game.client.sendLoginRegister(new LoginRegister("register"));
+									
+									displayDialog = true;
 								}
-								
-								//send username and password to back-end
-								game.client.sendUsername(new Username(usernameStr));
-								game.client.sendPassword(new Password(passwordStr));
-								game.client.sendLoginRegister(new LoginRegister("register"));
-								
-								displayErrorDialog = true;
 							}
-						}
-					});
+						});
+					
 				TextButton backButton = new TextButton("Back", game.skin, "default");
 					backButton.addListener(new ClickListener(){
 						@Override 
@@ -98,6 +101,7 @@ public class RegisterScreen implements Screen{
 							game.setScreen(new MainMenuScreen(game));
 						}
 					});
+					
 				TextButton exitButton = new TextButton("Exit", game.skin, "default");
 					exitButton.addListener(new ClickListener(){
 						@Override 
@@ -108,13 +112,17 @@ public class RegisterScreen implements Screen{
 					});
 					
 					
-				errorDialog = new Dialog("Failed to register", game.skin, "dialog") {
-				    public void result(Object obj) {
-				        
-				    }
-				};
-				errorDialog.text("Use other username/password");
-				errorDialog.button("Got it", false); //sends "false" as the result
+				registerFailDialog = new Dialog("Failed to register", game.skin, "dialog") {
+				    public void result(Object obj) {}};
+				registerFailDialog.text("Use other username/password");
+				registerFailDialog.button("Got it", false); //sends "false" as the result
+				
+				
+				gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
+				    public void result(Object obj) {}};
+				gameFullDialog.text("We already have 2 players.");
+				gameFullDialog.button("Got it", false); //sends "false" as the result
+				
 				
 				//use vg and hg to group the actors now. changes should be made to make it look better
 				VerticalGroup vg = new VerticalGroup();
@@ -185,13 +193,24 @@ public class RegisterScreen implements Screen{
 	
 	public void checkClientLoginState() {
 		
-		if(!game.client.loginState && displayErrorDialog) {
-			errorDialog.show(stage);
-			displayErrorDialog = false;
-		}
-		
-		if(game.client.loginState) {
-			game.setScreen(new WaitingScreen(game));
+		if(displayDialog == true) {
+			
+			if(game.client.loginState) {
+				game.setScreen(new WaitingScreen(game));
+			}
+			
+			if(!game.client.loginState) {
+				if(game.client.loginStateMessage.equals("Failed to register.")) {
+					game.client.loginStateMessage = "";
+					registerFailDialog.show(stage);
+					displayDialog = false;
+				}
+				if(game.client.loginStateMessage.equals("Game is Full.")) {
+					game.client.loginStateMessage = "";
+					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+			}
 		}
 	}
 	
