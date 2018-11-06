@@ -91,27 +91,45 @@ public class ServerThread extends Thread{
 					*/	
 
 					
-					//send database result from this serverthread back to its client					
-					if (usernameStr.equals("fail")) { // this condition has to be changed
+					//send server validation result from this serverthread back to its client					
+					if (loginRegisterStr.equals("login") && usernameStr.equals("fail")) { // this condition has to be changed
 						try {
-							oos.writeObject(new LoginResult(false));
+							oos.writeObject(new LoginResult(false, "Check username/password"));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}	
 					}
+					
+					else if (loginRegisterStr.equals("register") && usernameStr.equals("fail")) { // this condition has to be changed
+						try {
+							oos.writeObject(new LoginResult(false, "Failed to register."));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
+						}	
+					}
+					
+					else if (server.isGameFull()) { // is 2 players are already in the game
+						try {
+							oos.writeObject(new LoginResult(false, "Game is Full."));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
+						}
+					}
 					else {
 						try {
-							oos.writeObject(new LoginResult(true));
+							oos.writeObject(new LoginResult(true, "Login/Register done"));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}
-					}
-					
-					
+					}				
 				}
 				
 				//if a Player object is sent to this serverthread

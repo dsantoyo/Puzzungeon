@@ -61,7 +61,6 @@ public class LoginScreen implements Screen{
 		        
 		    }
 		};
-		errorDialog.text("Check username/password");
 		errorDialog.button("Got it", false); //sends "false" as the result
 		
 		
@@ -212,6 +211,7 @@ public class LoginScreen implements Screen{
 	public void checkClientLoginState() {
 		
 		if(!game.client.loginState && displayErrorDialog) {
+			errorDialog.text(game.client.loginStateMessage);
 			errorDialog.show(stage);
 			displayErrorDialog = false;
 		}

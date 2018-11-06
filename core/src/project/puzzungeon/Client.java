@@ -28,6 +28,7 @@ public class Client {
 	public Boolean bothPlayerReady;
 	
 	public Boolean loginState;
+	public String loginStateMessage;
 	public Boolean ConnectState;
 	
 	//client's own player
@@ -43,6 +44,7 @@ public class Client {
 		this.clientUsername = "default";
 		this.bothPlayerReady = false;
 		this.loginState = false;
+		this.loginStateMessage = "";
 		this.ConnectState = false;
 	}
 	
@@ -117,6 +119,7 @@ public class Client {
 		            				
 		            				LoginResult rs = (LoginResult)object;
 		            				loginState = rs.getLoginResult();
+		            				loginStateMessage = rs.getMessage();
 		            				System.out.println("Client: update loginState = "+loginState);
 		            				if(!loginState) {
 		            					System.out.println("failed to log in");
