@@ -25,6 +25,7 @@ public class MainMenuScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
+	//shared by different methods
 	private Boolean displayDialog;
 	private Dialog gameFullDialog;
 	private Dialog connectionFailDialog;
@@ -41,14 +42,9 @@ public class MainMenuScreen implements Screen{
 	@Override
 	public void show() {
 		
-		//simple layout:
-		//       Game Title
-		//
-		//login   new user   guest
-		//
-		//                    exit
-		
-		//create the actors
+/****************************************************************************************
+*                             start: actors functionality
+****************************************************************************************/
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
@@ -66,12 +62,12 @@ public class MainMenuScreen implements Screen{
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
+			
 		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
-              
 							if(!game.client.connectState) {
 								//set up connection to the server
 								System.out.println("Trying to connect...");
@@ -95,6 +91,7 @@ public class MainMenuScreen implements Screen{
 							}
 						}
 					});
+					
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
 			exitButton.addListener(new ClickListener(){
 				@Override 
@@ -103,22 +100,24 @@ public class MainMenuScreen implements Screen{
 					System.exit(0);
 				}
 			});
-			
-			
+					
 		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
-			    public void result(Object obj) {}};
-
+			public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
-		
 		connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
 		    public void result(Object obj) {}};
-
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
 			
+/****************************************************************************************
+*                             end: actors functionality
+****************************************************************************************/
 		
+/****************************************************************************************
+*                             start: actors layout
+****************************************************************************************/
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
@@ -136,6 +135,10 @@ public class MainMenuScreen implements Screen{
 		
 		//add actors onto the stage
 		stage.addActor(vg);
+
+/****************************************************************************************
+*                             end: actors layout
+****************************************************************************************/
 	}
 
 	@Override
