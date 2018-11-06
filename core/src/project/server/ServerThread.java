@@ -20,7 +20,7 @@ public class ServerThread extends Thread{
 	 * server uses this to know which player in server's playerVec is 
 	 * this client's otherPlayer
 	 */
-	private int localPlayerID;
+	private int serverThreadPlayerID;
 	
 	//when a client tries to connect to the server,
 	//ServerThread constructor will be called by the server 
@@ -75,8 +75,7 @@ public class ServerThread extends Thread{
 					   
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
-					*/
-					
+					*/	
 				}
 				
 				//if a Player object is sent to this serverthread
@@ -87,10 +86,10 @@ public class ServerThread extends Thread{
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
-							int serverPlayerVecSize = server.addServerPlayer(player);
+							int newID = server.addServerPlayer(player);
 							//set up PlayerID on client side
-							localPlayerID = serverPlayerVecSize;
-							setLocalPlayerID(serverPlayerVecSize);
+							serverThreadPlayerID = newID;
+							setLocalPlayerID(newID);
 							server.updateServerPlayer(player.playerID, player);
 						}
 						else {
@@ -162,7 +161,7 @@ public class ServerThread extends Thread{
 	}
 	
 	//return localPlayerID in this serverThread
-	public int getLocalPlayerID() {
-		return localPlayerID;
+	public int getServerThreadPlayerID() {
+		return serverThreadPlayerID;
 	}
 }
