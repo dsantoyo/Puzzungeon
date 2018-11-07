@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
@@ -157,13 +158,15 @@ public class WaitingScreen implements Screen{
 		
 		//chatroom UI
 		//5 rows for the bottom bar.
-		HorizontalGroup chatRow0 = new HorizontalGroup().bottom().left();
-		HorizontalGroup chatRow1 = new HorizontalGroup().left();
-		HorizontalGroup chatRow2 = new HorizontalGroup().left();
-		HorizontalGroup chatRow3 = new HorizontalGroup().left();
-		HorizontalGroup chatRow4 = new HorizontalGroup().left();
-		
 		VerticalGroup Chatroom = new VerticalGroup().bottom().left();
+		Chatroom.setFillParent(true);
+		HorizontalGroup chatRow0 = new HorizontalGroup();
+		HorizontalGroup chatRow1 = new HorizontalGroup();
+		HorizontalGroup chatRow2 = new HorizontalGroup();
+		HorizontalGroup chatRow3 = new HorizontalGroup();
+		HorizontalGroup chatRow4 = new HorizontalGroup();
+		
+		
 		
 		chatRow0.addActor(inputBox);
 		chatRow0.addActor(sendButton);

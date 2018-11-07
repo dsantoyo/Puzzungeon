@@ -30,6 +30,9 @@ public class MainGameScreen implements Screen{
 	private Label showMessage2;
 	private Label showMessage3;
 	
+	private Label showLocalPlayerName;
+	private Label showOtherPlayerName;
+	
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
@@ -55,6 +58,8 @@ public class MainGameScreen implements Screen{
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
+		showLocalPlayerName = new Label("Player1: " + game.client.localPlayer.playerName, game.skin);
+		showOtherPlayerName = new Label("Player2: " + game.client.otherPlayer.playerName, game.skin);
 		Label showDivider = new Label("-------------------------------------",game.skin);
 		
 		final TextArea inputBox = new TextArea("",game.skin);
@@ -124,20 +129,30 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-		VerticalGroup vg1 = new VerticalGroup();
-		vg1.setFillParent(true);
-		vg1.addActor(gameTitle);
-		stage.addActor(vg1);
+		
+		
+		//use vg and hg to group the actors now. changes should be made to make it look better
+		VerticalGroup topbar = new VerticalGroup().left();
+		topbar.setFillParent(true);
+		topbar.addActor(gameTitle);
+		HorizontalGroup topRow1 = new HorizontalGroup();
+		HorizontalGroup topRow2 = new HorizontalGroup();
+		topRow1.addActor(showLocalPlayerName);
+		topbar.addActor(topRow1);
+		topRow2.addActor(showOtherPlayerName);
+		topbar.addActor(topRow2);			
+		stage.addActor(topbar);
+		
+		
 		
 		//chatroom UI
 		//5 rows for the bottom bar.
+		VerticalGroup Chatroom = new VerticalGroup().bottom().left();
 		HorizontalGroup chatRow0 = new HorizontalGroup().bottom().left();
 		HorizontalGroup chatRow1 = new HorizontalGroup().left();
 		HorizontalGroup chatRow2 = new HorizontalGroup().left();
 		HorizontalGroup chatRow3 = new HorizontalGroup().left();
 		HorizontalGroup chatRow4 = new HorizontalGroup().left();
-		
-		VerticalGroup Chatroom = new VerticalGroup().bottom().left();
 		
 		chatRow0.addActor(inputBox);
 		chatRow0.addActor(sendButton);
