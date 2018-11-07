@@ -131,7 +131,7 @@ public class WaitingScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-		//chatroom UI
+		
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
@@ -144,6 +144,8 @@ public class WaitingScreen implements Screen{
 		
 		stage.addActor(vg1);
 				
+		
+		//chatroom UI
 		//5 rows for the bottom bar.
 		HorizontalGroup chatRow0 = new HorizontalGroup().bottom().left();
 		HorizontalGroup chatRow1 = new HorizontalGroup().left();
@@ -236,9 +238,10 @@ public class WaitingScreen implements Screen{
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		
-		
 		//check if every player is ready
 		if(game.client.bothPlayerReady) {
+			game.client.messageVec.remove(0);
+			game.client.messageVec.add(new ChatMessage("","The game is going to start!"));
 			game.setScreen(new MainGameScreen(game));
 		}
 	}
