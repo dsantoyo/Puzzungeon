@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
-import project.server.ChatMessage;
 import project.server.LoginRegister;
 import project.server.Password;
 import project.server.Username;
@@ -293,7 +292,7 @@ public class LoginScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
-		checkClientLoginState();
+		update();
 		stage.draw();
 	}
 
@@ -322,7 +321,7 @@ public class LoginScreen implements Screen{
 
 	}
 	
-	public void checkClientLoginState() {
+	public void update() {
 		
 		if(displayDialog == true) {
 			

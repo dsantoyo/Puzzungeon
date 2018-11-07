@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -30,13 +31,15 @@ public class WaitingScreen implements Screen{
 	private Label showMessage3;
 	private Label waitingState;
 	private TextButton readyButton;
+	private Dialog connectionLostDialog;
+	private Boolean displayDialog;
 	
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		
+		displayDialog = true;
 		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.");
 		game.client.sendMessage(cm);
 	}
@@ -123,6 +126,13 @@ public class WaitingScreen implements Screen{
 	            	}
 	            }
 	        });
+			
+		connectionLostDialog = new Dialog("Connection Lost", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	game.setScreen(new MainMenuScreen(game));
+		    }};
+		connectionLostDialog.text("Connection to sever lost.");
+		connectionLostDialog.button("Got it", false); //sends "false" as the result
 		
 /****************************************************************************************
 *                             end: actors functionality
@@ -243,6 +253,12 @@ public class WaitingScreen implements Screen{
 			game.client.messageVec.remove(0);
 			game.client.messageVec.add(new ChatMessage("","The game is going to start!"));
 			game.setScreen(new MainGameScreen(game));
+		}
+		
+		if(!game.client.connectState & displayDialog) {
+			connectionLostDialog.show(stage);
+			displayDialog = false;
+			System.out.println("waitingScreen: connection lost.");
 		}
 	}
 }

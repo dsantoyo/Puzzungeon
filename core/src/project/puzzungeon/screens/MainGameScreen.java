@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -31,11 +30,16 @@ public class MainGameScreen implements Screen{
 	private Label showMessage2;
 	private Label showMessage3;
 	
+	private Dialog connectionLostDialog;
+	private Boolean displayDialog;
+	
+	
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
+		displayDialog = true;
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -95,6 +99,13 @@ public class MainGameScreen implements Screen{
 	                game.client.sendMessage(cm);
 	            }
 	        });
+			
+		connectionLostDialog = new Dialog("Connection Lost", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	game.setScreen(new MainMenuScreen(game));
+		    }};
+		connectionLostDialog.text("Connection to sever lost.");
+		connectionLostDialog.button("Got it", false); //sends "false" as the result
 		
 /****************************************************************************************
 *                             end: actors functionality
@@ -185,7 +196,10 @@ public class MainGameScreen implements Screen{
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		
+		if(!game.client.connectState & displayDialog) {
+			System.out.println("MainGameScreen: connection lost.");
+			connectionLostDialog.show(stage);
+			displayDialog = false;
+		}
 	}
-	
-
 }
