@@ -103,6 +103,7 @@ public class LoginScreen implements Screen{
 							error.setText("Please enter a valid password!");
 						} 
 						else {
+							error.setText("");
 							game.client.clientUsername = usernameStr;
 							System.out.println("username: ." + usernameStr + ".");
 							//set up connection to the server
@@ -166,6 +167,7 @@ public class LoginScreen implements Screen{
 						error.setText("Please enter a valid password!");
 					} 
 					else {
+						error.setText("");
 						game.client.clientUsername = usernameStr;
 						System.out.println("username: ." + usernameStr + ".");
 						//set up connection to the server
