@@ -76,6 +76,8 @@ public class RegisterScreen implements Screen{
 			});
 				
 		passwordInput = new TextArea("",game.skin);
+			passwordInput.setPasswordCharacter('*');
+			passwordInput.setPasswordMode(true);
 			//when ENTER key is pressed,
 			passwordInput.setTextFieldListener(new TextFieldListener() {
 				@Override
