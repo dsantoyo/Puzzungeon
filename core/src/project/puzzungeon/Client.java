@@ -147,6 +147,7 @@ public class Client {
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
+		            		System.out.println("client: Thread run() LOST CONNECTION.");
 		            	}catch (ClassNotFoundException cnfe) {
 		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());
 		            	}
