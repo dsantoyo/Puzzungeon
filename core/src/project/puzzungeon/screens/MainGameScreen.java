@@ -31,6 +31,7 @@ public class MainGameScreen implements Screen{
 	private Label showMessage3;
 	
 	private Dialog connectionLostDialog;
+	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
 	
 	
@@ -106,6 +107,15 @@ public class MainGameScreen implements Screen{
 		    }};
 		connectionLostDialog.text("Connection to sever lost.");
 		connectionLostDialog.button("Got it", false); //sends "false" as the result
+		
+		player2LeftDialog = new Dialog("Player2 has left", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	game.client.localPlayer.readyState = false;
+		    	game.client.updatePlayer();
+		    	game.setScreen(new WaitingScreen(game));
+		    }};
+		player2LeftDialog.text("Player2 has left.");
+		player2LeftDialog.button("Got it", false); //sends "false" as the result
 		
 /****************************************************************************************
 *                             end: actors functionality
@@ -196,9 +206,18 @@ public class MainGameScreen implements Screen{
 		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		
+		
+		//if connection is lost
 		if(!game.client.connectState & displayDialog) {
 			System.out.println("MainGameScreen: connection lost.");
 			connectionLostDialog.show(stage);
+			displayDialog = false;
+		}
+		
+		//if player2 has left
+		if((game.client.otherPlayer.playerID == -1) & displayDialog) {
+			System.out.println("MainGameScreen: player2 has left.");
+			player2LeftDialog.show(stage);
 			displayDialog = false;
 		}
 	}
