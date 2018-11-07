@@ -266,7 +266,7 @@ public class RegisterScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
-		checkClientLoginState();
+		update();
 		stage.draw();
 	}
 
@@ -295,7 +295,7 @@ public class RegisterScreen implements Screen{
 
 	}
 	
-	public void checkClientLoginState() {
+	public void update() {
 		
 		if(displayDialog == true) {
 			

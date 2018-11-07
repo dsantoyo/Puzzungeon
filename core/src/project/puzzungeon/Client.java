@@ -59,8 +59,9 @@ public class Client {
 			ois = new ObjectInputStream(s.getInputStream());
 			
 			
-			//try to read from the socket to test connection
+			//test connection to server
 			System.out.println("Testing if the connection is established");
+			@SuppressWarnings("unused")
 			Object TestObject = ois.readObject();
 			
 			connectState = true;
@@ -147,6 +148,8 @@ public class Client {
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
+		            		System.out.println("client: Thread run() LOST CONNECTION.");
+		            		connectState = false;
 		            	}catch (ClassNotFoundException cnfe) {
 		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());
 		            	}
