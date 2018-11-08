@@ -11,8 +11,8 @@ import project.puzzungeon.screens.MainMenuScreen;
 //main game class
 public class Puzzungeon extends Game {
 	
-	public static final int WIDTH = 500;
- 	public static final int HEIGHT = 500;
+	public final int WIDTH = 500;
+ 	public final int HEIGHT = 500;
 	
 	public SpriteBatch batch;
 	public Skin skin;

@@ -7,11 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import project.puzzungeon.Client;
@@ -125,11 +123,9 @@ public class MainMenuScreen implements Screen{
 *                             start: Main Menu UI
 ****************************************************************************************/
 		
-		
 		//set label color and size
 		gameTitle.setColor(Color.GREEN);
 		gameTitle.setFontScale(2);
-		
 		
 		Table mainMenuTable = new Table();
 		mainMenuTable.setFillParent(true);
@@ -140,17 +136,22 @@ public class MainMenuScreen implements Screen{
 		mainMenuTable.add(newUserButton).width(game.WIDTH*0.2f).pad(10);
 		mainMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(10);
 		mainMenuTable.row();
-		exitButton.bottom();
 			
 /****************************************************************************************
 *                             end: Main Menu UI
 ****************************************************************************************/
 		
+/****************************************************************************************
+*                             start: Exit Button
+****************************************************************************************/
 		
-		//exit button
 		Table exitButtonTable = new Table().bottom().right();
 		exitButtonTable.setFillParent(true);
 		exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+		
+/****************************************************************************************
+*                             end: Exit Button
+****************************************************************************************/
 		
 		
 		//add actors onto the stage
@@ -160,8 +161,6 @@ public class MainMenuScreen implements Screen{
 		//draw debugline to see the boundary of each actor
 		stage.setDebugAll(true);
 		
-
-
 /****************************************************************************************
 *                             end: actors layout
 ****************************************************************************************/

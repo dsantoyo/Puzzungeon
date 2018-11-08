@@ -3,12 +3,14 @@ package project.puzzungeon.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -252,38 +254,56 @@ public class LoginScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-		//use vg and hg to group the actors now. changes should be made to make it look better
-		VerticalGroup vg = new VerticalGroup();
-		vg.setFillParent(true);
-		vg.addActor(gameTitle);
+			
+			
+	/****************************************************************************************
+	*                             start: Login Menu UI
+	****************************************************************************************/
+			
+			//set label color and size
+			gameTitle.setColor(Color.GREEN);
+			gameTitle.setFontScale(2);
+			error.setColor(Color.RED);
+			
+			Table loginMenuTable = new Table();
+			loginMenuTable.setFillParent(true);
+			loginMenuTable.add(gameTitle).colspan(3);
+			loginMenuTable.row();
+			
+			loginMenuTable.add(username).width(game.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(usernameInput).width(game.WIDTH*0.4f).pad(5);
+			loginMenuTable.row();
+			loginMenuTable.add(password).width(game.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(passwordInput).width(game.WIDTH*0.4f).pad(5);
+			loginMenuTable.row();
+			loginMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(loginButton).width(game.WIDTH*0.2f).pad(5);
+			loginMenuTable.row();
+			loginMenuTable.add(error).colspan(2);
+
+			
+				
+/****************************************************************************************
+*                             end: Login Menu UI
+****************************************************************************************/
 		
-		HorizontalGroup inputRow1 = new HorizontalGroup();
-		inputRow1.addActor(username);
-		inputRow1.addActor(usernameInput);
-		vg.addActor(inputRow1);
-		
-		HorizontalGroup inputRow2 = new HorizontalGroup();
-		inputRow2.addActor(password);
-		inputRow2.addActor(passwordInput);
-		vg.addActor(inputRow2);
-		
-		HorizontalGroup inputRow3 = new HorizontalGroup();
-		inputRow3.addActor(loginButton);
-		inputRow3.addActor(guestButton);
-		vg.addActor(inputRow3);
-		
-		HorizontalGroup inputRow4 = new HorizontalGroup();
-		inputRow4.addActor(backButton);
-		inputRow4.addActor(exitButton);
-		vg.addActor(inputRow4);
-		
-		HorizontalGroup inputRow5 = new HorizontalGroup();
-		inputRow5.addActor(error);
-		vg.addActor(inputRow5);
-		
+/****************************************************************************************
+*                             start: Exit and Back Button
+****************************************************************************************/
+			
+			Table exitButtonTable = new Table().bottom().right();
+			exitButtonTable.setFillParent(true);
+			exitButtonTable.add(backButton).width(game.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+			
+/****************************************************************************************
+*                             end: Exit and Back Button
+****************************************************************************************/
+	
 		//add actors onto the stage
-		stage.addActor(vg);
-		
+		stage.addActor(loginMenuTable);
+		stage.addActor(exitButtonTable);
+	
 		//draw debugline to see the boundary of each actor
 		stage.setDebugAll(true);
 		
