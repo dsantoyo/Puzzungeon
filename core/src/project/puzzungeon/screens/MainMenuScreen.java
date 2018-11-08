@@ -117,6 +117,11 @@ public class MainMenuScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
+		
+		
+/****************************************************************************************
+*                             start: Main Menu UI
+****************************************************************************************/	
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg = new VerticalGroup();
 		vg.setFillParent(true);
@@ -137,6 +142,10 @@ public class MainMenuScreen implements Screen{
 		
 		//draw debugline to see the boundary of each actor
 		stage.setDebugAll(true);
+		
+/****************************************************************************************
+*                             start: Main Menu UI
+****************************************************************************************/
 
 /****************************************************************************************
 *                             end: actors layout

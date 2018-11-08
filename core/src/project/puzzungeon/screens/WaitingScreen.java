@@ -89,7 +89,7 @@ public class WaitingScreen implements Screen{
 				}
 			});
 		
-		final TextButton sendButton  = new TextButton("Send", game.skin, "default");
+		final TextButton sendButton  = new TextButton("Send Message", game.skin, "default");
 			//when sendButton is clicked, send message to the serverthread
 			sendButton.addListener(new ClickListener(){
 	            @Override 
@@ -181,8 +181,8 @@ public class WaitingScreen implements Screen{
 		chatRoom.row();
 		chatRoom.add(showMessage1).width(game.WIDTH).colspan(2);
 		chatRoom.row();
-		chatRoom.add(inputBox).width(game.WIDTH-100);
-		chatRoom.add(sendButton).width(100);
+		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
+		chatRoom.add(sendButton).width(game.WIDTH*0.3f);
 		
 /****************************************************************************************
 *                             end: chatroom UI
