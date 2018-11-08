@@ -2,12 +2,14 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -121,31 +123,44 @@ public class MainMenuScreen implements Screen{
 		
 /****************************************************************************************
 *                             start: Main Menu UI
-****************************************************************************************/	
-		//use vg and hg to group the actors now. changes should be made to make it look better
-		VerticalGroup vg = new VerticalGroup();
-		vg.setFillParent(true);
-		vg.addActor(gameTitle);
+****************************************************************************************/
 		
-		HorizontalGroup buttonRow1 = new HorizontalGroup();
-		buttonRow1.addActor(loginButton);
-		buttonRow1.addActor(newUserButton);
-		buttonRow1.addActor(guestButton);
-		vg.addActor(buttonRow1);
 		
-		HorizontalGroup buttonRow2 = new HorizontalGroup();
-		buttonRow2.addActor(exitButton);
-		vg.addActor(buttonRow2);
+		//set label color and size
+		gameTitle.setColor(Color.GREEN);
+		gameTitle.setFontScale(2);
+		
+		
+		Table mainMenuTable = new Table();
+		mainMenuTable.setFillParent(true);
+		mainMenuTable.add(gameTitle).colspan(3);
+		mainMenuTable.row();
+		
+		mainMenuTable.add(loginButton).width(game.WIDTH*0.2f).pad(10);
+		mainMenuTable.add(newUserButton).width(game.WIDTH*0.2f).pad(10);
+		mainMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(10);
+		mainMenuTable.row();
+		exitButton.bottom();
+			
+/****************************************************************************************
+*                             end: Main Menu UI
+****************************************************************************************/
+		
+		
+		//exit button
+		Table exitButtonTable = new Table().bottom().right();
+		exitButtonTable.setFillParent(true);
+		exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+		
 		
 		//add actors onto the stage
-		stage.addActor(vg);
+		stage.addActor(mainMenuTable);
+		stage.addActor(exitButtonTable);
 		
 		//draw debugline to see the boundary of each actor
 		stage.setDebugAll(true);
 		
-/****************************************************************************************
-*                             start: Main Menu UI
-****************************************************************************************/
+
 
 /****************************************************************************************
 *                             end: actors layout
