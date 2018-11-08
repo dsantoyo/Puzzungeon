@@ -58,11 +58,7 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors functionality
 ****************************************************************************************/
-		
-		
-		game.client.localPlayer.readyState = false;
-    	game.client.updatePlayer();
-		
+				
 		//create the actors
 		Label gameTitle = new Label("Main Game Screen", game.skin);
 		showMessage1 = new Label("",game.skin);
