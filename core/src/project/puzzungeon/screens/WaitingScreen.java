@@ -133,11 +133,11 @@ public class WaitingScreen implements Screen{
 	            }
 	        });
 			
-		connectionLostDialog = new Dialog("Connection Lost", game.skin, "dialog") {
+		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
-		connectionLostDialog.text("Connection to sever lost.");
+		connectionLostDialog.text("Connection lost.");
 		connectionLostDialog.button("Got it", false); //sends "false" as the result
 		
 /****************************************************************************************

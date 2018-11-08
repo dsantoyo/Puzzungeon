@@ -3,12 +3,14 @@ package project.puzzungeon.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -139,8 +141,8 @@ public class RegisterScreen implements Screen{
 				}
 			});
 			
-		TextButton RegisterButton = new TextButton("Register", game.skin, "default");
-			RegisterButton.addListener(new ClickListener(){
+		TextButton registerButton = new TextButton("Register", game.skin, "default");
+			registerButton.addListener(new ClickListener(){
 					@Override 
 					public void clicked(InputEvent event, float x, float y){
 						String usernameStr = usernameInput.getText();
@@ -187,6 +189,35 @@ public class RegisterScreen implements Screen{
 					}
 				});
 			
+		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
+		guestButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.client.clientUsername = "Guest";
+				if(!game.client.connectState) {
+					//set up connection to the server
+					System.out.println("Trying to connect...");
+					if(!game.client.connect()) {
+						System.out.println("Unable to connect to the server");
+						displayDialog = true;
+						game.client = new Client(game.serverAddress, game.serverPort);
+					}
+					else {
+						game.client.sendUsername(new Username("guest"));
+						game.client.sendPassword(new Password("guest"));
+						game.client.sendLoginRegister(new LoginRegister("guest"));
+						displayDialog = true;
+					}
+				}
+				else {
+					game.client.sendUsername(new Username("guest"));
+					game.client.sendPassword(new Password("guest"));
+					game.client.sendLoginRegister(new LoginRegister("guest"));
+					displayDialog = true;
+				}
+			}
+		});
+			
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
 				@Override 
@@ -203,17 +234,17 @@ public class RegisterScreen implements Screen{
 				}
 			});
 			
-		registerFailDialog = new Dialog("Failed to register", game.skin, "dialog") {
+		registerFailDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		registerFailDialog.text("Use other username/password");
 		registerFailDialog.button("Got it", false); //sends "false" as the result
 		
-		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
+		gameFullDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
-		connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
+		connectionFailDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
@@ -226,38 +257,53 @@ public class RegisterScreen implements Screen{
 *                             start: actors layout
 ****************************************************************************************/
 			
+/****************************************************************************************
+*                             start: Register Menu UI
+****************************************************************************************/
 			
-		//use vg and hg to group the actors now. changes should be made to make it look better
-		VerticalGroup vg = new VerticalGroup();
-		vg.setFillParent(true);
-		vg.addActor(gameTitle);
+		//set label color and size
+		gameTitle.setColor(Color.GREEN);
+		gameTitle.setFontScale(2);
+		error.setColor(Color.RED);
 		
-		HorizontalGroup inputRow1 = new HorizontalGroup();
-		inputRow1.addActor(username);
-		inputRow1.addActor(usernameInput);
-		vg.addActor(inputRow1);
+		Table registerMenuTable = new Table();
+		registerMenuTable.setFillParent(true);
+		registerMenuTable.add(gameTitle).colspan(3);
+		registerMenuTable.row();
 		
-		HorizontalGroup inputRow2 = new HorizontalGroup();
-		inputRow2.addActor(password);
-		inputRow2.addActor(passwordInput);
-		vg.addActor(inputRow2);
+		registerMenuTable.add(username).width(game.WIDTH*0.3f).pad(5);
+		registerMenuTable.add(usernameInput).width(game.WIDTH*0.4f).pad(5);
+		registerMenuTable.row();
+		registerMenuTable.add(password).width(game.WIDTH*0.3f).pad(5);
+		registerMenuTable.add(passwordInput).width(game.WIDTH*0.4f).pad(5);
+		registerMenuTable.row();
+		registerMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(5);
+		registerMenuTable.add(registerButton).width(game.WIDTH*0.2f).pad(5);
+		registerMenuTable.row();
+		registerMenuTable.add(error).colspan(2);
+
+			
+/****************************************************************************************
+*                             end: Register Menu UI
+****************************************************************************************/
 		
-		HorizontalGroup inputRow3 = new HorizontalGroup();
-		inputRow3.addActor(RegisterButton);
-		vg.addActor(inputRow3);
-		
-		HorizontalGroup inputRow4 = new HorizontalGroup();
-		inputRow4.addActor(backButton);
-		inputRow4.addActor(exitButton);
-		vg.addActor(inputRow4);
-		
-		HorizontalGroup inputRow5 = new HorizontalGroup();
-		inputRow5.addActor(error);
-		vg.addActor(inputRow5);
-		
+/****************************************************************************************
+*                             start: Exit and Back Button
+****************************************************************************************/
+			
+			Table exitButtonTable = new Table().bottom().right();
+			exitButtonTable.setFillParent(true);
+			exitButtonTable.add(backButton).width(game.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+			
+/****************************************************************************************
+*                             end: Exit and Back Button
+****************************************************************************************/
+	
 		//add actors onto the stage
-		stage.addActor(vg);
-		
+		stage.addActor(registerMenuTable);
+		stage.addActor(exitButtonTable);
+	
 		//draw debugline to see the boundary of each actor
 		stage.setDebugAll(true);
 		

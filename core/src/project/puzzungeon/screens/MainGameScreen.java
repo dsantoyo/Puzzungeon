@@ -121,14 +121,14 @@ public class MainGameScreen implements Screen{
 	            }
 	        });
 			
-		connectionLostDialog = new Dialog("Connection Lost", game.skin, "dialog") {
+		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
-		connectionLostDialog.text("Connection to sever lost.");
+		connectionLostDialog.text("Connection lost.");
 		connectionLostDialog.button("Got it", false); //sends "false" as the result
 		
-		player2LeftDialog = new Dialog("Player2 has left", game.skin, "dialog") {
+		player2LeftDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	game.client.localPlayer.readyState = false;
 		    	game.client.updatePlayer();

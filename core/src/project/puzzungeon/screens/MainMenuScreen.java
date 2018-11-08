@@ -100,12 +100,12 @@ public class MainMenuScreen implements Screen{
 				}
 			});
 					
-		gameFullDialog = new Dialog("Game is full.", game.skin, "dialog") {
+		gameFullDialog = new Dialog("Error", game.skin, "dialog") {
 			public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
-		connectionFailDialog = new Dialog("Connection failed", game.skin, "dialog") {
+		connectionFailDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
