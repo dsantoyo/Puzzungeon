@@ -55,7 +55,7 @@ public class WaitingScreen implements Screen{
 ****************************************************************************************/
 		
 		//create the actors
-		Label gameTitle = new Label("Puzzungeon", game.skin);
+		Label gameTitle = new Label("Waiting Room", game.skin);
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
 		Label chatTitle = new Label("Chat",game.skin);
@@ -181,6 +181,7 @@ public class WaitingScreen implements Screen{
 		chatRoom.row();
 		chatRoom.add(showMessage1).width(game.WIDTH).colspan(2);
 		chatRoom.row();
+		
 		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
 		chatRoom.add(sendButton).width(game.WIDTH*0.3f);
 		

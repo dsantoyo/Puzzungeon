@@ -44,6 +44,7 @@ public class MainGameScreen implements Screen{
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
+	private long startTime;
 	
 	
 	//constructor
@@ -51,6 +52,7 @@ public class MainGameScreen implements Screen{
 		this.game = game;
 		stage = new Stage();
 		displayDialog = true;
+		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -146,23 +148,26 @@ public class MainGameScreen implements Screen{
 ****************************************************************************************/
 		
 		
-		//use vg and hg to group the actors now. changes should be made to make it look better
-		VerticalGroup topbar = new VerticalGroup().left();
+/****************************************************************************************
+*                             start: topbar UI
+****************************************************************************************/
+		
+		Table topbar = new Table().top().left();
 		topbar.setFillParent(true);
-		topbar.addActor(gameTitle);
-		topbar.addActor(showGameTime);
-		HorizontalGroup topRow1 = new HorizontalGroup();
-		HorizontalGroup topRow2 = new HorizontalGroup();
-		
-		topRow1.addActor(showLocalPlayerName);
-		topRow1.addActor(showLocalPlayerPC);
-		topbar.addActor(topRow1);
-		topRow2.addActor(showOtherPlayerName);
-		topRow2.addActor(showOtherPlayerPC);
-		topbar.addActor(topRow2);			
-		stage.addActor(topbar);
-		
-		
+		topbar.pad(0);
+		topbar.add(gameTitle);
+		topbar.row();
+		topbar.add(showLocalPlayerName);
+		topbar.add(showLocalPlayerPC);
+		topbar.row();
+		topbar.add(showOtherPlayerName);
+		topbar.add(showOtherPlayerPC);
+		topbar.row();
+		topbar.add(showGameTime);
+	
+/****************************************************************************************
+*                             end: topbar UI
+****************************************************************************************/
 		
 /****************************************************************************************
 *                             start: chatroom UI
@@ -190,7 +195,7 @@ public class MainGameScreen implements Screen{
 *                             end: chatroom UI
 ****************************************************************************************/
 
-		//add bottom bar to the stage
+		stage.addActor(topbar);
 		stage.addActor(chatRoom);
 		
 		//draw debugline to see the boundary of each actor
@@ -248,6 +253,10 @@ public class MainGameScreen implements Screen{
 		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		
 		
+		//update elapsed time. should change this to be updated by the server.
+		Long currentTime = (System.nanoTime()-startTime)/1000000000;
+		showGameTime.setText("Time: " + Long.toString(currentTime));
+		
 		//if connection is lost
 		if(!game.client.connectState & displayDialog) {
 			System.out.println("MainGameScreen: connection lost.");
@@ -256,7 +265,7 @@ public class MainGameScreen implements Screen{
 		}
 		
 		//if player2 has left
-		if((game.client.otherPlayer.playerID == -1) & displayDialog) {
+		else if((game.client.otherPlayer.playerID == -1) & displayDialog) {
 			System.out.println("MainGameScreen: player2 has left.");
 			player2LeftDialog.show(stage);
 			displayDialog = false;
