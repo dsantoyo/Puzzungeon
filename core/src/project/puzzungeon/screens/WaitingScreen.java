@@ -3,12 +3,14 @@ package project.puzzungeon.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -56,6 +58,8 @@ public class WaitingScreen implements Screen{
 		Label gameTitle = new Label("Puzzungeon", game.skin);
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
+		Label chatTitle = new Label("Chat",game.skin);
+		
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
@@ -157,34 +161,35 @@ public class WaitingScreen implements Screen{
 		
 		stage.addActor(vg1);
 				
+/****************************************************************************************
+*                             start: chatroom UI
+****************************************************************************************/	
 		
-		//chatroom UI
-		//5 rows for the bottom bar.
-		VerticalGroup Chatroom = new VerticalGroup().bottom().left();
-		HorizontalGroup chatRow0 = new HorizontalGroup();
-		HorizontalGroup chatRow1 = new HorizontalGroup();
-		HorizontalGroup chatRow2 = new HorizontalGroup();
-		HorizontalGroup chatRow3 = new HorizontalGroup();
-		HorizontalGroup chatRow4 = new HorizontalGroup();
+		//set colors of the labels
+		chatTitle.setColor(Color.GREEN);
 		
 		
-		chatRow0.fill();
-		chatRow0.addActor(inputBox);
-		chatRow0.addActor(sendButton);
+		Table chatRoom = new Table().bottom().left();
+		chatRoom.pad(0);
+		chatRoom.add(chatTitle).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage4).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage3).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage2).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage1).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(inputBox).width(game.WIDTH-100);
+		chatRoom.add(sendButton).width(100);
 		
-		chatRow4.addActor(showMessage4);
-		chatRow3.addActor(showMessage3);
-		chatRow2.addActor(showMessage2);
-		chatRow1.addActor(showMessage1);
+/****************************************************************************************
+*                             end: chatroom UI
+****************************************************************************************/
 		
-		Chatroom.addActor(chatRow4);
-		Chatroom.addActor(chatRow3);
-		Chatroom.addActor(chatRow2);
-		Chatroom.addActor(chatRow1);
-		Chatroom.addActor(chatRow0);
-		
-		//add bottom bar to the stage
-		stage.addActor(Chatroom);
+		//add chatroom to the stage
+		stage.addActor(chatRoom);
 		
 		//draw debugline to see the boundary of each actor
 		stage.setDebugAll(true);
