@@ -76,6 +76,8 @@ public class RegisterScreen implements Screen{
 			});
 				
 		passwordInput = new TextArea("",game.skin);
+			passwordInput.setPasswordCharacter('*');
+			passwordInput.setPasswordMode(true);
 			//when ENTER key is pressed,
 			passwordInput.setTextFieldListener(new TextFieldListener() {
 				@Override
@@ -256,6 +258,9 @@ public class RegisterScreen implements Screen{
 		
 		//add actors onto the stage
 		stage.addActor(vg);
+		
+		//draw debugline to see the boundary of each actor
+		stage.setDebugAll(true);
 		
 /****************************************************************************************
 *                             end: actors layout

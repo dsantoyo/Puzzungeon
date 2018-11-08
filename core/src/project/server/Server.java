@@ -29,7 +29,8 @@ public class Server {
 		playerVec.add(new Player("default"));
 		
 		//a vector to store the last 3 messages on server (could be redundant)
-		messageVec = new Vector<ChatMessage>(3);
+		messageVec = new Vector<ChatMessage>(4);
+		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
 		messageVec.add(new ChatMessage("", ""));
@@ -124,7 +125,7 @@ public class Server {
 			System.out.println("Server new message: " + cm.getUsername()+" "+cm.getMessage());
 			//send the newest message to every serverThread
 			for(ServerThread thread : serverThreads) {
-					thread.sendMessage(messageVec.get(2));
+					thread.sendMessage(messageVec.get(3));
 			}
 		}
 	}
