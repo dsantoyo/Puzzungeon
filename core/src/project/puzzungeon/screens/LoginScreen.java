@@ -242,7 +242,6 @@ public class LoginScreen implements Screen{
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					Gdx.app.exit();
-					System.exit(0);
 				}
 			});
 		
