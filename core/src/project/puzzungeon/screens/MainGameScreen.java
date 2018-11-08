@@ -29,14 +29,19 @@ public class MainGameScreen implements Screen{
 	private Label showMessage1;
 	private Label showMessage2;
 	private Label showMessage3;
+	private Label showMessage4;
 	
 	private Label showLocalPlayerName;
 	private Label showOtherPlayerName;
 	
+	private Label showLocalPlayerPC;
+	private Label showOtherPlayerPC;
+	
+	private Label showGameTime;
+	
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
-	
 	
 	
 	//constructor
@@ -53,15 +58,25 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors functionality
 ****************************************************************************************/
+		
+		
+		game.client.localPlayer.readyState = false;
+    	game.client.updatePlayer();
+		
 		//create the actors
 		Label gameTitle = new Label("Main Game Screen", game.skin);
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
+		showMessage4 = new Label("",game.skin);
+		
 		showLocalPlayerName = new Label("Player1: " + game.client.localPlayer.playerName, game.skin);
 		showOtherPlayerName = new Label("Player2: " + game.client.otherPlayer.playerName, game.skin);
-		Label showDivider = new Label("-------------------------------------",game.skin);
 		
+		showLocalPlayerPC = new Label(" Pieces Completed: 1/10", game.skin);
+		showOtherPlayerPC = new Label(" Pieces Completed: 2/10", game.skin);
+		showGameTime = new Label(" Time: 10:10", game.skin);
+				
 		final TextArea inputBox = new TextArea("",game.skin);
 			//when ENTER key is pressed, send message to the serverthread
 			inputBox.setTextFieldListener(new TextFieldListener() {
@@ -135,11 +150,15 @@ public class MainGameScreen implements Screen{
 		VerticalGroup topbar = new VerticalGroup().left();
 		topbar.setFillParent(true);
 		topbar.addActor(gameTitle);
+		topbar.addActor(showGameTime);
 		HorizontalGroup topRow1 = new HorizontalGroup();
 		HorizontalGroup topRow2 = new HorizontalGroup();
+		
 		topRow1.addActor(showLocalPlayerName);
+		topRow1.addActor(showLocalPlayerPC);
 		topbar.addActor(topRow1);
 		topRow2.addActor(showOtherPlayerName);
+		topRow2.addActor(showOtherPlayerPC);
 		topbar.addActor(topRow2);			
 		stage.addActor(topbar);
 		
@@ -157,7 +176,7 @@ public class MainGameScreen implements Screen{
 		chatRow0.addActor(inputBox);
 		chatRow0.addActor(sendButton);
 		
-		chatRow4.addActor(showDivider);
+		chatRow4.addActor(showMessage4);
 		chatRow3.addActor(showMessage3);
 		chatRow2.addActor(showMessage2);
 		chatRow1.addActor(showMessage1);
@@ -170,6 +189,9 @@ public class MainGameScreen implements Screen{
 		
 		//add bottom bar to the stage
 		stage.addActor(Chatroom);
+		
+		//draw debugline to see the boundary of each actor
+		stage.setDebugAll(true);
 		
 /****************************************************************************************
 *                             end: actors layout
@@ -217,9 +239,10 @@ public class MainGameScreen implements Screen{
 	public void update() {
 		
 		//update chatroom
-		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
-		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
-		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+		showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
+		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
+		showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
+		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		
 		
 		//if connection is lost

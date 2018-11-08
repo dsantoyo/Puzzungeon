@@ -285,6 +285,9 @@ public class LoginScreen implements Screen{
 		//add actors onto the stage
 		stage.addActor(vg);
 		
+		//draw debugline to see the boundary of each actor
+		stage.setDebugAll(true);
+		
 /****************************************************************************************
 *                             end: actors layout
 ****************************************************************************************/

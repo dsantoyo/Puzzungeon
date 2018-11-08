@@ -68,7 +68,8 @@ public class Client {
 			System.out.println("Connected to " + hostname + ":" + port);
 			
 			//only store the last 3 messages on the client side
-			messageVec = new Vector<ChatMessage>(3);
+			messageVec = new Vector<ChatMessage>(4);
+			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));
 			messageVec.add(new ChatMessage("", ""));

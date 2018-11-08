@@ -30,6 +30,7 @@ public class WaitingScreen implements Screen{
 	private Label showMessage1;
 	private Label showMessage2;
 	private Label showMessage3;
+	private Label showMessage4;
 	private Label waitingState;
 	private TextButton readyButton;
 	private Dialog connectionLostDialog;
@@ -58,9 +59,9 @@ public class WaitingScreen implements Screen{
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
-		Label showDivider = new Label("-------------------------------------",game.skin);
+		showMessage4 = new Label("",game.skin);
 				
-		final TextArea inputBox = new TextArea("",game.skin);
+		final TextField inputBox = new TextArea("",game.skin);
 			//when ENTER key is pressed, send message to the serverthread
 			inputBox.setTextFieldListener(new TextFieldListener() {
 				@Override
@@ -143,6 +144,7 @@ public class WaitingScreen implements Screen{
 *                             start: actors layout
 ****************************************************************************************/
 		
+
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
@@ -159,7 +161,6 @@ public class WaitingScreen implements Screen{
 		//chatroom UI
 		//5 rows for the bottom bar.
 		VerticalGroup Chatroom = new VerticalGroup().bottom().left();
-		Chatroom.setFillParent(true);
 		HorizontalGroup chatRow0 = new HorizontalGroup();
 		HorizontalGroup chatRow1 = new HorizontalGroup();
 		HorizontalGroup chatRow2 = new HorizontalGroup();
@@ -167,11 +168,11 @@ public class WaitingScreen implements Screen{
 		HorizontalGroup chatRow4 = new HorizontalGroup();
 		
 		
-		
+		chatRow0.fill();
 		chatRow0.addActor(inputBox);
 		chatRow0.addActor(sendButton);
 		
-		chatRow4.addActor(showDivider);
+		chatRow4.addActor(showMessage4);
 		chatRow3.addActor(showMessage3);
 		chatRow2.addActor(showMessage2);
 		chatRow1.addActor(showMessage1);
@@ -184,6 +185,9 @@ public class WaitingScreen implements Screen{
 		
 		//add bottom bar to the stage
 		stage.addActor(Chatroom);
+		
+		//draw debugline to see the boundary of each actor
+		stage.setDebugAll(true);
 		
 /****************************************************************************************
 *                             end: actors functionality
@@ -247,9 +251,10 @@ public class WaitingScreen implements Screen{
 		}
 		
 		//update chatroom
-		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
-		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
-		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+		showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
+		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
+		showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
+		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		
 		//check if every player is ready
 		if(game.client.bothPlayerReady) {
