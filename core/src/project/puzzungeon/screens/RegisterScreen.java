@@ -305,7 +305,9 @@ public class RegisterScreen implements Screen{
 		stage.addActor(exitButtonTable);
 	
 		//draw debugline to see the boundary of each actor
-		stage.setDebugAll(true);
+		if(game.showDebugLine) {
+			stage.setDebugAll(true);
+		}
 		
 /****************************************************************************************
 *                             end: actors layout
