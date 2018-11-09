@@ -44,7 +44,7 @@ public class WaitingScreen implements Screen{
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = true;
-		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.");
+		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.", true);
 		game.client.sendMessage(cm);
 	}
 	
@@ -83,7 +83,7 @@ public class WaitingScreen implements Screen{
 		                }
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
 		                game.client.sendMessage(cm);
 					}
 				}
@@ -104,7 +104,7 @@ public class WaitingScreen implements Screen{
 	                }
 	                //clear inputbox after new message is sent
 	                inputBox.setText("");
-	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
 	                game.client.sendMessage(cm);
 	            }
 	        });
@@ -119,14 +119,14 @@ public class WaitingScreen implements Screen{
 	            	if(game.client.localPlayer.readyState == false) {
 	            		game.client.localPlayer.readyState = true;
 		                game.client.updatePlayer();
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready");
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready", true);
 		                game.client.sendMessage(cm);
 		                readyButton.setText("Cancel?");
 	            	}
 	            	else {
 	            		game.client.localPlayer.readyState = false;
 		                game.client.updatePlayer();
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "isn't ready anymore");
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "isn't ready anymore", true);
 		                game.client.sendMessage(cm);
 		                readyButton.setText("Ready?");
 	            	}
@@ -263,11 +263,44 @@ public class WaitingScreen implements Screen{
 		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
 		showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+		if(game.client.messageVec.get(3).isSystemMessage()) {
+			showMessage1.setColor(Color.RED);
+			showMessage1.setAlignment(Align.center);
+		}
+		else {
+			showMessage1.setColor(Color.WHITE);
+			showMessage1.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(2).isSystemMessage()) {
+			showMessage2.setColor(Color.RED);
+			showMessage2.setAlignment(Align.center);
+		}
+		else {
+			showMessage2.setColor(Color.WHITE);
+			showMessage2.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(1).isSystemMessage()) {
+			showMessage3.setColor(Color.RED);
+			showMessage3.setAlignment(Align.center);
+		}
+		else {
+			showMessage3.setColor(Color.WHITE);
+			showMessage3.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(0).isSystemMessage()) {
+			showMessage4.setColor(Color.RED);
+			showMessage4.setAlignment(Align.center);
+		}
+		else {
+			showMessage4.setColor(Color.WHITE);
+			showMessage4.setAlignment(Align.left);
+		}
 		
+
 		//check if every player is ready
 		if(game.client.bothPlayerReady) {
 			game.client.messageVec.remove(0);
-			game.client.messageVec.add(new ChatMessage("","The game is going to start!"));
+			game.client.messageVec.add(new ChatMessage("The game is going to start!","", true));
 			game.setScreen(new MainGameScreen(game));
 		}
 		

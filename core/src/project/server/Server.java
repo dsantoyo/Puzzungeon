@@ -30,10 +30,10 @@ public class Server {
 		
 		//a vector to store the last 3 messages on server (could be redundant)
 		messageVec = new Vector<ChatMessage>(4);
-		messageVec.add(new ChatMessage("", ""));
-		messageVec.add(new ChatMessage("", ""));
-		messageVec.add(new ChatMessage("", ""));
-		messageVec.add(new ChatMessage("", ""));
+		messageVec.add(new ChatMessage("", "",false));
+		messageVec.add(new ChatMessage("", "",false));
+		messageVec.add(new ChatMessage("", "",false));
+		messageVec.add(new ChatMessage("", "",false));
 		//allConnected = false;
 		
 		//Display the priave IP of the server.

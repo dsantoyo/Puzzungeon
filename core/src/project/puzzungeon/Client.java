@@ -69,10 +69,10 @@ public class Client {
 			
 			//only store the last 3 messages on the client side
 			messageVec = new Vector<ChatMessage>(4);
-			messageVec.add(new ChatMessage("", ""));
-			messageVec.add(new ChatMessage("", ""));
-			messageVec.add(new ChatMessage("", ""));
-			messageVec.add(new ChatMessage("", ""));
+			messageVec.add(new ChatMessage("", "", false));
+			messageVec.add(new ChatMessage("", "", false));
+			messageVec.add(new ChatMessage("", "", false));
+			messageVec.add(new ChatMessage("", "", false));
 			
 			//add localPlayer to the server
 			//localPlayer = new Player(clientUsername);
