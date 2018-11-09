@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
@@ -97,7 +98,7 @@ public class MainGameScreen implements Screen{
 		                }
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
 		                game.client.sendMessage(cm);
 					}
 				}
@@ -118,7 +119,7 @@ public class MainGameScreen implements Screen{
 	                }
 	                //clear inputbox after new message is sent
 	                inputBox.setText("");
-	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
 	                game.client.sendMessage(cm);
 	            }
 	        });
@@ -253,7 +254,38 @@ public class MainGameScreen implements Screen{
 		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
 		showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
 		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
-		
+		if(game.client.messageVec.get(3).isSystemMessage()) {
+			showMessage1.setColor(Color.RED);
+			showMessage1.setAlignment(Align.center);
+		}
+		else {
+			showMessage1.setColor(Color.WHITE);
+			showMessage1.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(2).isSystemMessage()) {
+			showMessage2.setColor(Color.RED);
+			showMessage2.setAlignment(Align.center);
+		}
+		else {
+			showMessage2.setColor(Color.WHITE);
+			showMessage2.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(1).isSystemMessage()) {
+			showMessage3.setColor(Color.RED);
+			showMessage3.setAlignment(Align.center);
+		}
+		else {
+			showMessage3.setColor(Color.WHITE);
+			showMessage3.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(0).isSystemMessage()) {
+			showMessage4.setColor(Color.RED);
+			showMessage4.setAlignment(Align.center);
+		}
+		else {
+			showMessage4.setColor(Color.WHITE);
+			showMessage4.setAlignment(Align.left);
+		}
 		
 		//update elapsed time. should change this to be updated by the server.
 		Long currentTime = (System.nanoTime()-startTime)/1000000000;

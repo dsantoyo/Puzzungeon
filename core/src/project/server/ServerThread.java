@@ -175,7 +175,7 @@ public class ServerThread extends Thread{
 			
 			if(clientLoginState) {
 				server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-				server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+				server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true));
 			}
 			server.serverThreads.remove(this);
 			
