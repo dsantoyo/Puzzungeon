@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 
 
 //a serverThread object(back-end) is connected to a client(front-end)
@@ -88,6 +89,8 @@ public class ServerThread extends Thread{
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
 					*/	
+					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);
+					database.something();
 
 					System.out.println("trying to login...");
 					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
@@ -98,7 +101,7 @@ public class ServerThread extends Thread{
 					//send server validation result from this serverthread back to its client
 					
 					// from loginScreen
-					if (loginRegisterStr.equals("login") && usernameStr.equals("fail")) { // this condition has to be changed
+					if (loginRegisterStr.equals("login") && !(database.PlayerValidation(usernameStr, passswordStr))) { // this condition has to be changed
 						try {
 							System.out.println("serverthread: denied. Check username/password");
 							oos.writeObject(new LoginResult(false, "Check username/password"));
@@ -106,10 +109,11 @@ public class ServerThread extends Thread{
 							oos.reset();
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
-						}	
+						} 
 					}
 					// from registerScreen
-					else if (loginRegisterStr.equals("register") && usernameStr.equals("fail")) { // this condition has to be changed
+					else if (loginRegisterStr.equals("register") && !(database.exists(usernameStr))) { // this condition has to be changed
+						System.out.println("bhehehehhehhe");
 						try {
 							System.out.println("serverthread: denied. Failed to register.");
 							oos.writeObject(new LoginResult(false, "Failed to register."));
@@ -131,7 +135,9 @@ public class ServerThread extends Thread{
 						}
 					}
 					else { // allow the client to login
+						System.out.println("if we can log in");
 						try {
+							System.out.println("logged in.");
 							clientLoginState = true;
 							oos.writeObject(new LoginResult(true, "Login/Register done"));
 							oos.flush();
@@ -139,7 +145,8 @@ public class ServerThread extends Thread{
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}
-					}				
+					}
+					database.close();
 				}
 				
 				//if a Player object is sent to this serverthread
@@ -183,6 +190,8 @@ public class ServerThread extends Thread{
 			
 		}catch(ClassNotFoundException cnfe) {
 			System.out.println("serverthread: run() cnfe: " + cnfe.getMessage());
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
 		}
 	}
 
