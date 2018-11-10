@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
 
@@ -140,6 +142,27 @@ public class WaitingScreen implements Screen{
 		connectionLostDialog.text("Connection lost.");
 		connectionLostDialog.button("Got it", false); //sends "false" as the result
 		
+		
+		TextButton backButton = new TextButton("Back", game.skin, "default");
+			backButton.addListener(new ClickListener(){
+				@Override 
+				public void clicked(InputEvent event, float x, float y){
+					game.client.disconnect = true;
+					game.client.localPlayer.disconnect = true;
+					game.client.updatePlayer();
+					game.client = new Client(game.serverAddress, game.serverPort);
+					game.setScreen(new MainMenuScreen(game));
+				}
+			});
+		
+		TextButton exitButton = new TextButton("Exit", game.skin, "default");
+			exitButton.addListener(new ClickListener(){
+				@Override 
+				public void clicked(InputEvent event, float x, float y){
+					Gdx.app.exit();
+				}
+			});
+		
 /****************************************************************************************
 *                             end: actors functionality
 ****************************************************************************************/
@@ -151,21 +174,6 @@ public class WaitingScreen implements Screen{
 /****************************************************************************************
 *                             start: Waiting state UI
 ****************************************************************************************/
-
-		/*
-		//use vg and hg to group the actors now. changes should be made to make it look better
-		VerticalGroup vg1 = new VerticalGroup();
-		vg1.setFillParent(true);
-		vg1.addActor(gameTitle);
-		vg1.addActor(localPlayerUsername);
-		vg1.addActor(waitingState);
-		
-		readyButton.setVisible(false);
-		vg1.addActor(readyButton);
-		
-		stage.addActor(vg1);
-		*/
-		
 		
 		Table waitingTable = new Table().top();
 		waitingTable.setFillParent(true);
@@ -176,10 +184,7 @@ public class WaitingScreen implements Screen{
 		waitingTable.add(waitingState);
 		waitingTable.row();
 		waitingTable.add(readyButton);
-		
-		
-		
-		
+			
 /****************************************************************************************
 *                             end: Waiting state UI
 ****************************************************************************************/
@@ -194,24 +199,29 @@ public class WaitingScreen implements Screen{
 		
 		Table chatRoom = new Table().bottom().left();
 		chatRoom.pad(0);
-		chatRoom.add(chatTitle).width(game.WIDTH).colspan(2);
+		chatRoom.add(chatTitle).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage4).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage4).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage3).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage3).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage2).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage2).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage1).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage1).width(game.WIDTH).colspan(3);
 		chatRoom.row();
 		
 		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
-		chatRoom.add(sendButton).width(game.WIDTH*0.3f);
+		chatRoom.add(sendButton).width(game.WIDTH*0.3f).colspan(2);
+		chatRoom.row();
+		
+		chatRoom.add(new Label("",game.skin)).width(game.WIDTH*0.7f);
+		chatRoom.add(backButton).width(game.WIDTH*0.15f).pad(0);
+		chatRoom.add(exitButton).width(game.WIDTH*0.15f).pad(0);
 		
 /****************************************************************************************
 *                             end: chatroom UI
 ****************************************************************************************/
-		
+				
 		stage.addActor(waitingTable);
 		
 		//add chatroom to the stage
@@ -223,7 +233,7 @@ public class WaitingScreen implements Screen{
 		}
 		
 /****************************************************************************************
-*                             end: actors functionality
+*                             end: actors layout
 ****************************************************************************************/
 	}
 

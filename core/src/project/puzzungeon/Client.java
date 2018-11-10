@@ -30,6 +30,7 @@ public class Client {
 	public Boolean loginState;
 	public String loginStateMessage;
 	public Boolean connectState;
+	public Boolean disconnect;
 	
 	//client's own player
 	public Player localPlayer;
@@ -46,6 +47,7 @@ public class Client {
 		this.loginState = false;
 		this.loginStateMessage = "";
 		this.connectState = false;
+		this.disconnect = false;
 	}
 	
 	//setting up connection between a client and the server
@@ -124,6 +126,11 @@ public class Client {
 		            					System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
 		            					System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
 		            					System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            					
+		            					if(disconnect) {
+		            						
+		            						throw new IOException();
+		            					}
 		            				}
 		            			}
 		            			

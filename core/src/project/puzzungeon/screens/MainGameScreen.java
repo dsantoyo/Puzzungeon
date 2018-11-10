@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
 
@@ -140,6 +141,26 @@ public class MainGameScreen implements Screen{
 		player2LeftDialog.text("Player2 has left.");
 		player2LeftDialog.button("Got it", false); //sends "false" as the result
 		
+		TextButton backButton = new TextButton("Back", game.skin, "default");
+			backButton.addListener(new ClickListener(){
+				@Override 
+				public void clicked(InputEvent event, float x, float y){
+					game.client.disconnect = true;
+					game.client.localPlayer.disconnect = true;
+					game.client.updatePlayer();
+					game.client = new Client(game.serverAddress, game.serverPort);
+					game.setScreen(new MainMenuScreen(game));
+				}
+			});
+	
+		TextButton exitButton = new TextButton("Exit", game.skin, "default");
+			exitButton.addListener(new ClickListener(){
+				@Override 
+				public void clicked(InputEvent event, float x, float y){
+					Gdx.app.exit();
+				}
+			});
+		
 /****************************************************************************************
 *                             end: actors functionality
 ****************************************************************************************/
@@ -191,6 +212,12 @@ public class MainGameScreen implements Screen{
 		chatRoom.row();
 		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
 		chatRoom.add(sendButton).width(game.WIDTH*0.3f);
+		
+		chatRoom.row();
+		
+		chatRoom.add(new Label("",game.skin)).width(game.WIDTH*0.7f);
+		chatRoom.add(backButton).width(game.WIDTH*0.15f).pad(0);
+		chatRoom.add(exitButton).width(game.WIDTH*0.15f).pad(0);
 		
 /****************************************************************************************
 *                             end: chatroom UI
@@ -256,23 +283,23 @@ public class MainGameScreen implements Screen{
 		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		if(game.client.messageVec.get(3).isSystemMessage()) {
 			showMessage1.setColor(Color.RED);
-			showMessage1.setAlignment(Align.center);
+			//showMessage1.setAlignment(Align.center);
 		}
 		else {
 			showMessage1.setColor(Color.WHITE);
-			showMessage1.setAlignment(Align.left);
+			//showMessage1.setAlignment(Align.left);
 		}
 		if(game.client.messageVec.get(2).isSystemMessage()) {
 			showMessage2.setColor(Color.RED);
-			showMessage2.setAlignment(Align.center);
+			//showMessage2.setAlignment(Align.center);
 		}
 		else {
 			showMessage2.setColor(Color.WHITE);
-			showMessage2.setAlignment(Align.left);
+			//showMessage2.setAlignment(Align.left);
 		}
 		if(game.client.messageVec.get(1).isSystemMessage()) {
 			showMessage3.setColor(Color.RED);
-			showMessage3.setAlignment(Align.center);
+			//showMessage3.setAlignment(Align.center);
 		}
 		else {
 			showMessage3.setColor(Color.WHITE);
@@ -280,11 +307,11 @@ public class MainGameScreen implements Screen{
 		}
 		if(game.client.messageVec.get(0).isSystemMessage()) {
 			showMessage4.setColor(Color.RED);
-			showMessage4.setAlignment(Align.center);
+			//showMessage4.setAlignment(Align.center);
 		}
 		else {
 			showMessage4.setColor(Color.WHITE);
-			showMessage4.setAlignment(Align.left);
+			//showMessage4.setAlignment(Align.left);
 		}
 		
 		//update elapsed time. should change this to be updated by the server.

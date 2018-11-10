@@ -146,6 +146,11 @@ public class ServerThread extends Thread{
 				if(object instanceof Player) {
 					player = (Player)object;
 					if(player != null) {
+						
+						if(player.disconnect) {
+							throw new IOException();
+						}
+						
 						serverThreadPlayerName = player.playerName;
 						
 						//if a new player is being added to the server
