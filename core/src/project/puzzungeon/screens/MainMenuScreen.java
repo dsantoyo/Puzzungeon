@@ -12,8 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import project.puzzungeon.AssetLoader;
 import project.puzzungeon.Puzzungeon;
 
 //First screen; 
@@ -23,11 +25,20 @@ public class MainMenuScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	private Table table;
+	private FitViewport viewport;
+	
+	//actor references
+	private Label gameTitle;
+	private TextButton loginButton;
+	private TextButton newUserButton;
+	private TextButton guestButton;
+	private TextButton exitButton;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage(new ScreenViewport());
+		viewport = new FitViewport(Puzzungeon.DEFAULT_WIDTH, Puzzungeon.DEFAULT_HEIGHT);
+		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 	}
 	
@@ -43,9 +54,9 @@ public class MainMenuScreen implements Screen{
 		//                    exit
 		
 		//create the actors
-		Label gameTitle = new Label("Puzzungeon", game.skin);
+		gameTitle = new Label("Puzzungeon", game.skin);
 		
-		TextButton loginButton = new TextButton("Login", game.skin, "default");
+		loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
@@ -53,14 +64,14 @@ public class MainMenuScreen implements Screen{
 		            }
 		        });
 		
-		TextButton newUserButton = new TextButton("New User", game.skin, "default");
+		newUserButton = new TextButton("New User", game.skin, "default");
 			newUserButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
-		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
+		guestButton = new TextButton("Login as Guest", game.skin, "default");
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
@@ -72,7 +83,7 @@ public class MainMenuScreen implements Screen{
 					game.setScreen(new WaitingScreen(game));
 						}
 					});
-		TextButton exitButton = new TextButton("Exit", game.skin, "default");
+		exitButton = new TextButton("Exit", game.skin, "default");
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
@@ -126,7 +137,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		table.setWidth(Puzzungeon.WIDTH);
+		viewport.update(width, height);
 	}
 
 	@Override
