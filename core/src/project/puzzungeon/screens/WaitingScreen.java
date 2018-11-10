@@ -148,7 +148,11 @@ public class WaitingScreen implements Screen{
 *                             start: actors layout
 ****************************************************************************************/
 		
+/****************************************************************************************
+*                             start: Waiting state UI
+****************************************************************************************/
 
+		/*
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
@@ -160,6 +164,25 @@ public class WaitingScreen implements Screen{
 		vg1.addActor(readyButton);
 		
 		stage.addActor(vg1);
+		*/
+		
+		
+		Table waitingTable = new Table().top();
+		waitingTable.setFillParent(true);
+		waitingTable.add(gameTitle);
+		waitingTable.row();
+		waitingTable.add(localPlayerUsername);
+		waitingTable.row();
+		waitingTable.add(waitingState);
+		waitingTable.row();
+		waitingTable.add(readyButton);
+		
+		
+		
+		
+/****************************************************************************************
+*                             end: Waiting state UI
+****************************************************************************************/
 				
 /****************************************************************************************
 *                             start: chatroom UI
@@ -188,6 +211,8 @@ public class WaitingScreen implements Screen{
 /****************************************************************************************
 *                             end: chatroom UI
 ****************************************************************************************/
+		
+		stage.addActor(waitingTable);
 		
 		//add chatroom to the stage
 		stage.addActor(chatRoom);
@@ -265,23 +290,23 @@ public class WaitingScreen implements Screen{
 		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
 		if(game.client.messageVec.get(3).isSystemMessage()) {
 			showMessage1.setColor(Color.RED);
-			showMessage1.setAlignment(Align.center);
+			//showMessage1.setAlignment(Align.center);
 		}
 		else {
 			showMessage1.setColor(Color.WHITE);
-			showMessage1.setAlignment(Align.left);
+			//showMessage1.setAlignment(Align.left);
 		}
 		if(game.client.messageVec.get(2).isSystemMessage()) {
 			showMessage2.setColor(Color.RED);
-			showMessage2.setAlignment(Align.center);
+			//showMessage2.setAlignment(Align.center);
 		}
 		else {
 			showMessage2.setColor(Color.WHITE);
-			showMessage2.setAlignment(Align.left);
+			//showMessage2.setAlignment(Align.left);
 		}
 		if(game.client.messageVec.get(1).isSystemMessage()) {
 			showMessage3.setColor(Color.RED);
-			showMessage3.setAlignment(Align.center);
+			//showMessage3.setAlignment(Align.center);
 		}
 		else {
 			showMessage3.setColor(Color.WHITE);
@@ -289,11 +314,11 @@ public class WaitingScreen implements Screen{
 		}
 		if(game.client.messageVec.get(0).isSystemMessage()) {
 			showMessage4.setColor(Color.RED);
-			showMessage4.setAlignment(Align.center);
+			//showMessage4.setAlignment(Align.center);
 		}
 		else {
 			showMessage4.setColor(Color.WHITE);
-			showMessage4.setAlignment(Align.left);
+			//showMessage4.setAlignment(Align.left);
 		}
 		
 
