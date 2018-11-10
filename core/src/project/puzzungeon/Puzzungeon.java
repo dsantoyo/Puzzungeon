@@ -9,32 +9,38 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
-import project.server.Server;
 
 
 //main game class
 public class Puzzungeon extends Game {
 	
+	public final int WIDTH = 1000;
+ 	public final int HEIGHT = 800;
+	
 	public SpriteBatch batch;
 	public Skin skin;
 	public Client client;
-	
 	public AssetLoader assetLoader;
 	
 	public static final int DEFAULT_WIDTH = 400;
 	public static final int DEFAULT_HEIGHT = 400;
+
+	public String serverAddress = "localhost";
+	public int serverPort = 6789;
+	
+	public Boolean showDebugLine = true;
 
 	//loads assets and calls first screen
 	@Override
 	public void create () {
 		assetLoader = new AssetLoader();
 		batch = new SpriteBatch();
-		
+
 		//pre-loading assets
 		assetLoader.loadSkin();
 		skin = assetLoader.manager.get("uiskin.json", Skin.class);
-		
-		client = new Client("localhost", 6789);
+
+		client = new Client(serverAddress, serverPort);
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));
 	}

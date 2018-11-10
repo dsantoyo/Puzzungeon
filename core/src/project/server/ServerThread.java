@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 
 
 //a serverThread object(back-end) is connected to a client(front-end)
@@ -16,6 +17,7 @@ public class ServerThread extends Thread{
 	private LoginRegister loginRegister;
 	private Player player;
 	private Server server;
+	private Boolean clientLoginState;
 	
 	/* the localPlayerID of this serverThread's client's localPlayer
 	 * server uses this to know which player in server's playerVec is 
@@ -40,7 +42,6 @@ public class ServerThread extends Thread{
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
-	
 
 	public void run() {
 		
@@ -73,7 +74,6 @@ public class ServerThread extends Thread{
 					object = ois.readObject();
 					loginRegister = (LoginRegister)object;
 					
-					
 					String usernameStr = username.getUsername();
 					String passswordStr = password.getPassword();
 					String loginRegisterStr = loginRegister.getloginRegister();
@@ -89,13 +89,88 @@ public class ServerThread extends Thread{
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
 					*/	
+					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);
+					database.connectionSet();
+
+					System.out.println("trying to login...");
+					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
+					System.out.println("serverThread: current player0 id on server: " + server.playerVec.get(0).playerID);
+					System.out.println("serverThread: current player1 name on server: " + server.playerVec.get(1).playerName);
+					System.out.println("serverThread: current player1 id on server: " + server.playerVec.get(1).playerID);
+					
+					//send server validation result from this serverthread back to its client
+					
+					// from loginScreen
+					if (loginRegisterStr.equals("login") && !(database.PlayerValidation(usernameStr, passswordStr))) { // this condition has to be changed
+						try {
+							System.out.println("serverthread: denied. Check username/password");
+							oos.writeObject(new LoginResult(false, "Check username/password",0));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
+						} 
+					}
+					// from registerScreen
+					else if (loginRegisterStr.equals("register") && (database.exists(usernameStr))) { // this condition has to be changed
+						System.out.println("bhehehehhehhe");
+						try {
+							System.out.println("serverthread: denied. Failed to register.");
+							oos.writeObject(new LoginResult(false, "Failed to register.",0));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
+						}	
+					}
+					
+					else if (server.isGameFull()) { // is 2 players are already in the game
+						try {
+							System.out.println("serverthread: denied. game is full.");
+							oos.writeObject(new LoginResult(false, "Game is Full.", 0));
+							oos.flush();
+							oos.reset();
+						} catch (IOException ioe) {
+							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
+						}
+					}
+					else { // allow the client to login
+						
+						//read past score from the database
+						int pastScore = database.getHighScore();
+						System.out.println("past score = " + pastScore);
+						
+						
+						
+						System.out.println("if we can log in");
+						try {
+							System.out.println("logged in.");
+							clientLoginState = true;
+							oos.writeObject(new LoginResult(true, "Login/Register done", pastScore));
+							oos.flush();
+							oos.reset();
+							
+							//send past score
+							
+							
+						} catch (IOException ioe) {
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
+						}
+					}
+					database.close();
 				}
 				
 				//if a Player object is sent to this serverthread
 				if(object instanceof Player) {
 					player = (Player)object;
 					if(player != null) {
+						
+						if(player.disconnect) {
+							throw new IOException();
+						}
+						
 						serverThreadPlayerName = player.playerName;
+						
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
@@ -114,20 +189,25 @@ public class ServerThread extends Thread{
 								
 			}
 		}catch(IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: run() ioe: " + ioe.getMessage());
 			
 			//if the connection to this severthread is lost
 			//reset corresponding player object in server's playerVec
 			//send a "has left" message
 			//remove this serverThread from server's serverThreads vector
-			server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-			server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left."));
+			
+			if(clientLoginState) {
+				server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+				server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true));
+			}
 			server.serverThreads.remove(this);
 			
 			//need to work on this
 			
 		}catch(ClassNotFoundException cnfe) {
-			System.out.println("cnfe: " + cnfe.getMessage());
+			System.out.println("serverthread: run() cnfe: " + cnfe.getMessage());
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
 		}
 	}
 
@@ -138,12 +218,11 @@ public class ServerThread extends Thread{
 	
 	//receive new message from the server and send to this serverthread's client
 	public void sendMessage(ChatMessage cm) {
-		
 		try {
 			oos.writeObject(cm);
 			oos.flush();
 		}catch(IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: sendMessage() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -155,32 +234,30 @@ public class ServerThread extends Thread{
 			oos.writeObject(IDInt);
 			oos.flush();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: setLocalPlayerID() ioe: " + ioe.getMessage());
 		}
 	}
 	
 	//send ReadyState from this serverthread to the client
 	public void broadcastReadyState(Boolean readyState) {
-		
 		try {
 			ReadyState rs = new ReadyState(readyState);
 			oos.writeObject(rs);
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: broadcastReadyState() ioe: " + ioe.getMessage());
 		}
 	}
 	
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
-			
 		try {
 			oos.writeObject(otherPlayer);
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
+			System.out.println("serverthread: updateOtherPlayer() ioe: " + ioe.getMessage());
 		}
 	}
 	
