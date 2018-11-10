@@ -90,7 +90,7 @@ public class ServerThread extends Thread{
 					    //String errorMessage = database.errorMessage();
 					*/	
 					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);
-					database.something();
+					database.connectionSet();
 
 					System.out.println("trying to login...");
 					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
@@ -112,7 +112,7 @@ public class ServerThread extends Thread{
 						} 
 					}
 					// from registerScreen
-					else if (loginRegisterStr.equals("register") && !(database.exists(usernameStr))) { // this condition has to be changed
+					else if (loginRegisterStr.equals("register") && (database.exists(usernameStr))) { // this condition has to be changed
 						System.out.println("bhehehehhehhe");
 						try {
 							System.out.println("serverthread: denied. Failed to register.");
