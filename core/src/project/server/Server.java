@@ -16,9 +16,10 @@ public class Server {
 	private Vector<ChatMessage> messageVec;
 	
 	//a vector to store Player objects
-	private Vector<Player> playerVec;
+	public Vector<Player> playerVec;
 	
 	//private boolean allConnected;
+	
 	
 	public Server(int port) {
 		
@@ -28,10 +29,11 @@ public class Server {
 		playerVec.add(new Player("default"));
 		
 		//a vector to store the last 3 messages on server (could be redundant)
-		messageVec = new Vector<ChatMessage>(3);
-		messageVec.add(new ChatMessage("", ""));
-		messageVec.add(new ChatMessage("", ""));
-		messageVec.add(new ChatMessage("", ""));
+		messageVec = new Vector<ChatMessage>(4);
+		messageVec.add(new ChatMessage("", "",false));
+		messageVec.add(new ChatMessage("", "",false));
+		messageVec.add(new ChatMessage("", "",false));
+		messageVec.add(new ChatMessage("", "",false));
 		//allConnected = false;
 		
 		//Display the priave IP of the server.
@@ -77,7 +79,7 @@ public class Server {
 				
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
-				System.out.println("serverThreads size = " + serverThreads.size());
+				System.out.println("server: serverThreads size: " + serverThreads.size());
 				/*
 				if (serverThreads.size() > 2 && allConnected == false) {
 					System.out.println("Enough connections.");
@@ -123,7 +125,7 @@ public class Server {
 			System.out.println("Server new message: " + cm.getUsername()+" "+cm.getMessage());
 			//send the newest message to every serverThread
 			for(ServerThread thread : serverThreads) {
-					thread.sendMessage(messageVec.get(2));
+					thread.sendMessage(messageVec.get(3));
 			}
 		}
 	}
@@ -200,6 +202,15 @@ public class Server {
 				}
 			}
 		}
+	}
+	
+	public Boolean isGameFull() {
+		
+		System.out.println("server: isGameFull(); called");
+		System.out.println(playerVec.get(0).playerID);
+		System.out.println(playerVec.get(1).playerID);
+		
+		return ((playerVec.get(0).playerID != -1) && (playerVec.get(1).playerID != -1));
 	}
 	
 	public static void main(String [] args) {

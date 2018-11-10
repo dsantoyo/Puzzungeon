@@ -6,25 +6,30 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
-import project.server.Server;
 
 
 //main game class
 public class Puzzungeon extends Game {
 	
+	public final int WIDTH = 1000;
+ 	public final int HEIGHT = 800;
+	
 	public SpriteBatch batch;
 	public Skin skin;
 	public Client client;
 	
-	public static final int WIDTH = 400;
-	public static final int HEIGHT = 400;
+
+	public String serverAddress = "localhost";
+	public int serverPort = 6789;
+	
+	public Boolean showDebugLine = true;
 
 	//loads assets and calls first screen
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		client = new Client("localhost", 6789);
+		client = new Client(serverAddress, serverPort);
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));
 	}

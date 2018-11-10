@@ -3,14 +3,16 @@ package project.puzzungeon.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -28,48 +30,44 @@ public class WaitingScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	
-	
-	//chat ui
+	//shared by different methods
 	private Label showMessage1;
 	private Label showMessage2;
 	private Label showMessage3;
-	
-	//waiting ui
+	private Label showMessage4;
 	private Label waitingState;
 	private TextButton readyButton;
+	private Dialog connectionLostDialog;
+	private Boolean displayDialog;
 	
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		
-		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.");
+		displayDialog = true;
+		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.", true);
 		game.client.sendMessage(cm);
 	}
 	
 	@Override
 	public void show() {
-
-		//simple layout:
-		//       Waiting
-		//        
-		//    (choose character ui)
-		//
-		//    (chat ui)
+/****************************************************************************************
+*                             start: actors functionality
+****************************************************************************************/
 		
 		//create the actors
-		Label gameTitle = new Label("Puzzungeon", game.skin);
+		Label gameTitle = new Label("Waiting Room", game.skin);
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
-
+		Label chatTitle = new Label("Chat",game.skin);
+		
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
-		Label showDivider = new Label("-------------------------------------",game.skin);
+		showMessage4 = new Label("",game.skin);
 				
-		final TextArea inputBox = new TextArea("",game.skin);
-		
+		final TextField inputBox = new TextArea("",game.skin);
 			//when ENTER key is pressed, send message to the serverthread
 			inputBox.setTextFieldListener(new TextFieldListener() {
 				@Override
@@ -85,17 +83,15 @@ public class WaitingScreen implements Screen{
 		                	//remove newline character
 		                	messageStr = messageStr.replace("\n", "");
 		                }
-		               
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
-		                
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
 		                game.client.sendMessage(cm);
 					}
 				}
 			});
 		
-		final TextButton sendButton  = new TextButton("Send", game.skin, "default");
+		final TextButton sendButton  = new TextButton("Send Message", game.skin, "default");
 			//when sendButton is clicked, send message to the serverthread
 			sendButton.addListener(new ClickListener(){
 	            @Override 
@@ -108,14 +104,12 @@ public class WaitingScreen implements Screen{
 	                else {
 	                	messageStr = inputBox.getText();
 	                }
-	                
 	                //clear inputbox after new message is sent
 	                inputBox.setText("");
-	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr);
+	                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
 	                game.client.sendMessage(cm);
 	            }
 	        });
-			
 			
 		readyButton  = new TextButton("Ready?", game.skin, "default");
 			//when readybutton is clicked, change localplayerstate(front-end)
@@ -127,20 +121,21 @@ public class WaitingScreen implements Screen{
 	            	if(game.client.localPlayer.readyState == false) {
 	            		game.client.localPlayer.readyState = true;
 		                game.client.updatePlayer();
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready");
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "is ready", true);
 		                game.client.sendMessage(cm);
 		                readyButton.setText("Cancel?");
 	            	}
 	            	else {
 	            		game.client.localPlayer.readyState = false;
 		                game.client.updatePlayer();
-		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "isn't ready anymore");
+		                ChatMessage cm = new ChatMessage(game.client.clientUsername, "isn't ready anymore", true);
 		                game.client.sendMessage(cm);
 		                readyButton.setText("Ready?");
 	            	}
 	            }
 	        });
 			
+
 		//controls instructions
 		String instructions1Str = "Each player has one half of the puzzle."
 				+ " Complete both of your sides to escape the Puzzungeon!";
@@ -156,15 +151,30 @@ public class WaitingScreen implements Screen{
 		Image teleporter = new Image(new Texture(Gdx.files.internal("teleporter.png")));
 		instruct1.setWrap(true);
 		instruct3.setWrap(true);
+
+		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	game.setScreen(new MainMenuScreen(game));
+		    }};
+		connectionLostDialog.text("Connection lost.");
+		connectionLostDialog.button("Got it", false); //sends "false" as the result
+
 		
-		//chatroom UI
+/****************************************************************************************
+*                             end: actors functionality
+****************************************************************************************/
+			
+/****************************************************************************************
+*                             start: actors layout
+****************************************************************************************/
+		
+
 		//use vg and hg to group the actors now. changes should be made to make it look better
 		VerticalGroup vg1 = new VerticalGroup();
 		vg1.setFillParent(true);
 		vg1.addActor(gameTitle);
 		vg1.addActor(localPlayerUsername);
 		vg1.addActor(waitingState);
-		
 		
 		readyButton.setVisible(false);
 		vg1.addActor(readyButton);
@@ -184,31 +194,45 @@ public class WaitingScreen implements Screen{
 		//add vertical group of instructions and UI to stage
 		stage.addActor(vg1);
 				
-		//5 rows for the bottom bar.
-		HorizontalGroup chatRow0 = new HorizontalGroup().bottom().left();
-		HorizontalGroup chatRow1 = new HorizontalGroup().left();
-		HorizontalGroup chatRow2 = new HorizontalGroup().left();
-		HorizontalGroup chatRow3 = new HorizontalGroup().left();
-		HorizontalGroup chatRow4 = new HorizontalGroup().left();
+/****************************************************************************************
+*                             start: chatroom UI
+****************************************************************************************/	
 		
-		VerticalGroup Chatroom = new VerticalGroup().bottom().left();
+		//set colors of the labels
+		chatTitle.setColor(Color.GREEN);
 		
-		chatRow0.addActor(inputBox);
-		chatRow0.addActor(sendButton);
 		
-		chatRow4.addActor(showDivider);
-		chatRow3.addActor(showMessage3);
-		chatRow2.addActor(showMessage2);
-		chatRow1.addActor(showMessage1);
+		Table chatRoom = new Table().bottom().left();
+		chatRoom.pad(0);
+		chatRoom.add(chatTitle).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage4).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage3).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage2).width(game.WIDTH).colspan(2);
+		chatRoom.row();
+		chatRoom.add(showMessage1).width(game.WIDTH).colspan(2);
+		chatRoom.row();
 		
-		Chatroom.addActor(chatRow4);
-		Chatroom.addActor(chatRow3);
-		Chatroom.addActor(chatRow2);
-		Chatroom.addActor(chatRow1);
-		Chatroom.addActor(chatRow0);
+		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
+		chatRoom.add(sendButton).width(game.WIDTH*0.3f);
 		
-		//add bottom bar to the stage
-		stage.addActor(Chatroom);
+/****************************************************************************************
+*                             end: chatroom UI
+****************************************************************************************/
+		
+		//add chatroom to the stage
+		stage.addActor(chatRoom);
+		
+		//draw debugline to see the boundary of each actor
+		if(game.showDebugLine) {
+			stage.setDebugAll(true);
+		}
+		
+/****************************************************************************************
+*                             end: actors functionality
+****************************************************************************************/
 	}
 
 	@Override
@@ -268,14 +292,55 @@ public class WaitingScreen implements Screen{
 		}
 		
 		//update chatroom
-		showMessage1.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
-		showMessage2.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
-		showMessage3.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+		showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
+		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
+		showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
+		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+		if(game.client.messageVec.get(3).isSystemMessage()) {
+			showMessage1.setColor(Color.RED);
+			showMessage1.setAlignment(Align.center);
+		}
+		else {
+			showMessage1.setColor(Color.WHITE);
+			showMessage1.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(2).isSystemMessage()) {
+			showMessage2.setColor(Color.RED);
+			showMessage2.setAlignment(Align.center);
+		}
+		else {
+			showMessage2.setColor(Color.WHITE);
+			showMessage2.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(1).isSystemMessage()) {
+			showMessage3.setColor(Color.RED);
+			showMessage3.setAlignment(Align.center);
+		}
+		else {
+			showMessage3.setColor(Color.WHITE);
+			showMessage3.setAlignment(Align.left);
+		}
+		if(game.client.messageVec.get(0).isSystemMessage()) {
+			showMessage4.setColor(Color.RED);
+			showMessage4.setAlignment(Align.center);
+		}
+		else {
+			showMessage4.setColor(Color.WHITE);
+			showMessage4.setAlignment(Align.left);
+		}
 		
-		
+
 		//check if every player is ready
 		if(game.client.bothPlayerReady) {
+			game.client.messageVec.remove(0);
+			game.client.messageVec.add(new ChatMessage("The game is going to start!","", true));
 			game.setScreen(new MainGameScreen(game));
+		}
+		
+		if(!game.client.connectState & displayDialog) {
+			connectionLostDialog.show(stage);
+			displayDialog = false;
+			System.out.println("waitingScreen: connection lost.");
 		}
 	}
 }
