@@ -32,7 +32,7 @@ public class JDBCType {
 	public void something() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/game_database?user=root&password=root&useSSL=false");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?user=root&password=root&useSSL=false");
 			st = conn.createStatement();
 			
 			if(determine.equals("register") && !exists(username)) {
