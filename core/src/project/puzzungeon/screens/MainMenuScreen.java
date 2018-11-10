@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -24,6 +26,7 @@ public class MainMenuScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
+	private Table table;
 	
 	//shared by different methods
 	private Boolean displayDialog;
@@ -33,7 +36,7 @@ public class MainMenuScreen implements Screen{
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
 	}
@@ -140,6 +143,7 @@ public class MainMenuScreen implements Screen{
 /****************************************************************************************
 *                             end: Main Menu UI
 ****************************************************************************************/
+
 		
 /****************************************************************************************
 *                             start: Exit Button
@@ -179,7 +183,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		table.setWidth(Puzzungeon.WIDTH);
 	}
 
 	@Override
