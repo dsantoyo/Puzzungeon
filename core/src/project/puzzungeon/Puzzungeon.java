@@ -22,7 +22,7 @@ public class Puzzungeon extends Game {
 	public String serverAddress = "localhost";
 	public int serverPort = 6789;
 	
-	public Boolean showDebugLine = true;
+	public Boolean showDebugLine = false;
 
 	//loads assets and calls first screen
 	@Override

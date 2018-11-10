@@ -29,54 +29,17 @@ public class JDBCType {
 		this.score = 0;
 	}
 	
-	public void something() {
+	public void connectionSet() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/game_database?user=root&password=root&useSSL=false");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?user=root&password=root&useSSL=false");
 			st = conn.createStatement();
-			
-			if(determine.equals("register") && !exists(username)) {
-				++userID;
-				ps = conn.prepareStatement("INSERT INTO user_table (userID, username, userpassword)" + " VALUES (?, ?, ?)");
-				ps.setInt(1, userID);
-				ps.setString(2, username);
-				ps.setString(3, password);
-				ps.execute();
-			}
-			else {
-				if(!exists(username)) {
-					//login = false?
-					
-				}
-				else if(PlayerValidation(username, password)) {
-					//login = true;
-					score = getHighScore();
-				}
-			}
 			
 		} catch (SQLException sqle) {
 			System.out.println("SQLException: " + sqle.getMessage());
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println("ClassNotFoundException: " + cnfe.getMessage());
 		} 
-		//finally {
-//			try {
-//				if(rs != null) {
-//					rs.close();
-//				}
-//				if(st != null) {
-//					st.close();
-//				}
-//				if(ps != null) {
-//					ps.close();
-//				}
-//				if(conn != null) {
-//					conn.close();
-//				}
-//			} catch(SQLException sqle) {
-//				System.out.println("sqle: " + sqle.getMessage());
-//			}
-//		}
 	}
 	
 	public int getHighScore() throws SQLException {
@@ -130,6 +93,12 @@ public class JDBCType {
 		} catch (SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());
 		}
+		++userID;
+		ps = conn.prepareStatement("INSERT INTO user_table (userID, username, userpassword)" + " VALUES (?, ?, ?)");
+		ps.setInt(1, userID);
+		ps.setString(2, username);
+		ps.setString(3, password);
+		ps.execute();
 		
 		return false;
 	}
