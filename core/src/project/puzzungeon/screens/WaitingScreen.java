@@ -212,6 +212,20 @@ public class WaitingScreen implements Screen{
 *                             start: instructions UI
 ****************************************************************************************/
 		
+		Table instructionTable = new Table().left();
+		instructionTable.setFillParent(true);
+		instructionTable.add(instruct1);
+		instructionTable.row();
+		instructionTable.add(mouse);
+		instructionTable.add(instruct2);
+		instructionTable.row();
+		instructionTable.add(instruct3);
+		instructionTable.row();
+		instructionTable.add(teleporter);
+		
+		
+		stage.addActor(instructionTable);
+		
 		/*
 		//controls instructions widget setup
 		VerticalGroup instructs = new VerticalGroup();
