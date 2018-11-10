@@ -146,6 +146,7 @@ public class Client {
 		            				}
 		            				else {
 		            					localPlayer = new Player(clientUsername);
+		            					localPlayer.pastScore = rs.pastScore;
 		            					otherPlayer = new Player("default");
 		            					updatePlayer();
 		            					System.out.println("logged in ");

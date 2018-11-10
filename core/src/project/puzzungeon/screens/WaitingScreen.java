@@ -36,6 +36,8 @@ public class WaitingScreen implements Screen{
 	private Label showMessage2;
 	private Label showMessage3;
 	private Label showMessage4;
+	private Label otherPlayerUsername;
+	private Label otherPlayerPastScore;
 	private Label waitingState;
 	private TextButton readyButton;
 	private Dialog connectionLostDialog;
@@ -60,7 +62,11 @@ public class WaitingScreen implements Screen{
 		//create the actors
 		Label gameTitle = new Label("Waiting Room", game.skin);
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
+		Label localPlayerPastScore = new Label("Highest score: " + Integer.toString(game.client.localPlayer.pastScore), game.skin);
+		otherPlayerPastScore = new Label("", game.skin);
+		otherPlayerUsername = new Label("", game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
+		
 		Label chatTitle = new Label("Chat",game.skin);
 		
 		showMessage1 = new Label("",game.skin);
@@ -196,13 +202,18 @@ public class WaitingScreen implements Screen{
 		
 		Table waitingTable = new Table().top();
 		waitingTable.setFillParent(true);
-		waitingTable.add(gameTitle);
+		waitingTable.add(gameTitle).colspan(2);
 		waitingTable.row();
-		waitingTable.add(localPlayerUsername);
+		waitingTable.add(localPlayerUsername).padRight(10);
+		waitingTable.add(localPlayerPastScore).padLeft(10);
 		waitingTable.row();
-		waitingTable.add(waitingState);
+		waitingTable.add(otherPlayerUsername).padRight(10);;
+		waitingTable.add(otherPlayerPastScore).padLeft(10);;
 		waitingTable.row();
-		waitingTable.add(readyButton);
+		waitingTable.add(readyButton).colspan(2);
+		waitingTable.row();
+		waitingTable.add(waitingState).colspan(2);
+		
 			
 /****************************************************************************************
 *                             end: Waiting state UI
@@ -336,7 +347,9 @@ public class WaitingScreen implements Screen{
 			readyButton.setVisible(true);
 			
 			//update waiting state
-			waitingState.setText("Player2: " + game.client.otherPlayer.playerName);
+			waitingState.setText("");
+			otherPlayerUsername.setText("Player2: " + game.client.otherPlayer.playerName);
+			otherPlayerPastScore.setText("Highest score: " + Integer.toString(game.client.otherPlayer.pastScore));
 		}
 		
 		if(game.client.otherPlayer.playerID == -1) {
@@ -345,6 +358,8 @@ public class WaitingScreen implements Screen{
 			readyButton.setVisible(false);
 			
 			//update waiting state
+			otherPlayerUsername.setText("");
+			otherPlayerPastScore.setText("");
 			waitingState.setText("Waiting for another player...");
 		}
 		

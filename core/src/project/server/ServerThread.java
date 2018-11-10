@@ -104,7 +104,7 @@ public class ServerThread extends Thread{
 					if (loginRegisterStr.equals("login") && !(database.PlayerValidation(usernameStr, passswordStr))) { // this condition has to be changed
 						try {
 							System.out.println("serverthread: denied. Check username/password");
-							oos.writeObject(new LoginResult(false, "Check username/password"));
+							oos.writeObject(new LoginResult(false, "Check username/password",0));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
@@ -116,7 +116,7 @@ public class ServerThread extends Thread{
 						System.out.println("bhehehehhehhe");
 						try {
 							System.out.println("serverthread: denied. Failed to register.");
-							oos.writeObject(new LoginResult(false, "Failed to register."));
+							oos.writeObject(new LoginResult(false, "Failed to register.",0));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
@@ -127,7 +127,7 @@ public class ServerThread extends Thread{
 					else if (server.isGameFull()) { // is 2 players are already in the game
 						try {
 							System.out.println("serverthread: denied. game is full.");
-							oos.writeObject(new LoginResult(false, "Game is Full."));
+							oos.writeObject(new LoginResult(false, "Game is Full.", 0));
 							oos.flush();
 							oos.reset();
 						} catch (IOException ioe) {
@@ -146,7 +146,7 @@ public class ServerThread extends Thread{
 						try {
 							System.out.println("logged in.");
 							clientLoginState = true;
-							oos.writeObject(new LoginResult(true, "Login/Register done"));
+							oos.writeObject(new LoginResult(true, "Login/Register done", pastScore));
 							oos.flush();
 							oos.reset();
 							
