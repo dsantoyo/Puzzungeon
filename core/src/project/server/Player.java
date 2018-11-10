@@ -21,6 +21,8 @@ public class Player implements Serializable{
 		this.playerID = -1;
 		this.readyState = false;
 		this.disconnect = false;
+		this.pastScore = 0;
+
 	}
 	
 	public String playerName;
@@ -32,6 +34,8 @@ public class Player implements Serializable{
 	public Boolean readyState;
 	
 	public Boolean disconnect;
+	
+	public int pastScore;
 	
 	//other in-game objects that the server should know...
 	//Avatar avatar ?

@@ -43,7 +43,7 @@ public class JDBCType {
 	}
 	
 	public int getHighScore() throws SQLException {
-		rs = st.executeQuery("SELECT * from highscore_table where user1 ='"+username+"'");
+		rs = st.executeQuery("SELECT * from highscore_table where user1 ='"+username+"' OR user2= '"+username+"'" );
 		
 		while(rs.next()) {
 			//String user2 = rs.getString("user2");

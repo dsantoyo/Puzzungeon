@@ -135,6 +135,13 @@ public class ServerThread extends Thread{
 						}
 					}
 					else { // allow the client to login
+						
+						//read past score from the database
+						int pastScore = database.getHighScore();
+						System.out.println("past score = " + pastScore);
+						
+						
+						
 						System.out.println("if we can log in");
 						try {
 							System.out.println("logged in.");
@@ -142,6 +149,10 @@ public class ServerThread extends Thread{
 							oos.writeObject(new LoginResult(true, "Login/Register done"));
 							oos.flush();
 							oos.reset();
+							
+							//send past score
+							
+							
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}
