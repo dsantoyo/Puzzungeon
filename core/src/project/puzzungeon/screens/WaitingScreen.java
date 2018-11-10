@@ -211,6 +211,8 @@ public class WaitingScreen implements Screen{
 /****************************************************************************************
 *                             start: instructions UI
 ****************************************************************************************/
+		
+		/*
 		//controls instructions widget setup
 		VerticalGroup instructs = new VerticalGroup();
 		HorizontalGroup line2 = new HorizontalGroup();
@@ -221,10 +223,9 @@ public class WaitingScreen implements Screen{
 		instructs.addActor(line2);
 		instructs.addActor(instruct3);
 		instructs.addActor(teleporter);
-		vg1.addActor(instructs);
+		stage.addActor(instructs);
+		*/
 		
-		//add vertical group of instructions and UI to stage
-		stage.addActor(vg1);
 /****************************************************************************************
 *                             end: instructions UI
 ****************************************************************************************/

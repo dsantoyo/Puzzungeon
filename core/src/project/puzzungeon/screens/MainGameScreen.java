@@ -200,19 +200,19 @@ public class MainGameScreen implements Screen{
 		
 		Table chatRoom = new Table().bottom().left();
 		chatRoom.pad(0);
-		chatRoom.add(chatTitle).width(game.WIDTH).colspan(2);
+		chatRoom.add(chatTitle).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage4).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage4).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage3).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage3).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage2).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage2).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage1).width(game.WIDTH).colspan(2);
+		chatRoom.add(showMessage1).width(game.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
-		chatRoom.add(sendButton).width(game.WIDTH*0.3f);
 		
+		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
+		chatRoom.add(sendButton).width(game.WIDTH*0.3f).colspan(2);
 		chatRoom.row();
 		
 		chatRoom.add(new Label("",game.skin)).width(game.WIDTH*0.7f);
