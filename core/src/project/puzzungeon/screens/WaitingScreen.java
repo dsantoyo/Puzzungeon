@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -135,12 +136,30 @@ public class WaitingScreen implements Screen{
 	            }
 	        });
 			
+
+		//controls instructions
+		String instructions1Str = "Each player has one half of the puzzle."
+				+ " Complete both of your sides to escape the Puzzungeon!";
+		String instructions2Str = "Drag and Drop the puzzle pieces.";
+		String instructions3Str = "You may have some of the other player’s"
+				+ " pieces, and vice versa. Use the teleporter to send puzzle"
+				+ " pieces to the other player!";
+		Label instruct1 = new Label(instructions1Str, game.skin, "default");
+		Label instruct2 = new Label(instructions2Str, game.skin, "default");
+		Label instruct3 = new Label(instructions3Str, game.skin, "default");
+		Image mouse = new Image(new Texture(Gdx.files.internal("mouse-cursor-icon.png")));
+		mouse.setScale(0.5f);
+		Image teleporter = new Image(new Texture(Gdx.files.internal("teleporter.png")));
+		instruct1.setWrap(true);
+		instruct3.setWrap(true);
+
 		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
 		connectionLostDialog.text("Connection lost.");
 		connectionLostDialog.button("Got it", false); //sends "false" as the result
+
 		
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
@@ -187,6 +206,27 @@ public class WaitingScreen implements Screen{
 			
 /****************************************************************************************
 *                             end: Waiting state UI
+****************************************************************************************/
+
+/****************************************************************************************
+*                             start: instructions UI
+****************************************************************************************/
+		//controls instructions widget setup
+		VerticalGroup instructs = new VerticalGroup();
+		HorizontalGroup line2 = new HorizontalGroup();
+		line2.rowAlign(Align.center);
+		line2.addActor(mouse);
+		line2.addActor(instruct2);
+		instructs.addActor(instruct1);
+		instructs.addActor(line2);
+		instructs.addActor(instruct3);
+		instructs.addActor(teleporter);
+		vg1.addActor(instructs);
+		
+		//add vertical group of instructions and UI to stage
+		stage.addActor(vg1);
+/****************************************************************************************
+*                             end: instructions UI
 ****************************************************************************************/
 				
 /****************************************************************************************
