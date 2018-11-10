@@ -20,3 +20,4 @@ CREATE TABLE `user_table` (
   `userpassword` varchar(45) NOT NULL,
   PRIMARY KEY (`userID`,`username`,`userpassword`)
 );
+
