@@ -5,11 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import project.puzzungeon.Client;
+import project.puzzungeon.PuzzlePiece;
 import project.puzzungeon.Puzzungeon;
 import project.server.LoginRegister;
 import project.server.Password;
@@ -41,11 +40,10 @@ public class MainMenuScreen implements Screen{
 	private Dialog connectionFailDialog;
 	
 	
-	public Image testImage1;
-	public Image testImage2;
-	public Image table1Image;
-	public Image table2Image;
-	public Image table3Image;
+	public PuzzlePiece piece1;
+	public PuzzlePiece piece2;
+
+	public DragAndDrop dragAndDrop;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
@@ -64,27 +62,33 @@ public class MainMenuScreen implements Screen{
 ****************************************************************************************/
 		
 		
-		testImage1 = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-		testImage2 = new Image(new Texture(Gdx.files.internal("green.png")));
-		table1Image = new Image(new Texture(Gdx.files.internal("black.png")));
-		table2Image = new Image(new Texture(Gdx.files.internal("black.png")));
-		table3Image = new Image(new Texture(Gdx.files.internal("black.png")));
+		piece1 = new PuzzlePiece(new Texture(Gdx.files.internal("badlogic.jpg")), 1);
+		piece2 = new PuzzlePiece(new Texture(Gdx.files.internal("green.png")), 2);
+		
+		final Table mainTable = new Table();
+		mainTable.setFillParent(true);
 		
 		final Table table1 = new Table().bottom();
-		table1.setFillParent(true);
-		table1.add(testImage1).width(100).height(100);
+		//table1.setFillParent(true);
+		table1.add(piece1).width(100).height(100);
 		
 		final Table table2  = new Table().center();
-		table2.setFillParent(true);
-		table2.add(testImage2).width(100).height(100);
+		//table2.setFillParent(true);
+		table2.add(piece2).width(100).height(100);
 		
 		final Table table3  = new Table().top();
-		table3.setFillParent(true);
-		table3.add(table3Image).width(100).height(100);
+		//table3.setFillParent(true);
+		table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
 				
 		
-		DragAndDrop dragAndDrop = new DragAndDrop();
+		mainTable.add(table1);
+		mainTable.add(table2);
+		mainTable.add(table3);
+		stage.addActor(mainTable);
 		
+		
+		
+		dragAndDrop = new DragAndDrop();
 		
 		dragAndDrop.addSource(new Source(table1) {
 			public Payload dragStart (InputEvent event, float x, float y, int pointer) {
@@ -96,11 +100,12 @@ public class MainMenuScreen implements Screen{
 
 				payload.setDragActor(table1.getCells().get(0).getActor());
 				table1.clearChildren();
-				table1.add(new Image(new Texture(Gdx.files.internal("black.png")))).width(100).height(100);
+				table1.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+				
+				dragAndDrop.removeSource(this);
 				return payload;
 			}
 		});
-		
 		
 		dragAndDrop.addSource(new Source(table2) {
 			public Payload dragStart (InputEvent event, float x, float y, int pointer) {
@@ -112,58 +117,93 @@ public class MainMenuScreen implements Screen{
 
 				payload.setDragActor(table2.getCells().get(0).getActor());
 				table2.clearChildren();
-				table2.add(new Image(new Texture(Gdx.files.internal("black.png")))).width(100).height(100);
+				table2.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+				
+				dragAndDrop.removeSource(this);
 				return payload;
 			}
 		});
 		
+		/*
 		dragAndDrop.addSource(new Source(table3) {
 			public Payload dragStart (InputEvent event, float x, float y, int pointer) {
 				
-				System.out.println("dragging from table3");
+				System.out.println("dragging from table2");
 				Payload payload = new Payload();
 				
-				payload.setObject(table3.getCells().get(0).getActor());
-				payload.setDragActor(table3.getCells().get(0).getActor());
+				payload.setObject(table2.getCells().get(0).getActor());
+
+				payload.setDragActor(table2.getCells().get(0).getActor());
 				table3.clearChildren();
-				table3.add(new Image(new Texture(Gdx.files.internal("black.png")))).width(100).height(100);
+				table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+				
+				dragAndDrop.removeSource(this);
 				return payload;
 			}
 		});
+		*/
 		
 		
 		dragAndDrop.addTarget(new Target(table1) {
 			public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
-				getActor().setColor(Color.GREEN);
 				return true;
-			}
-
-			public void reset (Source source, Payload payload) {
-				getActor().setColor(Color.WHITE);
 			}
 
 			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 				System.out.println("table1 Accepted: " + payload.getObject() + " " + x + ", " + y);
 				((Table) getActor()).clearChildren();
-				((Table) getActor()).add((Image)payload.getObject()).width(100).height(100);
+				System.out.println("PuzzlePiece " + Integer.toString(((PuzzlePiece)payload.getObject()).getPieceID()) + " dropped on table1");
+				((Table) getActor()).add((PuzzlePiece)payload.getObject()).width(100).height(100);
+				dragAndDrop.removeTarget(this);
+				
+				dragAndDrop.addSource(new Source(table1) {
+					public Payload dragStart (InputEvent event, float x, float y, int pointer) {
+						
+						System.out.println("dragging from table1");
+						Payload payload = new Payload();
+						
+						payload.setObject(table1.getCells().get(0).getActor());
+
+						payload.setDragActor(table1.getCells().get(0).getActor());
+						table1.clearChildren();
+						table1.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+						
+						dragAndDrop.removeSource(this);
+						return payload;
+					}
+				});
 			}
 		});
 		
 		
 		dragAndDrop.addTarget(new Target(table2) {
 			public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
-				getActor().setColor(Color.GREEN);
 				return true;
 			}
-
-			public void reset (Source source, Payload payload) {
-				getActor().setColor(Color.WHITE);
-			}
-
+			
 			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 				System.out.println("table2 Accepted: " + payload.getObject() + " " + x + ", " + y);
 				((Table) getActor()).clearChildren();
-				((Table) getActor()).add((Image)payload.getObject()).width(100).height(100);
+				System.out.println("PuzzlePiece " + Integer.toString(((PuzzlePiece)payload.getObject()).getPieceID()) + " dropped on table2");
+				((Table) getActor()).add((PuzzlePiece)payload.getObject()).width(100).height(100);
+				dragAndDrop.removeTarget(this);
+				
+				dragAndDrop.addSource(new Source(table2) {
+					public Payload dragStart (InputEvent event, float x, float y, int pointer) {
+						
+						System.out.println("dragging from table2");
+						Payload payload = new Payload();
+						
+						payload.setObject(table2.getCells().get(0).getActor());
+
+						payload.setDragActor(table2.getCells().get(0).getActor());
+						table2.clearChildren();
+						table2.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+						
+						dragAndDrop.removeSource(this);
+						return payload;
+					}
+				});
 			}
 		});
 		
@@ -174,25 +214,30 @@ public class MainMenuScreen implements Screen{
 				return true;
 			}
 
-			public void reset (Source source, Payload payload) {
-				getActor().setColor(Color.WHITE);
-			}
-
 			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 				System.out.println("table3 Accepted: " + payload.getObject() + " " + x + ", " + y);
 				((Table) getActor()).clearChildren();
-				((Table) getActor()).add((Image)payload.getObject()).width(100).height(100);
+				System.out.println("PuzzlePiece " + Integer.toString(((PuzzlePiece)payload.getObject()).getPieceID()) + " dropped on table3");
+				((Table) getActor()).add((PuzzlePiece)payload.getObject()).width(100).height(100);
+				dragAndDrop.removeTarget(this);
+				
+				dragAndDrop.addSource(new Source(table3) {
+					public Payload dragStart (InputEvent event, float x, float y, int pointer) {
+						
+						System.out.println("dragging from table3");
+						Payload payload = new Payload();
+						
+						payload.setObject(table3.getCells().get(0).getActor());
+						payload.setDragActor(table3.getCells().get(0).getActor());
+						table3.clearChildren();
+						table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+						
+						dragAndDrop.removeSource(this);
+						return payload;
+					}
+				});
 			}
 		});
-		
-		
-		
-		stage.addActor(table1);
-		stage.addActor(table2);
-		stage.addActor(table3);
-		
-
-		
 		
 		
 ///////////////////////////
