@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -46,7 +47,8 @@ public class WaitingScreen implements Screen{
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = true;
 		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.", true);
@@ -315,7 +317,7 @@ public class WaitingScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);		
 	}
 
 	@Override

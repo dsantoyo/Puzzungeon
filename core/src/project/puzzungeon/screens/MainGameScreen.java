@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -52,7 +53,8 @@ public class MainGameScreen implements Screen{
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage = new Stage(viewport);
 		displayDialog = true;
 		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
@@ -249,7 +251,7 @@ public class MainGameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);
 	}
 
 	@Override
@@ -269,9 +271,6 @@ public class MainGameScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		
-		game.batch.dispose();
-		
 	}
 	
 	public void update() {

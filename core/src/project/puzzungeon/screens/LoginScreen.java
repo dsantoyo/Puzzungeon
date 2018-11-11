@@ -8,15 +8,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -40,7 +39,8 @@ public class LoginScreen implements Screen{
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
 		
@@ -327,7 +327,7 @@ public class LoginScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);
 	}
 
 	@Override

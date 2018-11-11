@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -40,7 +41,8 @@ public class RegisterScreen implements Screen{
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage = new Stage(viewport);
 		displayDialog = false;
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -326,7 +328,7 @@ public class RegisterScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);
 	}
 
 	@Override

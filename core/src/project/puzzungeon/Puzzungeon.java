@@ -1,7 +1,6 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
@@ -13,7 +12,6 @@ public class Puzzungeon extends Game {
 	public final int WIDTH = 1000;
  	public final int HEIGHT = 800;
 	
-	public SpriteBatch batch;
 	public Skin skin;
 	public Client client;
 	public AssetLoader assetLoader;
@@ -30,7 +28,6 @@ public class Puzzungeon extends Game {
 	@Override
 	public void create () {
 		assetLoader = new AssetLoader();
-		batch = new SpriteBatch();
 
 		//pre-loading assets
 		assetLoader.loadSkin();
