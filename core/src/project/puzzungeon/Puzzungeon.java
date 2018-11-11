@@ -18,8 +18,8 @@ public class Puzzungeon extends Game {
 	public Client client;
 	public AssetLoader assetLoader;
 	
-	public static final int DEFAULT_WIDTH = 400;
-	public static final int DEFAULT_HEIGHT = 400;
+	public static final int DEFAULT_WIDTH = 1000;
+	public static final int DEFAULT_HEIGHT = 800;
 
 	public String serverAddress = "localhost";
 	public int serverPort = 6789;
