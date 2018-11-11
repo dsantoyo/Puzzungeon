@@ -270,14 +270,14 @@ public class LoginScreen implements Screen{
 			loginMenuTable.add(gameTitle).colspan(3);
 			loginMenuTable.row();
 			
-			loginMenuTable.add(username).width(game.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(usernameInput).width(game.WIDTH*0.4f).pad(5);
+			loginMenuTable.add(username).width(Puzzungeon.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(usernameInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 			loginMenuTable.row();
-			loginMenuTable.add(password).width(game.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(passwordInput).width(game.WIDTH*0.4f).pad(5);
+			loginMenuTable.add(password).width(Puzzungeon.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(passwordInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 			loginMenuTable.row();
-			loginMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(loginButton).width(game.WIDTH*0.2f).pad(5);
+			loginMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(5);
 			loginMenuTable.row();
 			loginMenuTable.add(error).colspan(2);
 
@@ -293,8 +293,8 @@ public class LoginScreen implements Screen{
 			
 			Table exitButtonTable = new Table().bottom().right();
 			exitButtonTable.setFillParent(true);
-			exitButtonTable.add(backButton).width(game.WIDTH*0.2f).pad(10);
-			exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(backButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 			
 /****************************************************************************************
 *                             end: Exit and Back Button

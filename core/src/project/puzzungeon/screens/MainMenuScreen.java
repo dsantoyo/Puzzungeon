@@ -142,9 +142,9 @@ public class MainMenuScreen implements Screen{
 		mainMenuTable.add(gameTitle).colspan(3);
 		mainMenuTable.row();
 		
-		mainMenuTable.add(loginButton).width(game.WIDTH*0.2f).pad(10);
-		mainMenuTable.add(newUserButton).width(game.WIDTH*0.2f).pad(10);
-		mainMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(10);
+		mainMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(newUserButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
 		mainMenuTable.row();
 			
 /****************************************************************************************
@@ -157,7 +157,7 @@ public class MainMenuScreen implements Screen{
 ****************************************************************************************/
 		Table exitButtonTable = new Table().bottom().right();
 		exitButtonTable.setFillParent(true);
-		exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+		exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 		
 /****************************************************************************************
 *                             end: Exit Button
@@ -166,7 +166,7 @@ public class MainMenuScreen implements Screen{
 		
 		//add actors onto the stage
 		stage.addActor(mainMenuTable);
-		//stage.addActor(exitButtonTable);
+		stage.addActor(exitButtonTable);
 		
 		//draw debugline to see the boundary of each actor
 		if(game.showDebugLine) {

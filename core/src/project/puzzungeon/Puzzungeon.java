@@ -9,15 +9,12 @@ import project.puzzungeon.screens.MainMenuScreen;
 //main game class
 public class Puzzungeon extends Game {
 	
-	public final int WIDTH = 1000;
- 	public final int HEIGHT = 800;
+	public static final int WIDTH = 1920;
+	public static final int HEIGHT = 1080;
 	
 	public Skin skin;
 	public Client client;
 	public AssetLoader assetLoader;
-	
-	public static final int DEFAULT_WIDTH = 1000;
-	public static final int DEFAULT_HEIGHT = 800;
 
 	public String serverAddress = "localhost";
 	public int serverPort = 6789;
