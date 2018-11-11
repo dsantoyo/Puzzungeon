@@ -46,8 +46,8 @@ public class MainMenuScreen implements Screen{
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
-		viewport = new FitViewport(Puzzungeon.DEFAULT_WIDTH, Puzzungeon.DEFAULT_HEIGHT);
-		stage = new Stage(viewport);
+		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
 	}
@@ -159,7 +159,6 @@ public class MainMenuScreen implements Screen{
 /****************************************************************************************
 *                             start: Exit Button
 ****************************************************************************************/
-		
 		Table exitButtonTable = new Table().bottom().right();
 		exitButtonTable.setFillParent(true);
 		exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
@@ -171,7 +170,7 @@ public class MainMenuScreen implements Screen{
 		
 		//add actors onto the stage
 		stage.addActor(mainMenuTable);
-		stage.addActor(exitButtonTable);
+		//stage.addActor(exitButtonTable);
 		
 		//draw debugline to see the boundary of each actor
 		if(game.showDebugLine) {
