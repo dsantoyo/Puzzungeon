@@ -78,7 +78,7 @@ public class MainMenuScreen implements Screen{
 		
 		final Table table3  = new Table().top();
 		//table3.setFillParent(true);
-		table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+		table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 				
 		
 		mainTable.add(table1);
@@ -100,11 +100,29 @@ public class MainMenuScreen implements Screen{
 
 				payload.setDragActor(table1.getCells().get(0).getActor());
 				table1.clearChildren();
-				table1.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+				table1.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 				
 				dragAndDrop.removeSource(this);
 				return payload;
 			}
+			
+			
+			
+			public void dragStop(InputEvent event,
+                    float x,
+                    float y,
+                    int pointer,
+                    DragAndDrop.Payload payload,
+                    DragAndDrop.Target target) {
+				
+				if(target == null) {
+					System.out.println("drag from table1 failed.");
+					table1.clearChildren();
+					table1.add(((PuzzlePiece)payload.getObject())).width(100).height(100);
+					dragAndDrop.addSource(this);
+				}
+			}
+			
 		});
 		
 		dragAndDrop.addSource(new Source(table2) {
@@ -117,7 +135,7 @@ public class MainMenuScreen implements Screen{
 
 				payload.setDragActor(table2.getCells().get(0).getActor());
 				table2.clearChildren();
-				table2.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+				table2.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 				
 				dragAndDrop.removeSource(this);
 				return payload;
@@ -166,7 +184,7 @@ public class MainMenuScreen implements Screen{
 
 						payload.setDragActor(table1.getCells().get(0).getActor());
 						table1.clearChildren();
-						table1.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+						table1.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 						
 						dragAndDrop.removeSource(this);
 						return payload;
@@ -198,7 +216,7 @@ public class MainMenuScreen implements Screen{
 
 						payload.setDragActor(table2.getCells().get(0).getActor());
 						table2.clearChildren();
-						table2.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+						table2.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 						
 						dragAndDrop.removeSource(this);
 						return payload;
@@ -230,7 +248,7 @@ public class MainMenuScreen implements Screen{
 						payload.setObject(table3.getCells().get(0).getActor());
 						payload.setDragActor(table3.getCells().get(0).getActor());
 						table3.clearChildren();
-						table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("black.png")),-1)).width(100).height(100);
+						table3.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 						
 						dragAndDrop.removeSource(this);
 						return payload;
