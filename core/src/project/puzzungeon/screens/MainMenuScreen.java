@@ -140,7 +140,6 @@ public class MainMenuScreen implements Screen{
 		
 		//set label color and size
 		gameTitle.setColor(Color.GREEN);
-		gameTitle.setFontScale(2);
 		
 		Table mainMenuTable = new Table();
 		mainMenuTable.setFillParent(true);

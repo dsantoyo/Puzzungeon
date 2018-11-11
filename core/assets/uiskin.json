@@ -1,6 +1,6 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: { 
-	default-font: { file: default-big.fnt }, 
+	default-font: { file: default.fnt }, 
 	mason: { file: mason-64.fnt }
 	},
 com.badlogic.gdx.graphics.Color: {

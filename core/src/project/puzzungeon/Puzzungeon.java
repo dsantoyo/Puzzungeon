@@ -1,11 +1,7 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
@@ -38,6 +34,7 @@ public class Puzzungeon extends Game {
 
 		//pre-loading assets
 		assetLoader.loadSkin();
+		assetLoader.manager.finishLoading();
 		skin = assetLoader.manager.get("uiskin.json", Skin.class);
 
 		client = new Client(serverAddress, serverPort);
