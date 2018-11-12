@@ -39,7 +39,7 @@ public class LoginScreen implements Screen{
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
-		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;

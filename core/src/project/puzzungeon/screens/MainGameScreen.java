@@ -53,7 +53,7 @@ public class MainGameScreen implements Screen{
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
-		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
 		displayDialog = true;
 		startTime = System.nanoTime();

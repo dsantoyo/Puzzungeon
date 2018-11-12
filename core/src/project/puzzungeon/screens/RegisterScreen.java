@@ -41,7 +41,7 @@ public class RegisterScreen implements Screen{
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
 		this.game = game;
-		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
 		displayDialog = false;
 		Gdx.input.setInputProcessor(stage);
