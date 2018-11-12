@@ -138,9 +138,7 @@ public class ServerThread extends Thread{
 						
 						//read past score from the database
 						int pastScore = database.getHighScore();
-						System.out.println("past score = " + pastScore);
-						
-						
+						System.out.println("past score = " + pastScore);	
 						
 						System.out.println("if we can log in");
 						try {

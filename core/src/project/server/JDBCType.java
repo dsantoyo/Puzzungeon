@@ -32,13 +32,15 @@ public class JDBCType {
 	public void connectionSet() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?user=root&password=root&useSSL=false");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?user=root&password=Florence100!&useSSL=false");
 			st = conn.createStatement();
 			
 		} catch (SQLException sqle) {
 			System.out.println("SQLException: " + sqle.getMessage());
+			//we should exit/go to error screen here
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println("ClassNotFoundException: " + cnfe.getMessage());
+			//we should exit/go to error screen here
 		} 
 	}
 	
