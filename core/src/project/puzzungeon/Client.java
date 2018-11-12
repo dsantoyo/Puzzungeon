@@ -146,6 +146,7 @@ public class Client {
 		            				}
 		            				else {
 		            					localPlayer = new Player(clientUsername);
+		            					System.out.println("localPlayer highest score = " + Integer.toString(rs.pastScore));
 		            					localPlayer.pastScore = rs.pastScore;
 		            					otherPlayer = new Player("default");
 		            					updatePlayer();
