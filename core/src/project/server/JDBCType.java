@@ -37,8 +37,10 @@ public class JDBCType {
 			
 		} catch (SQLException sqle) {
 			System.out.println("SQLException: " + sqle.getMessage());
+			//we should exit/go to error screen here
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println("ClassNotFoundException: " + cnfe.getMessage());
+			//we should exit/go to error screen here
 		} 
 	}
 	
