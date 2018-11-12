@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -40,7 +41,8 @@ public class RegisterScreen implements Screen{
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		stage = new Stage(viewport);
 		displayDialog = false;
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -271,14 +273,14 @@ public class RegisterScreen implements Screen{
 		registerMenuTable.add(gameTitle).colspan(3);
 		registerMenuTable.row();
 		
-		registerMenuTable.add(username).width(game.WIDTH*0.3f).pad(5);
-		registerMenuTable.add(usernameInput).width(game.WIDTH*0.4f).pad(5);
+		registerMenuTable.add(username).width(Puzzungeon.WIDTH*0.3f).pad(5);
+		registerMenuTable.add(usernameInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 		registerMenuTable.row();
-		registerMenuTable.add(password).width(game.WIDTH*0.3f).pad(5);
-		registerMenuTable.add(passwordInput).width(game.WIDTH*0.4f).pad(5);
+		registerMenuTable.add(password).width(Puzzungeon.WIDTH*0.3f).pad(5);
+		registerMenuTable.add(passwordInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 		registerMenuTable.row();
-		registerMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(5);
-		registerMenuTable.add(registerButton).width(game.WIDTH*0.2f).pad(5);
+		registerMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(5);
+		registerMenuTable.add(registerButton).width(Puzzungeon.WIDTH*0.2f).pad(5);
 		registerMenuTable.row();
 		registerMenuTable.add(error).colspan(2);
 
@@ -293,8 +295,8 @@ public class RegisterScreen implements Screen{
 			
 			Table exitButtonTable = new Table().bottom().right();
 			exitButtonTable.setFillParent(true);
-			exitButtonTable.add(backButton).width(game.WIDTH*0.2f).pad(10);
-			exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(backButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 			
 /****************************************************************************************
 *                             end: Exit and Back Button
@@ -326,7 +328,7 @@ public class RegisterScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);
 	}
 
 	@Override

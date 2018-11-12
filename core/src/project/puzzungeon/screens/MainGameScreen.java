@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.PuzzlePiece;
@@ -71,7 +72,8 @@ public class MainGameScreen implements Screen{
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		stage = new Stage(viewport);
 		displayDialog = true;
 		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
@@ -384,24 +386,24 @@ public class MainGameScreen implements Screen{
 		
 		Table chatRoom = new Table().bottom().left();
 		chatRoom.pad(0);
-		chatRoom.add(chatTitle).width(game.WIDTH).colspan(3);
+		chatRoom.add(chatTitle).width(Puzzungeon.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage4).width(game.WIDTH).colspan(3);
+		chatRoom.add(showMessage4).width(Puzzungeon.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage3).width(game.WIDTH).colspan(3);
+		chatRoom.add(showMessage3).width(Puzzungeon.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage2).width(game.WIDTH).colspan(3);
+		chatRoom.add(showMessage2).width(Puzzungeon.WIDTH).colspan(3);
 		chatRoom.row();
-		chatRoom.add(showMessage1).width(game.WIDTH).colspan(3);
-		chatRoom.row();
-		
-		chatRoom.add(inputBox).width(game.WIDTH*0.7f);
-		chatRoom.add(sendButton).width(game.WIDTH*0.3f).colspan(2);
+		chatRoom.add(showMessage1).width(Puzzungeon.WIDTH).colspan(3);
 		chatRoom.row();
 		
-		chatRoom.add(new Label("",game.skin)).width(game.WIDTH*0.7f);
-		chatRoom.add(backButton).width(game.WIDTH*0.15f).pad(0);
-		chatRoom.add(exitButton).width(game.WIDTH*0.15f).pad(0);
+		chatRoom.add(inputBox).width(Puzzungeon.WIDTH*0.7f);
+		chatRoom.add(sendButton).width(Puzzungeon.WIDTH*0.3f).colspan(2);
+		chatRoom.row();
+		
+		chatRoom.add(new Label("",game.skin)).width(Puzzungeon.WIDTH*0.7f);
+		chatRoom.add(backButton).width(Puzzungeon.WIDTH*0.15f).pad(0);
+		chatRoom.add(exitButton).width(Puzzungeon.WIDTH*0.15f).pad(0);
 		
 /****************************************************************************************
 *                             end: chatroom UI
@@ -433,7 +435,7 @@ public class MainGameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);
 	}
 
 	@Override
@@ -453,9 +455,6 @@ public class MainGameScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		
-		game.batch.dispose();
-		
 	}
 	
 	public void update() {

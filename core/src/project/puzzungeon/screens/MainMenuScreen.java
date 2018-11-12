@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.PuzzlePiece;
@@ -35,6 +36,13 @@ public class MainMenuScreen implements Screen{
 	private Stage stage;
 	private Table table;
 	
+	//actor references
+	private Label gameTitle;
+	private TextButton loginButton;
+	private TextButton newUserButton;
+	private TextButton guestButton;
+	private TextButton exitButton;
+	
 	//shared by different methods
 	private Boolean displayDialog;
 	private Dialog gameFullDialog;
@@ -43,7 +51,8 @@ public class MainMenuScreen implements Screen{
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage(new ScreenViewport());
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
 		
@@ -53,16 +62,13 @@ public class MainMenuScreen implements Screen{
 	//construct stage
 	@Override
 	public void show() {
-		
 /****************************************************************************************
 *                             start: actors functionality
 ****************************************************************************************/
+
+		gameTitle = new Label("Puzzungeon", game.skin);
 		
-		
-		
-		Label gameTitle = new Label("Puzzungeon", game.skin);
-		
-		TextButton loginButton = new TextButton("Login", game.skin, "default");
+		loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
@@ -70,15 +76,16 @@ public class MainMenuScreen implements Screen{
 		            }
 		        });
 		
-		TextButton newUserButton = new TextButton("New User", game.skin, "default");
+		newUserButton = new TextButton("New User", game.skin, "default");
 			newUserButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
-			
-		TextButton guestButton = new TextButton("Login as Guest", game.skin, "default");
+
+		guestButton = new TextButton("Login as Guest", game.skin, "default");
+
 					guestButton.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
@@ -106,8 +113,9 @@ public class MainMenuScreen implements Screen{
 							}
 						}
 					});
-					
-		TextButton exitButton = new TextButton("Exit", game.skin, "default");
+
+		exitButton = new TextButton("Exit", game.skin, "default");
+
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
@@ -140,16 +148,15 @@ public class MainMenuScreen implements Screen{
 		
 		//set label color and size
 		gameTitle.setColor(Color.GREEN);
-		gameTitle.setFontScale(2);
 		
 		Table mainMenuTable = new Table();
 		mainMenuTable.setFillParent(true);
 		mainMenuTable.add(gameTitle).colspan(3);
 		mainMenuTable.row();
 		
-		mainMenuTable.add(loginButton).width(game.WIDTH*0.2f).pad(10);
-		mainMenuTable.add(newUserButton).width(game.WIDTH*0.2f).pad(10);
-		mainMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(10);
+		mainMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(newUserButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
 		mainMenuTable.row();
 			
 /****************************************************************************************
@@ -160,10 +167,9 @@ public class MainMenuScreen implements Screen{
 /****************************************************************************************
 *                             start: Exit Button
 ****************************************************************************************/
-		
 		Table exitButtonTable = new Table().bottom().right();
 		exitButtonTable.setFillParent(true);
-		exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+		exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 		
 /****************************************************************************************
 *                             end: Exit Button
@@ -195,6 +201,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height);
 		//table.setWidth(Puzzungeon.WIDTH);
 	}
 

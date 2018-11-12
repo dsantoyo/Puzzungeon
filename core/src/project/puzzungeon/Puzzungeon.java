@@ -1,8 +1,6 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import project.puzzungeon.screens.MainMenuScreen;
@@ -11,13 +9,12 @@ import project.puzzungeon.screens.MainMenuScreen;
 //main game class
 public class Puzzungeon extends Game {
 	
-	public final int WIDTH = 1000;
- 	public final int HEIGHT = 800;
+	public static final int WIDTH = 1920;
+	public static final int HEIGHT = 1080;
 	
-	public SpriteBatch batch;
 	public Skin skin;
 	public Client client;
-	
+	public AssetLoader assetLoader;
 
 	public String serverAddress = "localhost";
 	public int serverPort = 6789;
@@ -27,8 +24,13 @@ public class Puzzungeon extends Game {
 	//loads assets and calls first screen
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		assetLoader = new AssetLoader();
+
+		//pre-loading assets
+		assetLoader.loadSkin();
+		assetLoader.manager.finishLoading();
+		skin = assetLoader.manager.get("uiskin.json", Skin.class);
+
 		client = new Client(serverAddress, serverPort);
 		//move on the the main Menu screen
 		this.setScreen(new MainMenuScreen(this));

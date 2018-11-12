@@ -15,10 +15,7 @@ CREATE TABLE highscore_table (
   user1 varchar(45) NOT NULL,
   user2 varchar(45) NOT NULL,
   score int(11) NOT NULL,
-  PRIMARY KEY (user1,user2,score),
-  KEY user2 (user2),
-  CONSTRAINT highscore_table_ibfk_1 FOREIGN KEY (user1) REFERENCES user_table (userID),
-  CONSTRAINT highscore_table_ibfk_2 FOREIGN KEY (user2) REFERENCES user_table (userID)
+  PRIMARY KEY (user1,user2,score)
 ) ;
 
 

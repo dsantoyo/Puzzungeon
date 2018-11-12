@@ -8,15 +8,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
@@ -40,7 +39,8 @@ public class LoginScreen implements Screen{
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
-		stage = new Stage();
+		FitViewport viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
 		
@@ -270,14 +270,14 @@ public class LoginScreen implements Screen{
 			loginMenuTable.add(gameTitle).colspan(3);
 			loginMenuTable.row();
 			
-			loginMenuTable.add(username).width(game.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(usernameInput).width(game.WIDTH*0.4f).pad(5);
+			loginMenuTable.add(username).width(Puzzungeon.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(usernameInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 			loginMenuTable.row();
-			loginMenuTable.add(password).width(game.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(passwordInput).width(game.WIDTH*0.4f).pad(5);
+			loginMenuTable.add(password).width(Puzzungeon.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(passwordInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 			loginMenuTable.row();
-			loginMenuTable.add(guestButton).width(game.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(loginButton).width(game.WIDTH*0.2f).pad(5);
+			loginMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(5);
+			loginMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(5);
 			loginMenuTable.row();
 			loginMenuTable.add(error).colspan(2);
 
@@ -293,8 +293,8 @@ public class LoginScreen implements Screen{
 			
 			Table exitButtonTable = new Table().bottom().right();
 			exitButtonTable.setFillParent(true);
-			exitButtonTable.add(backButton).width(game.WIDTH*0.2f).pad(10);
-			exitButtonTable.add(exitButton).width(game.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(backButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
+			exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 			
 /****************************************************************************************
 *                             end: Exit and Back Button
@@ -327,7 +327,7 @@ public class LoginScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		
+		stage.getViewport().update(width, height);
 	}
 
 	@Override
