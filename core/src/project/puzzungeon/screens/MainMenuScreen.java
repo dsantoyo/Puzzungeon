@@ -46,6 +46,10 @@ public class MainMenuScreen implements Screen{
 	public PuzzlePiece piece3;
 	public PuzzlePiece piece4;
 	
+	public int correctPieceCount;
+	
+	public int totalPieces;
+	
 	public ArrayList<PuzzlePiece> pieces;
 	
 
@@ -57,6 +61,9 @@ public class MainMenuScreen implements Screen{
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
+		
+		correctPieceCount = 0;
+		totalPieces = 4;
 	}
 	
 	//construct stage
@@ -84,6 +91,7 @@ public class MainMenuScreen implements Screen{
 			final Table sourceTableNew = new Table();
 			sourceTableNew.add(pieces.get(i)).width(100).height(100);
 			sourceTables.add(sourceTableNew);
+			
 			dragAndDrop.addSource(new Source(sourceTableNew) {
 				public Payload dragStart (InputEvent event, float x, float y, int pointer) {
 					Payload payload = new Payload();
@@ -92,8 +100,23 @@ public class MainMenuScreen implements Screen{
 					//sourceTables.get(i).clearChildren();
 					//sourceTables.get(i).add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 					
-					dragAndDrop.removeSource(this);
+					//dragAndDrop.removeSource(this);
 					return payload;
+				}
+				
+				public void dragStop(InputEvent event,
+	                     float x,
+	                     float y,
+	                     int pointer,
+	                     DragAndDrop.Payload payload,
+	                     DragAndDrop.Target target) {
+					
+					if(target == null) {
+						System.out.println("lose piece");
+						sourceTableNew.clearChildren();
+						sourceTableNew.add((PuzzlePiece)payload.getObject()).width(100).height(100);
+						
+					}
 				}
 				
 			});
@@ -137,6 +160,11 @@ public class MainMenuScreen implements Screen{
 					
 					if(pieceID == targetCellID) {
 						dragAndDrop.removeTarget(this);
+						correctPieceCount++;
+						if(correctPieceCount == totalPieces) {
+							System.out.println("All pieces are in correct location");
+						
+						}
 					}
 					else {
 						dragAndDrop.addSource(new Source(targetTables.get(index)) {
@@ -147,10 +175,24 @@ public class MainMenuScreen implements Screen{
 								targetTables.get(index).clearChildren();
 								targetTables.get(index).add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(100).height(100);
 								
-								dragAndDrop.removeSource(this);
+								//dragAndDrop.removeSource(this);
 								return payload;
 							}
 							
+							public void dragStop(InputEvent event,
+				                     float x,
+				                     float y,
+				                     int pointer,
+				                     DragAndDrop.Payload payload,
+				                     DragAndDrop.Target target) {
+								
+								if(target == null) {
+									System.out.println("lose piece");
+									targetTableNew.clearChildren();
+									targetTableNew.add((PuzzlePiece)payload.getObject()).width(100).height(100);
+									
+								}
+							}
 						});
 					}
 					
