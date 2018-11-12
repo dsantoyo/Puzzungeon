@@ -1,5 +1,7 @@
 package project.puzzungeon.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
@@ -19,9 +21,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.Align;
 
 import project.puzzungeon.Client;
+import project.puzzungeon.PuzzlePiece;
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
 
@@ -51,6 +58,16 @@ public class MainGameScreen implements Screen{
 	private long startTime;
 	
 	
+	public int correctPieceCount;
+	
+	public int totalPieces;
+	
+	public ArrayList<PuzzlePiece> pieces;
+	
+
+	public DragAndDrop dragAndDrop;
+	
+	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
@@ -58,6 +75,9 @@ public class MainGameScreen implements Screen{
 		displayDialog = true;
 		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
+		
+		correctPieceCount = 0;
+		totalPieces = 4;
 	}
 
 	@Override
@@ -163,10 +183,172 @@ public class MainGameScreen implements Screen{
 				}
 			});
 		
+			
+/****************************************************************************************
+*                             start: game logic functionality
+****************************************************************************************/	
+			
+			pieces = new ArrayList<PuzzlePiece>();
+			
+			for(int i = 0; i < 4; i++) {
+				pieces.add(new PuzzlePiece(new Texture(Gdx.files.internal("image/pup"+(i+1)+".jpg")), i));
+			}
+			
+			
+			dragAndDrop = new DragAndDrop();
+			
+			final ArrayList<Table> sourceTables = new ArrayList<Table>();
+			final Table sourceTable = new Table().right();
+			sourceTable.setFillParent(true);
+			
+			for(int i = 0; i < 4; i++) {
+				final Table sourceTableNew = new Table();
+				sourceTableNew.add(pieces.get(i)).width(80).height(80);
+				sourceTables.add(sourceTableNew);
+				
+				dragAndDrop.addSource(new Source(sourceTableNew) {
+					public Payload dragStart (InputEvent event, float x, float y, int pointer) {
+						Payload payload = new Payload();
+						payload.setObject(sourceTableNew.getCells().get(0).getActor());
+						payload.setDragActor(sourceTableNew.getCells().get(0).getActor());
+						return payload;
+					}
+					
+					public void dragStop(InputEvent event,
+		                     float x,
+		                     float y,
+		                     int pointer,
+		                     DragAndDrop.Payload payload,
+		                     DragAndDrop.Target target) {
+						
+						if(target == null) {
+							System.out.println("lose piece");
+							sourceTableNew.clearChildren();
+							sourceTableNew.add((PuzzlePiece)payload.getObject()).width(80).height(80);
+							
+						}
+					}
+					
+				});
+		
+			}
+			
+			for(Table t : sourceTables) {
+				sourceTable.add(t);
+				sourceTable.row();
+			}
+				
+			final ArrayList<Table> targetTables = new ArrayList<Table>();
+			final Table targetTable = new Table();
+			targetTable.setFillParent(true);
+			
+			for(int i = 0; i < 4; i++) {
+				//final Table
+				final int index = i;
+				final Table targetTableNew = new Table();
+				targetTableNew.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")), -1)).width(80).height(80);
+				targetTables.add(targetTableNew);
+				dragAndDrop.addTarget(new Target(targetTableNew) {
+					public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
+						return true;
+					}
+
+					public void drop (Source source, Payload payload, float x, float y, int pointer) {
+						System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
+						
+						((Table)source.getActor()).clearChildren();
+						((Table)source.getActor()).add(((Table)getActor()).getCells().get(0).getActor()).width(80).height(80);
+						
+						
+						((Table) getActor()).clearChildren();
+						//System.out.println("PuzzlePiece " + Integer.toString(((PuzzlePiece)payload.getObject()).getPieceID()) + " dropped on table1");
+						((Table) getActor()).add((PuzzlePiece)payload.getObject()).width(80).height(80);
+						
+						//check if every piece is in the correct location
+						for(int i = 0; i < targetTables.size(); i++) {
+							
+							System.out.println("checking piece:" + i);
+							//get pieceIn every table
+							int pieceID = ((PuzzlePiece)(targetTables.get(i).getCells().get(0).getActor())).getPieceID();
+							
+							if(i == pieceID) {
+								//dragAndDrop.removeTarget( (Target)(targetTables.get(i)));
+								correctPieceCount++;
+								if(correctPieceCount == totalPieces) {
+									System.out.println("All pieces are in correct location");
+								
+								}
+							}
+						}
+						
+						
+						
+						int pieceID = ((PuzzlePiece)payload.getObject()).getPieceID();
+						int targetCellID = index;
+						System.out.println("piece " + pieceID + " dropped in cell " + targetCellID);
+						
+						if(pieceID == targetCellID) {
+							dragAndDrop.removeTarget(this);
+							correctPieceCount++;
+							if(correctPieceCount == totalPieces) {
+								System.out.println("All pieces are in correct location");
+							
+							}
+						}
+						else {
+							dragAndDrop.addSource(new Source(targetTables.get(index)) {
+								public Payload dragStart (InputEvent event, float x, float y, int pointer) {
+									Payload payload = new Payload();
+									payload.setObject(targetTables.get(index).getCells().get(0).getActor());
+									payload.setDragActor(targetTables.get(index).getCells().get(0).getActor());
+									targetTables.get(index).clearChildren();
+									targetTables.get(index).add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(80).height(80);
+									
+									//dragAndDrop.removeSource(this);
+									return payload;
+								}
+								
+								public void dragStop(InputEvent event,
+					                     float x,
+					                     float y,
+					                     int pointer,
+					                     DragAndDrop.Payload payload,
+					                     DragAndDrop.Target target) {
+									
+									if(target == null) {
+										System.out.println("lose piece");
+										targetTableNew.clearChildren();
+										targetTableNew.add((PuzzlePiece)payload.getObject()).width(80).height(80);
+										
+									}
+								}
+							});
+						}
+					}
+				});
+			}
+
+
+			
+			for(int i = 0; i < targetTables.size();i=i+2) {
+				targetTable.add(targetTables.get(i));
+				targetTable.add(targetTables.get(i+1));
+				targetTable.row();
+				
+			}
+			
+			stage.addActor(sourceTable);
+			stage.addActor(targetTable);
+			
+			
+/****************************************************************************************
+*                             end: game logic functionality
+****************************************************************************************/
+			
 /****************************************************************************************
 *                             end: actors functionality
 ****************************************************************************************/
-		
+	
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
