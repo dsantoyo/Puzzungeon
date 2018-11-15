@@ -1,8 +1,13 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import project.puzzungeon.screens.LoadingScreen;
 import project.puzzungeon.screens.MainMenuScreen;
 
 
@@ -15,6 +20,8 @@ public class Puzzungeon extends Game {
 	public Skin skin;
 	public Client client;
 	public AssetLoader assetLoader;
+	
+	public SpriteBatch batch;
 
 	public String serverAddress = "localhost";
 	public int serverPort = 6789;
@@ -25,15 +32,18 @@ public class Puzzungeon extends Game {
 	@Override
 	public void create () {
 		assetLoader = new AssetLoader();
-
-		//pre-loading assets
+		client = new Client(serverAddress, serverPort);
+		batch = new SpriteBatch();
+		
+		//load pre-loading assets
 		assetLoader.loadSkin();
 		assetLoader.manager.finishLoading();
 		skin = assetLoader.manager.get("uiskin.json", Skin.class);
-
-		client = new Client(serverAddress, serverPort);
-		//move on the the main Menu screen
-		this.setScreen(new MainMenuScreen(this));
+				
+		//queue loading for other assets
+		assetLoader.loadAtlas();
+		this.setScreen(new LoadingScreen(this));
+	
 	}
 
 	@Override
@@ -43,10 +53,9 @@ public class Puzzungeon extends Game {
 	
 	//disposes visual assets in order to free up memory 
 	//(called when switching screens and at end of program).
-	//Just a wrapper for AssetLoader’s dispose()
 	@Override
 	public void dispose () {
-
+		batch.dispose();
 	}
 	
 }

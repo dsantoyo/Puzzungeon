@@ -1,0 +1,47 @@
+sprites.png
+size: 216, 240
+format: RGBA8888
+filter: Linear,Nearest
+repeat: none
+castle-small
+  rotate: false
+  xy: 0, 0
+  size: 120, 60
+  orig: 120, 60
+  offset: 0, 0
+  index: -1
+dragon
+  rotate: false
+  xy: 120, 0
+  size: 96, 48
+  orig: 96, 48
+  offset: 0, 0
+  index: -1
+dungeon-wall
+  rotate: false
+  xy: 0, 60
+  size: 160, 90
+  orig: 160, 90
+  offset: 0, 0
+  index: -1
+dungeon
+  rotate: false
+  xy: 0, 150
+  size: 160, 90
+  orig: 160, 90
+  offset: 0, 0
+  index: -1
+mouse-cursor-icon
+  rotate: false
+  xy: 160, 150
+  size: 12, 19
+  orig: 12, 19
+  offset: 0, 0
+  index: -1
+teleporter
+  rotate: false
+  xy: 172, 150
+  size: 38, 38
+  orig: 38, 38
+  offset: 0, 0
+  index: -1
