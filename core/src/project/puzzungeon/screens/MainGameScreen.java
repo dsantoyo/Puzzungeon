@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -29,6 +31,11 @@ public class MainGameScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
+	FitViewport viewport;
+	
+	//background references
+	TextureAtlas atlas;
+	Sprite background;
 	
 	//shared by different methods
 	private Label showMessage1;
@@ -53,11 +60,16 @@ public class MainGameScreen implements Screen{
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
 		this.game = game;
-		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
 		displayDialog = true;
 		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
+		
+		atlas = game.assetLoader.manager.get("sprites.txt");
+		background = atlas.createSprite("dungeon-wall");
+		background.setOrigin(0, 0);
+		background.setScale(9f);
 	}
 
 	@Override
@@ -243,6 +255,15 @@ public class MainGameScreen implements Screen{
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		//draw background
+		viewport.apply();
+		game.batch.begin();
+		background.draw(game.batch);
+		game.batch.end();
+		
+		//draw stage
+		stage.getViewport().apply();
 		stage.act(Gdx.graphics.getDeltaTime());
 		update();
 		stage.draw();

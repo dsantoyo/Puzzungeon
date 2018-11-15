@@ -1,7 +1,7 @@
 sprites.png
 size: 216, 240
 format: RGBA8888
-filter: Linear,Linear
+filter: Linear,Nearest
 repeat: none
 castle-small
   rotate: false

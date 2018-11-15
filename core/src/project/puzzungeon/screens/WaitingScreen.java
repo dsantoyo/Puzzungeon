@@ -6,6 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -19,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -31,7 +35,14 @@ public class WaitingScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
+	FitViewport viewport;
 	
+	//asset reference
+	private TextureAtlas atlas;
+	private Sprite background;
+	private Sprite mouseSprite;
+	private Sprite teleporterSprite;
+
 	//shared by different methods
 	private Label showMessage1;
 	private Label showMessage2;
@@ -47,8 +58,16 @@ public class WaitingScreen implements Screen{
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
-		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
+		
+		atlas = game.assetLoader.manager.get("sprites.txt");
+		mouseSprite = atlas.createSprite("mouse-cursor-icon");
+		teleporterSprite = atlas.createSprite("teleporter");
+		background = atlas.createSprite("dungeon-wall");
+		background.setOrigin(0, 0);
+		background.setScale(9f);
+		
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = true;
 		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.", true);
@@ -155,9 +174,9 @@ public class WaitingScreen implements Screen{
 		Label instruct1 = new Label(instructions1Str, game.skin, "default");
 		Label instruct2 = new Label(instructions2Str, game.skin, "default");
 		Label instruct3 = new Label(instructions3Str, game.skin, "default");
-		Image mouse = new Image(new Texture(Gdx.files.internal("mouse-cursor-icon.png")));
+		Image mouse = new Image(new SpriteDrawable(mouseSprite));
 		mouse.setScale(0.5f);
-		Image teleporter = new Image(new Texture(Gdx.files.internal("teleporter.png")));
+		Image teleporter = new Image(new SpriteDrawable(teleporterSprite));
 		instruct1.setWrap(true);
 		instruct3.setWrap(true);
 
@@ -310,6 +329,14 @@ public class WaitingScreen implements Screen{
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		//draw background
+		viewport.apply();
+		game.batch.begin();
+		background.draw(game.batch);
+		game.batch.end();
+				
+		//draw stage
+		stage.getViewport().apply();
 		stage.act(Gdx.graphics.getDeltaTime());
 		update();
 		stage.draw();

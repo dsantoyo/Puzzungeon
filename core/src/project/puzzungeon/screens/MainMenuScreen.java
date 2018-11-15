@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,10 +27,10 @@ public class MainMenuScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
+	FitViewport viewport;
 	
 	//asset references
 	TextureAtlas atlas;
-	SpriteBatch batch;
 	Sprite background;
 	
 	//actor references
@@ -49,14 +48,16 @@ public class MainMenuScreen implements Screen{
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
-		FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
 		
-		//load background
+		//setup background
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		background = atlas.createSprite("dungeon");
+		background.setOrigin(0, 0);
+		background.setScale(9f);
 	}
 	
 	//construct stage
@@ -84,34 +85,33 @@ public class MainMenuScreen implements Screen{
 	        	});
 
 		guestButton = new TextButton("Login as Guest", game.skin, "default");
-
-					guestButton.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
+			guestButton.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
 							game.client.clientUsername = "Guest";
-							if(!game.client.connectState) {
-								//set up connection to the server
-								System.out.println("Trying to connect...");
-								if(!game.client.connect()) {
-									System.out.println("Unable to connect to the server");
-									displayDialog = true;
-									game.client = new Client(game.serverAddress, game.serverPort);
-								}
-								else {
-									game.client.sendUsername(new Username("guest"));
-									game.client.sendPassword(new Password("guest"));
-									game.client.sendLoginRegister(new LoginRegister("guest"));
-									displayDialog = true;
-								}
-							}
-							else {
-								game.client.sendUsername(new Username("guest"));
-								game.client.sendPassword(new Password("guest"));
-								game.client.sendLoginRegister(new LoginRegister("guest"));
-								displayDialog = true;
-							}
+					if(!game.client.connectState) {
+						//set up connection to the server
+						System.out.println("Trying to connect...");
+						if(!game.client.connect()) {
+							System.out.println("Unable to connect to the server");
+							displayDialog = true;
+							game.client = new Client(game.serverAddress, game.serverPort);
 						}
-					});
+						else {
+							game.client.sendUsername(new Username("guest"));
+							game.client.sendPassword(new Password("guest"));
+							game.client.sendLoginRegister(new LoginRegister("guest"));
+							displayDialog = true;
+						}
+					}
+					else {
+						game.client.sendUsername(new Username("guest"));
+						game.client.sendPassword(new Password("guest"));
+						game.client.sendLoginRegister(new LoginRegister("guest"));
+						displayDialog = true;
+					}
+				}
+			});
 
 		exitButton = new TextButton("Exit", game.skin, "default");
 
@@ -194,13 +194,14 @@ public class MainMenuScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		
 		//draw background
-		batch.begin();
-		background.draw(batch);
-		batch.end();
+		viewport.apply();
+		game.batch.begin();
+		background.draw(game.batch);
+		game.batch.end();
 		
 		//update and draw stage
+		stage.getViewport().apply();
 		stage.act(Gdx.graphics.getDeltaTime());
 		checkClientLoginState();
 		stage.draw();
@@ -229,7 +230,6 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		batch.dispose();
 	}
 	
 	public void checkClientLoginState() {
