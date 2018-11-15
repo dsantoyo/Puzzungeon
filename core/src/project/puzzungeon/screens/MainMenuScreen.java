@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -25,7 +28,11 @@ public class MainMenuScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
-	private Table table;
+	
+	//asset references
+	TextureAtlas atlas;
+	SpriteBatch batch;
+	Sprite background;
 	
 	//actor references
 	private Label gameTitle;
@@ -46,6 +53,10 @@ public class MainMenuScreen implements Screen{
 		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = false;
+		
+		//load background
+		atlas = game.assetLoader.manager.get("sprites.txt");
+		background = atlas.createSprite("dungeon");
 	}
 	
 	//construct stage
@@ -182,6 +193,14 @@ public class MainMenuScreen implements Screen{
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		
+		//draw background
+		batch.begin();
+		background.draw(batch);
+		batch.end();
+		
+		//update and draw stage
 		stage.act(Gdx.graphics.getDeltaTime());
 		checkClientLoginState();
 		stage.draw();
@@ -210,7 +229,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void dispose() {
-
+		batch.dispose();
 	}
 	
 	public void checkClientLoginState() {
