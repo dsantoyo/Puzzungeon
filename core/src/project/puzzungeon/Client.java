@@ -143,6 +143,7 @@ public class Client {
 		            				System.out.println("Client: update loginState = "+loginState);
 		            				if(!loginState) {
 		            					System.out.println("failed to log in");
+		            					System.out.println(loginStateMessage);
 		            				}
 		            				else {
 		            					localPlayer = new Player(clientUsername);
