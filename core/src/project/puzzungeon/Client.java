@@ -155,7 +155,6 @@ public class Client {
 		            					System.out.println("localPlayer highest score = " + Integer.toString(rs.pastScore));
 		            					localPlayer.pastScore = rs.pastScore;
 		            					otherPlayer = new Player("default");
-		            					updatePlayer();
 		            					System.out.println("logged in ");
 		            				}
 		            			}
@@ -163,6 +162,7 @@ public class Client {
 		            			if(object instanceof GameRoomCode) {
 		            				GameRoomCode grc = (GameRoomCode)object;
 		            				gameRoomCode = grc.code;
+		            				updatePlayer();
 		            				System.out.println("Client: got gameroomcode from server = "+gameRoomCode);
 		            			}
 		            		}
@@ -222,6 +222,7 @@ public class Client {
 	
 	//send/update a player from a client(front-end) to a serverthread(back-end)
 	public void updatePlayer() {
+		System.out.println("client: updatePlayer() called");
 		try {
 			oos.writeObject(localPlayer);
 			oos.flush();
