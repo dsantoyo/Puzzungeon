@@ -161,9 +161,14 @@ public class Client {
 		            			
 		            			if(object instanceof GameRoomCode) {
 		            				GameRoomCode grc = (GameRoomCode)object;
-		            				gameRoomCode = grc.code;
-		            				updatePlayer();
-		            				System.out.println("Client: got gameroomcode from server = "+gameRoomCode);
+		            				if(!grc.code.equals("no empty room") && !grc.code.equals("")) {
+		            					gameRoomCode = grc.code;
+		            					updatePlayer();
+		            					System.out.println("Client: got gameroomcode from server = "+gameRoomCode);
+		            				}
+		            				else if(grc.code.equals("no empty room")){
+		            					System.out.println("Client: 0 gameroom available");
+		            				}
 		            			}
 		            		}
 		            	}catch(IOException ioe) {

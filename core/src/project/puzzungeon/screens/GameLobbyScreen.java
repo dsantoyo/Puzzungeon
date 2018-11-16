@@ -217,7 +217,7 @@ public class GameLobbyScreen implements Screen{
 	
 	public void update() {
 		
-		if(!game.client.gameRoomCode.equals("")) {
+		if(!game.client.gameRoomCode.equals("") && !game.client.gameRoomCode.equals("no empty room")) {
 			game.setScreen(new WaitingScreen(game));
 		}
 	}

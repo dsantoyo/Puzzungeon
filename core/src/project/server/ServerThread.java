@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Iterator;
 
 
 //a serverThread object(back-end) is connected to a client(front-end)
@@ -143,6 +144,7 @@ public class ServerThread extends Thread{
 						}	
 					}
 					
+					/*
 					else if (server.isGameFull()) { // is 2 players are already in the game
 						try {
 							System.out.println("serverthread: denied. game is full.");
@@ -153,6 +155,7 @@ public class ServerThread extends Thread{
 							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
 						}
 					}
+					*/
 					else { // allow the client to login
 						
 						//read past score from the database
@@ -191,7 +194,7 @@ public class ServerThread extends Thread{
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
-							System.out.println("serverthrad: adding player for game room " + gameRoomCode.code);
+							System.out.println("serverthread: adding player for game room " + gameRoomCode.code);
 							int newID = server.addServerPlayer(player, gameRoomCode.code);
 							//set up PlayerID on client side
 							serverThreadPlayerID = newID;
@@ -208,13 +211,38 @@ public class ServerThread extends Thread{
 					lobbyChoice = (LobbyChoice)object;
 					if(lobbyChoice != null) {
 						if(lobbyChoice.choice.equals("new game")) {
+							System.out.println("serverthread: player asking from a new romm");
 							gameRoomCode = new GameRoomCode(server.generateGameRoomCode());
 							sendGameRoomCode(gameRoomCode);
 							
 							GameRoom gameroom = new GameRoom(gameRoomCode.code);
 							gameroom.serverThreads.add(this);
 							server.gameRoomMap.put(gameRoomCode.code, gameroom);
+						}
+						if(lobbyChoice.choice.equals("random game")) {
+							System.out.println("serverthread: player asking from a random romm");
 							
+							//find an available game room
+							Boolean foundAvailable = false;
+							for (String code : server.gameRoomMap.keySet()){
+						        //iterate over keys
+						        System.out.println("serverThread: checking if room " + code + " is available");
+						        
+						        //if find an available game room
+						        if(!server.isGameFull(code)){
+						        	//assign this serverthread to the gameroom
+						        	server.gameRoomMap.get(code).serverThreads.add(this);
+						        	gameRoomCode.code = code;
+						        	//return game code to the client
+						        	foundAvailable = true;
+						        	System.out.println("serverThread: found room "+code+" empty. sending code back to client.");
+						        	sendGameRoomCode(new GameRoomCode(code));
+						        	break;
+						        }
+						    }
+							if(!foundAvailable) {
+								sendGameRoomCode(new GameRoomCode("no empty room"));
+							}
 						}
 					}
 				}			

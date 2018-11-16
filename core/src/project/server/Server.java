@@ -220,13 +220,13 @@ public class Server {
 		}
 	}
 	
-	public Boolean isGameFull() {
+	public Boolean isGameFull(String roomCode) {
 		
 		System.out.println("server: isGameFull(); called");
-		System.out.println(playerVec.get(0).playerID);
-		System.out.println(playerVec.get(1).playerID);
+		System.out.println(gameRoomMap.get(roomCode).playerVec.get(0).playerID);
+		System.out.println(gameRoomMap.get(roomCode).playerVec.get(1).playerID);
 		
-		return ((playerVec.get(0).playerID != -1) && (playerVec.get(1).playerID != -1));
+		return ((gameRoomMap.get(roomCode).playerVec.get(0).playerID != -1) && (gameRoomMap.get(roomCode).playerVec.get(1).playerID != -1));
 	}
 	
 	public String generateGameRoomCode() {
