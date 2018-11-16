@@ -1,6 +1,7 @@
 package project.puzzungeon.screens;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -9,24 +10,24 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -45,6 +46,7 @@ public class MainGameScreen implements Screen{
 	//background references
 	TextureAtlas atlas;
 	Sprite background;
+	ArrayList<Sprite> dragon;
 	
 	//shared by different methods
 	private Label showMessage1;
@@ -204,10 +206,29 @@ public class MainGameScreen implements Screen{
 ****************************************************************************************/	
 			
 			pieces = new ArrayList<PuzzlePiece>();
-			
-			for(int i = 0; i < 4; i++) {
-				pieces.add(new PuzzlePiece(new Texture(Gdx.files.internal("image/pup"+(i+1)+".jpg")), i));
+			TextureRegion puzzle = atlas.findRegion("dragon");
+			int numTilesHorizontal = 4;
+			int numTilesVertical = 2;
+			int imageWidth = puzzle.getRegionWidth() ;
+		    int imageHeight = puzzle.getRegionHeight() ;
+		    int pieceWidth = imageWidth / numTilesHorizontal;
+		    int pieceHeight = imageHeight / numTilesVertical;
+			TextureRegion[][] pieceRegions = puzzle.split(pieceWidth, pieceHeight);
+			for (int i = 0; i < pieceRegions.length; i++) {
+				System.out.println("Row " + i + ": " + pieceRegions[i].length);
 			}
+			System.out.println("Column: " + pieceRegions.length);
+			
+			int j = 1;
+			for(int i = 0; i < 2; i++) {
+				for (int k = 1; k < 3; k++) {
+					//pieces.add(new PuzzlePiece(new Texture(Gdx.files.internal("image/pup"+(i+1)+".jpg")), i));
+					PuzzlePiece to_add = new PuzzlePiece(pieceRegions[i][k], j);
+					pieces.add(to_add);
+					j++;
+				}
+			}
+			System.out.println("Number of pieces: " + j);
 			
 			
 			dragAndDrop = new DragAndDrop();
