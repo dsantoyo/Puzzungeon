@@ -8,7 +8,7 @@ public class GameRoom {
 		public Vector<ServerThread> serverThreads;
 		
 		//a vector to store the last 3 messages on server (could be redundant)
-		private Vector<ChatMessage> messageVec;
+		public Vector<ChatMessage> messageVec;
 		
 		//a vector to store Player objects
 		public Vector<Player> playerVec;

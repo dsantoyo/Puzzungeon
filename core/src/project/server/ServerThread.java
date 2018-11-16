@@ -36,6 +36,7 @@ public class ServerThread extends Thread{
 		this.server = server;
 		
 		gameRoomCode = new GameRoomCode("");
+		player = new Player("");
 		
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
@@ -64,7 +65,7 @@ public class ServerThread extends Thread{
 					ChatMessage cm = (ChatMessage)object;
 					if( cm != null) {
 						//send new message to the server
-						server.broadcastMessage(cm);
+						server.broadcastMessage(cm, gameRoomCode.code);
 					}
 				}
 				
@@ -190,7 +191,8 @@ public class ServerThread extends Thread{
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
-							int newID = server.addServerPlayer(player);
+							System.out.println("serverthrad: adding player for game room " + gameRoomCode.code);
+							int newID = server.addServerPlayer(player, gameRoomCode.code);
 							//set up PlayerID on client side
 							serverThreadPlayerID = newID;
 							setLocalPlayerID(newID);
@@ -228,7 +230,7 @@ public class ServerThread extends Thread{
 			if(clientLoginState != null) {
 				if(clientLoginState) {
 					server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true));
+					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true), gameRoomCode.code);
 				}
 			}
 			server.serverThreads.remove(this);

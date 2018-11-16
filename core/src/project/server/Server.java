@@ -118,19 +118,21 @@ public class Server {
 	 *  Update this new message to server's messageVec
 	 *  Broadcast this new message to every serverThread
 	 */
-	public void broadcastMessage(ChatMessage cm) {
+	public void broadcastMessage(ChatMessage cm, String roomCode) {
+		
+		System.out.println("server:: broadcastMessage called with roomCode = " + roomCode);
 		
 		if(cm != null) {
 			
 			//remove the oldest message
-			messageVec.remove(0);
+			gameRoomMap.get(roomCode).messageVec.remove(0);
 			
 			// add the newest message
-			messageVec.add(cm);
+			gameRoomMap.get(roomCode).messageVec.add(cm);
 			System.out.println("Server new message: " + cm.getUsername()+" "+cm.getMessage());
 			//send the newest message to every serverThread
-			for(ServerThread thread : serverThreads) {
-					thread.sendMessage(messageVec.get(3));
+			for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
+				thread.sendMessage(gameRoomMap.get(roomCode).messageVec.get(3));
 			}
 		}
 	}
@@ -140,19 +142,23 @@ public class Server {
 	 * Use the size of playerVec on the server after the addition as playerID
 	 * Send this playerID back to front-end
 	 */
-	public int addServerPlayer(Player player) {
+	public int addServerPlayer(Player player, String roomCode) {
+		
+		if(gameRoomMap.size() == 0) {
+			System.out.println("addServerPlayer 0 rooms");
+		}
 		if(player != null) {
 			
 			//find an available spot in playerVec
 			for(int i = 0; i < 2; i++) {
-				if(playerVec.get(i).playerID == -1) {
+				if(gameRoomMap.get(roomCode).playerVec.get(i).playerID == -1) {
 					player.playerID = i;
-					playerVec.set(i, player);
+					gameRoomMap.get(roomCode).playerVec.set(i, player);
 					break;
 				}
 			}
 			
-			System.out.println("Server new player: username = " + player.playerName +", playerID = " + player.playerID);
+			System.out.println("Server: room " + roomCode +"new player: username = " + player.playerName +", playerID = " + player.playerID);
 		}
 		return player.playerID;
 	}

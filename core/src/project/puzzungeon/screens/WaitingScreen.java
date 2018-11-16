@@ -51,6 +51,7 @@ public class WaitingScreen implements Screen{
 	private Label otherPlayerUsername;
 	private Label otherPlayerPastScore;
 	private Label waitingState;
+	private Label roomCode;
 	private TextButton readyButton;
 	private Dialog connectionLostDialog;
 	private Boolean displayDialog;
@@ -86,6 +87,7 @@ public class WaitingScreen implements Screen{
 		Label localPlayerPastScore = new Label("Highest score: " + Integer.toString(game.client.localPlayer.pastScore), game.skin);
 		otherPlayerPastScore = new Label("", game.skin);
 		otherPlayerUsername = new Label("", game.skin);
+		roomCode = new Label("Code:" + game.client.gameRoomCode, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
 		
 		Label chatTitle = new Label("Chat",game.skin);
@@ -234,6 +236,8 @@ public class WaitingScreen implements Screen{
 		waitingTable.add(readyButton).colspan(2);
 		waitingTable.row();
 		waitingTable.add(waitingState).colspan(2);
+		waitingTable.row();
+		waitingTable.add(roomCode).colspan(2);
 		
 			
 /****************************************************************************************
