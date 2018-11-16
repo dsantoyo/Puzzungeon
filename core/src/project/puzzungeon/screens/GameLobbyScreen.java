@@ -88,7 +88,7 @@ public class GameLobbyScreen implements Screen{
 		randomGameButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-				
+					game.client.sendLobbyChoice(new LobbyChoice("random game"));
 				}
 			});
 

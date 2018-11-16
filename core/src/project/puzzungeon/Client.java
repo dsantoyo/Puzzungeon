@@ -235,6 +235,7 @@ public class Client {
 	
 	public void sendLobbyChoice(LobbyChoice lobbyChoice) {
 		try {
+			System.out.println("client: sendLobbyChoice: + " + lobbyChoice.choice);
 			oos.writeObject(lobbyChoice);
 			oos.flush();
 			oos.reset();

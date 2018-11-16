@@ -168,14 +168,14 @@ public class Server {
 	 * Get player object from a serverthread and update it in server's playerVec
 	 * User playerID to acees its counterpart in server's playerVec
 	 */
-	public void updateServerPlayer(int playerID, Player player) {
-		playerVec.set(playerID,player);
+	public void updateServerPlayer(int playerID, Player player, String roomCode) {
+		gameRoomMap.get(roomCode).playerVec.set(playerID,player);
 
 		System.out.println("Server updated player: username = " + player.playerName +", playerID = " + player.playerID);
 		
 		//when a player is updated in server's playerVec,
 		//also update front-end's otherPlayer
-		sendServerOtherPlayer();
+		sendServerOtherPlayer(roomCode);
 	}
 	
 	/* Get called when a serverThread wants to know if every player is ready to play
@@ -183,6 +183,10 @@ public class Server {
 	 * Call every serverThread to to update ove
 	 */
 	public void checkAllReadyState() {
+		
+		System.out.println("server: checkAllReadyState() called");
+		
+		
 		
 		Boolean allReady = true;
 		
@@ -196,20 +200,21 @@ public class Server {
 		for(ServerThread thread : serverThreads) {
 				thread.broadcastReadyState(allReady);
 		}
+		
 	}
 	
 	/* For updating every client's otherPlayer 
 	 * Send corresponding player object in server's playerVec to each serverThread
 	 */
-	public void sendServerOtherPlayer() {
-		if(playerVec.size() == 2) {
-			for(ServerThread thread : serverThreads) {
+	public void sendServerOtherPlayer(String roomCode) {
+		if(gameRoomMap.get(roomCode).playerVec.size() == 2) {
+			for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
 				int localPlayerID = thread.getServerThreadPlayerID();
 				if(localPlayerID == 0) {
-					thread.updateOtherPlayer(playerVec.get(1));
+					thread.updateOtherPlayer(gameRoomMap.get(roomCode).playerVec.get(1));
 				}
 				else {
-					thread.updateOtherPlayer(playerVec.get(0));
+					thread.updateOtherPlayer(gameRoomMap.get(roomCode).playerVec.get(0));
 				}
 			}
 		}

@@ -196,11 +196,11 @@ public class ServerThread extends Thread{
 							//set up PlayerID on client side
 							serverThreadPlayerID = newID;
 							setLocalPlayerID(newID);
-							server.updateServerPlayer(player.playerID, player);
+							server.updateServerPlayer(player.playerID, player, gameRoomCode.code);
 						}
 						else {
 							//update player on the server
-							server.updateServerPlayer(player.playerID, player);
+							server.updateServerPlayer(player.playerID, player, gameRoomCode.code);
 						}
 					}
 				}
@@ -229,7 +229,7 @@ public class ServerThread extends Thread{
 			
 			if(clientLoginState != null) {
 				if(clientLoginState) {
-					server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+					server.updateServerPlayer(serverThreadPlayerID, new Player("default"), gameRoomCode.code);
 					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true), gameRoomCode.code);
 				}
 			}
