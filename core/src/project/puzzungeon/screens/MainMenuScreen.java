@@ -53,6 +53,7 @@ public class MainMenuScreen implements Screen{
 	private Boolean displayDialog;
 	private Dialog gameFullDialog;
 	private Dialog connectionFailDialog;
+	private Dialog databaseFailDialog;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
@@ -141,6 +142,12 @@ public class MainMenuScreen implements Screen{
 		    public void result(Object obj) {}};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
+		
+		
+		databaseFailDialog = new Dialog("Error", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+		databaseFailDialog.text("Couldn't connect to the database");
+		databaseFailDialog.button("Got it", false); //sends "false" as the result
 			
 /****************************************************************************************
 *                             end: actors functionality
@@ -251,11 +258,19 @@ public class MainMenuScreen implements Screen{
 			}
 			
 			if(!game.client.loginState) {
+				System.out.println(game.client.loginStateMessage);
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
 					game.client.loginStateMessage = "";
 					gameFullDialog.show(stage);
 					displayDialog = false;
 				}
+				if(game.client.loginStateMessage.equals("Connection to the database failed")) {
+					
+					game.client.loginStateMessage = "";
+					databaseFailDialog.show(stage);
+					displayDialog = false;
+				}
+				
 				if(!game.client.connectState) {
 					connectionFailDialog.show(stage);
 					displayDialog = false;

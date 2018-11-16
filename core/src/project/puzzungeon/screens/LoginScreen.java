@@ -41,6 +41,7 @@ public class LoginScreen implements Screen{
 	private Dialog loginFailDialog;
 	private Dialog gameFullDialog;
 	private Dialog connectionFailDialog;
+	private Dialog databaseFailDialog;
 	private TextArea passwordInput;
 	
 	//constructor
@@ -165,6 +166,11 @@ public class LoginScreen implements Screen{
 		    public void result(Object obj) {}};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
+		
+		databaseFailDialog = new Dialog("Error", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+		databaseFailDialog.text("Couldn't connect to the database");
+		databaseFailDialog.button("Got it", false); //sends "false" as the result
 		
 		TextButton loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
@@ -387,6 +393,13 @@ public class LoginScreen implements Screen{
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
 					game.client.loginStateMessage = "";
 					gameFullDialog.show(stage);
+					displayDialog = false;
+				}
+				
+				if(game.client.loginStateMessage.equals("Connection to the database failed")) {
+					
+					game.client.loginStateMessage = "";
+					databaseFailDialog.show(stage);
 					displayDialog = false;
 				}
 				if(!game.client.connectState) {

@@ -88,9 +88,24 @@ public class ServerThread extends Thread{
 					   
 					   //JDBCType database = new JDBCType();
 					    //String errorMessage = database.errorMessage();
-					*/	
-					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);
-					database.connectionSet();
+					*/
+					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);;
+
+					Boolean databaseConnectionResult = database.connectionSet();
+					
+					System.out.println("serverthread: database connection result = " + databaseConnectionResult);
+					if(!databaseConnectionResult) {
+						
+						try {
+							System.out.println("serverthread: connection to database failed.");
+							oos.writeObject(new LoginResult(false, "Connection to the database failed",0));
+							oos.flush();
+							oos.reset();
+							continue;
+						} catch (IOException ioe) {
+							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
+						}
+					}
 
 					System.out.println("trying to login...");
 					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
@@ -113,7 +128,6 @@ public class ServerThread extends Thread{
 					}
 					// from registerScreen
 					else if (loginRegisterStr.equals("register") && (database.exists(usernameStr))) { // this condition has to be changed
-						System.out.println("bhehehehhehhe");
 						try {
 							System.out.println("serverthread: denied. Failed to register.");
 							oos.writeObject(new LoginResult(false, "Failed to register.",0));
@@ -194,9 +208,11 @@ public class ServerThread extends Thread{
 			//send a "has left" message
 			//remove this serverThread from server's serverThreads vector
 			
-			if(clientLoginState) {
-				server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-				server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true));
+			if(clientLoginState != null) {
+				if(clientLoginState) {
+					server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
+					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true));
+				}
 			}
 			server.serverThreads.remove(this);
 			

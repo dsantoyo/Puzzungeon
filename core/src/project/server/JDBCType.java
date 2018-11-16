@@ -29,7 +29,7 @@ public class JDBCType {
 		this.score = 0;
 	}
 	
-	public void connectionSet() {
+	public Boolean connectionSet() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?user=root&password=root&useSSL=false");
@@ -37,11 +37,15 @@ public class JDBCType {
 			
 		} catch (SQLException sqle) {
 			System.out.println("SQLException: " + sqle.getMessage());
+			return false;
 			//we should exit/go to error screen here
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println("ClassNotFoundException: " + cnfe.getMessage());
 			//we should exit/go to error screen here
+			return false;
 		} 
+		
+		return true;
 	}
 	
 	public int getHighScore() throws SQLException {
