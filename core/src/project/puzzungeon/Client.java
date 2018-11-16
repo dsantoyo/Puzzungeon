@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.Vector;
 
 import project.server.ChatMessage;
+import project.server.GameRoomCode;
+import project.server.LobbyChoice;
 import project.server.LoginRegister;
 import project.server.LoginResult;
 import project.server.Password;
@@ -32,6 +34,8 @@ public class Client {
 	public Boolean connectState;
 	public Boolean disconnect;
 	
+	public String gameRoomCode;
+	
 	//client's own player
 	public Player localPlayer;
 	
@@ -48,6 +52,7 @@ public class Client {
 		this.loginStateMessage = "";
 		this.connectState = false;
 		this.disconnect = false;
+		this.gameRoomCode = "";
 	}
 	
 	//setting up connection between a client and the server
@@ -155,7 +160,11 @@ public class Client {
 		            				}
 		            			}
 		            			
-		            			
+		            			if(object instanceof GameRoomCode) {
+		            				GameRoomCode grc = (GameRoomCode)object;
+		            				gameRoomCode = grc.code;
+		            				System.out.println("Client: got gameroomcode from server = "+gameRoomCode);
+		            			}
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
@@ -216,10 +225,20 @@ public class Client {
 		try {
 			oos.writeObject(localPlayer);
 			oos.flush();
-			//discard any cached references. this shit took me 1.5 hours to debug...
+			//discard any cached references.
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: updatePlayer() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	public void sendLobbyChoice(LobbyChoice lobbyChoice) {
+		try {
+			oos.writeObject(lobbyChoice);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("client: sendLobbyChoice() ioe: " + ioe.getMessage());
 		}
 	}
 }

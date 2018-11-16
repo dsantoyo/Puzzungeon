@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.Vector;
 
 public class Server {
@@ -20,8 +22,11 @@ public class Server {
 	
 	//private boolean allConnected;
 	
+	public HashMap<String, GameRoom> gameRoomMap;
 	
 	public Server(int port) {
+		
+		gameRoomMap = new HashMap<String, GameRoom>();
 		
 		//a vector to store Player objects
 		playerVec = new Vector<Player>();
@@ -211,6 +216,23 @@ public class Server {
 		System.out.println(playerVec.get(1).playerID);
 		
 		return ((playerVec.get(0).playerID != -1) && (playerVec.get(1).playerID != -1));
+	}
+	
+	public String generateGameRoomCode() {
+		String code = "";
+		Random r = new Random();
+		while(true){
+			char c1 = (char)(r.nextInt(26) + 'A');
+			char c2 = (char)(r.nextInt(26) + 'A');
+			char c3 = (char)(r.nextInt(26) + 'A');
+			char c4 = (char)(r.nextInt(26) + 'A');
+			code = Character.toString(c1) + Character.toString(c2) + Character.toString(c3) + Character.toString(c4);
+			if(!gameRoomMap.containsKey(code)) {
+				break;
+			}
+		}
+		System.out.println("server: generate GameRoomCode str = " + code);
+		return code;
 	}
 	
 	public static void main(String [] args) {

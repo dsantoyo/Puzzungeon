@@ -1,38 +1,27 @@
 package project.puzzungeon.screens;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
-import project.puzzungeon.PuzzlePiece;
 import project.puzzungeon.Puzzungeon;
-import project.server.LoginRegister;
-import project.server.Password;
-import project.server.Username;
+import project.server.LobbyChoice;
 
 //First screen; 
 
-public class MainMenuScreen implements Screen{
+public class GameLobbyScreen implements Screen{
 
 	Puzzungeon game; //reference to the game
 	private Stage stage;
@@ -44,19 +33,19 @@ public class MainMenuScreen implements Screen{
 	
 	//actor references
 	private Label gameTitle;
-	private TextButton loginButton;
-	private TextButton newUserButton;
-	private TextButton guestButton;
+	private TextButton newGameButton;
+	private TextButton existGameButton;
+	private TextField existGameCodeInput;
+	private TextButton randomGameButton;
+	private TextButton backButton;
 	private TextButton exitButton;
 	
 	//shared by different methods
 	private Boolean displayDialog;
-	private Dialog gameFullDialog;
-	private Dialog connectionFailDialog;
-	private Dialog databaseFailDialog;
+
 	
 	//constructor
-	public MainMenuScreen(Puzzungeon game) {
+	public GameLobbyScreen(Puzzungeon game) {
 		this.game = game;
 		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
@@ -79,75 +68,49 @@ public class MainMenuScreen implements Screen{
 
 		gameTitle = new Label("Puzzungeon", game.skin);
 		
-		loginButton = new TextButton("Login", game.skin, "default");
-			loginButton.addListener(new ClickListener(){
+		newGameButton = new TextButton("New Game", game.skin, "default");
+		newGameButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-						game.setScreen(new LoginScreen(game));
+						game.client.sendLobbyChoice(new LobbyChoice("new game"));
 		            }
 		        });
 		
-		newUserButton = new TextButton("New User", game.skin, "default");
-			newUserButton.addListener(new ClickListener(){
+		existGameButton = new TextButton("Join Game by Code", game.skin, "default");
+		existGameButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
-						game.setScreen(new RegisterScreen(game));
+						
 	            	}
 	        	});
 
-		guestButton = new TextButton("Login as Guest", game.skin, "default");
-			guestButton.addListener(new ClickListener() {
+		randomGameButton = new TextButton("Join a Random Game", game.skin, "default");
+		randomGameButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-							game.client.clientUsername = "Guest";
-					if(!game.client.connectState) {
-						//set up connection to the server
-						System.out.println("Trying to connect...");
-						if(!game.client.connect()) {
-							System.out.println("Unable to connect to the server");
-							displayDialog = true;
-							game.client = new Client(game.serverAddress, game.serverPort);
-						}
-						else {
-							game.client.sendUsername(new Username("guest"));
-							game.client.sendPassword(new Password("guest"));
-							game.client.sendLoginRegister(new LoginRegister("guest"));
-							displayDialog = true;
-						}
-					}
-					else {
-						game.client.sendUsername(new Username("guest"));
-						game.client.sendPassword(new Password("guest"));
-						game.client.sendLoginRegister(new LoginRegister("guest"));
-						displayDialog = true;
-					}
+				
 				}
 			});
 
 		exitButton = new TextButton("Exit", game.skin, "default");
-
-			exitButton.addListener(new ClickListener(){
+		exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					Gdx.app.exit();
 				}
 			});
 					
-		gameFullDialog = new Dialog("Error", game.skin, "dialog") {
-			public void result(Object obj) {}};
-		gameFullDialog.text("We already have 2 players.");
-		gameFullDialog.button("Got it", false); //sends "false" as the result
-		
-		connectionFailDialog = new Dialog("Error", game.skin, "dialog") {
-		    public void result(Object obj) {}};
-		connectionFailDialog.text("Couldn't connect to the server");
-		connectionFailDialog.button("Got it", false); //sends "false" as the result
-		
-		
-		databaseFailDialog = new Dialog("Error", game.skin, "dialog") {
-		    public void result(Object obj) {}};
-		databaseFailDialog.text("Couldn't connect to the database");
-		databaseFailDialog.button("Got it", false); //sends "false" as the result
+		backButton = new TextButton("Back", game.skin, "default");
+		backButton.addListener(new ClickListener(){
+			@Override 
+			public void clicked(InputEvent event, float x, float y){
+				game.client.disconnect = true;
+				game.client.localPlayer.disconnect = true;
+				game.client.updatePlayer();
+				game.client = new Client(game.serverAddress, game.serverPort);
+				game.setScreen(new MainMenuScreen(game));
+			}
+		});
 			
 /****************************************************************************************
 *                             end: actors functionality
@@ -170,9 +133,9 @@ public class MainMenuScreen implements Screen{
 		mainMenuTable.add(gameTitle).colspan(3);
 		mainMenuTable.row();
 		
-		mainMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
-		mainMenuTable.add(newUserButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
-		mainMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
+		mainMenuTable.add(newGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(existGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(randomGameButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
 		mainMenuTable.row();
 			
 /****************************************************************************************
@@ -185,6 +148,7 @@ public class MainMenuScreen implements Screen{
 ****************************************************************************************/
 		Table exitButtonTable = new Table().bottom().right();
 		exitButtonTable.setFillParent(true);
+		exitButtonTable.add(backButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 		exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 		
 /****************************************************************************************
@@ -211,6 +175,9 @@ public class MainMenuScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		//update
+		update();
+		
 		//draw background
 		viewport.apply();
 		game.batch.begin();
@@ -220,7 +187,6 @@ public class MainMenuScreen implements Screen{
 		//update and draw stage
 		stage.getViewport().apply();
 		stage.act(Gdx.graphics.getDeltaTime());
-		checkClientLoginState();
 		stage.draw();
 	}
 
@@ -249,34 +215,10 @@ public class MainMenuScreen implements Screen{
 	public void dispose() {
 	}
 	
-	public void checkClientLoginState() {
-
-		if(displayDialog == true) {
-			
-			if(game.client.loginState) {
-				game.setScreen(new GameLobbyScreen(game));
-			}
-			
-			if(!game.client.loginState) {
-				System.out.println(game.client.loginStateMessage);
-				if(game.client.loginStateMessage.equals("Game is Full.")) {
-					game.client.loginStateMessage = "";
-					gameFullDialog.show(stage);
-					displayDialog = false;
-				}
-				if(game.client.loginStateMessage.equals("Connection to the database failed")) {
-					
-					game.client.loginStateMessage = "";
-					databaseFailDialog.show(stage);
-					displayDialog = false;
-				}
-				
-				if(!game.client.connectState) {
-					connectionFailDialog.show(stage);
-					displayDialog = false;
-				}
-			}
+	public void update() {
+		
+		if(!game.client.gameRoomCode.equals("")) {
+			game.setScreen(new WaitingScreen(game));
 		}
 	}
-	
 }

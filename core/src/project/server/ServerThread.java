@@ -18,6 +18,8 @@ public class ServerThread extends Thread{
 	private Player player;
 	private Server server;
 	private Boolean clientLoginState;
+	private LobbyChoice lobbyChoice;
+	private GameRoomCode gameRoomCode;
 	
 	/* the localPlayerID of this serverThread's client's localPlayer
 	 * server uses this to know which player in server's playerVec is 
@@ -32,6 +34,8 @@ public class ServerThread extends Thread{
 		
 		//linked the server with this ServerThread object
 		this.server = server;
+		
+		gameRoomCode = new GameRoomCode("");
 		
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
@@ -198,7 +202,20 @@ public class ServerThread extends Thread{
 						}
 					}
 				}
-								
+				if(object instanceof LobbyChoice) {
+					lobbyChoice = (LobbyChoice)object;
+					if(lobbyChoice != null) {
+						if(lobbyChoice.choice.equals("new game")) {
+							gameRoomCode = new GameRoomCode(server.generateGameRoomCode());
+							sendGameRoomCode(gameRoomCode);
+							
+							GameRoom gameroom = new GameRoom(gameRoomCode.code);
+							gameroom.serverThreads.add(this);
+							server.gameRoomMap.put(gameRoomCode.code, gameroom);
+							
+						}
+					}
+				}			
 			}
 		}catch(IOException ioe) {
 			System.out.println("serverthread: run() ioe: " + ioe.getMessage());
@@ -278,5 +295,15 @@ public class ServerThread extends Thread{
 	//return localPlayerID in this serverThread
 	public int getServerThreadPlayerID() {
 		return serverThreadPlayerID;
+	}
+	
+	public void sendGameRoomCode(GameRoomCode code) {
+		try {
+			oos.writeObject(code);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("serverthread: sendGameRoomCode() ioe: " + ioe.getMessage());
+		}
 	}
 }
