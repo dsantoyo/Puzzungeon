@@ -207,6 +207,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">dungeon-hall.png</key>
             <key type="filename">dungeon-wall.png</key>
             <key type="filename">dungeon.png</key>
             <struct type="IndividualSpriteSettings">
@@ -257,7 +258,9 @@
         <key>replaceList</key>
         <array/>
         <key>ignoredWarnings</key>
-        <array/>
+        <array>
+            <string>try-pro-features</string>
+        </array>
         <key>commonDivisorX</key>
         <uint>1</uint>
         <key>commonDivisorY</key>
