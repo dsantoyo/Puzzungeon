@@ -43,6 +43,7 @@ public class GameLobbyScreen implements Screen{
 	
 	private Dialog noEmptyRoomDialog;
 	private Dialog roomNotAvailableDialog;
+	private Dialog didntEnterCodeDialog;
 	
 	//shared by different methods
 	private Boolean displayDialog;
@@ -86,9 +87,13 @@ public class GameLobbyScreen implements Screen{
 				@Override 
 	            public void clicked(InputEvent event, float x, float y){
 					String code = codeInputField.getText();
-					game.client.sendLobbyChoice(new LobbyChoice("use code", code));
-					displayDialog = true;
-					
+						if (code.trim().isEmpty()) {
+							game.client.gameRoomCode = "didnt enter room";
+							displayDialog = true;
+						} else {
+							game.client.sendLobbyChoice(new LobbyChoice("use code", code));
+							displayDialog = true;
+						}
 	            	}
 	        	});
 		
@@ -134,6 +139,11 @@ public class GameLobbyScreen implements Screen{
 		    public void result(Object obj) {}};
 		roomNotAvailableDialog.text("The room is not available");
 		roomNotAvailableDialog.button("Got it", false); //sends "false" as the result
+		
+		didntEnterCodeDialog = new Dialog("Error", game.skin, "dialog") {
+			public void result(Object obj) {}};
+		didntEnterCodeDialog.text("Please enter a code!");
+		didntEnterCodeDialog.button("Got it", false);
 			
 /****************************************************************************************
 *                             end: actors functionality
@@ -256,6 +266,12 @@ public class GameLobbyScreen implements Screen{
 				displayDialog = false;
 			}
 			
+			else if (game.client.gameRoomCode.equals("didnt enter room")) {
+				game.client.gameRoomCode = "";
+				didntEnterCodeDialog.show(stage);
+				displayDialog = false;
+			}
+		
 			else if(!game.client.gameRoomCode.equals("")) {
 				game.setScreen(new WaitingScreen(game));
 			}
