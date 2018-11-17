@@ -245,7 +245,6 @@ public class GameLobbyScreen implements Screen{
 		
 		if(displayDialog == true) {
 			if(game.client.gameRoomCode.equals("no empty room")){
-				
 				game.client.gameRoomCode = "";
 				noEmptyRoomDialog.show(stage);
 				displayDialog = false;

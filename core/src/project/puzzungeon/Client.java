@@ -164,8 +164,8 @@ public class Client {
 		            			
 		            			if(object instanceof GameRoomCode) {
 		            				GameRoomCode grc = (GameRoomCode)object;
+		            				gameRoomCode = grc.code;
 		            				if(!grc.code.equals("no empty room") && !grc.code.equals("room not available") && !grc.code.equals("")) {
-		            					gameRoomCode = grc.code;
 		            					updatePlayer();
 		            					System.out.println("Client: got gameroomcode from server = " + gameRoomCode);
 		            				}
