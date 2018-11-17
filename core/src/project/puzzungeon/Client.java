@@ -115,11 +115,13 @@ public class Client {
 		            				localPlayer.playerID = integer.intValue();
 		            			}
 		            			
+		            			
 		            			//if the serverThread sends the readyState of player1 AND player2
 		            			if(object instanceof ReadyState) {
 		            				ReadyState rs = (ReadyState)object;
-		            				bothPlayerReady = rs.getReadyState();
+		            				//bothPlayerReady = rs.getReadyState();
 		            			}
+		            			
 		            			
 		            			if(loginState) {
 		            				//if the serverThread sends back otherPlayer
@@ -131,6 +133,7 @@ public class Client {
 		            					System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
 		            					System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
 		            					System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            					bothPlayerReady = localPlayer.readyState && otherPlayer.readyState;
 		            					
 		            					if(disconnect) {
 		            						

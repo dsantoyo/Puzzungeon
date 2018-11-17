@@ -57,6 +57,7 @@ public class ServerThread extends Thread{
 				
 				//call the server to check overall ready state for both players
 				server.checkAllReadyState();
+				System.out.println();
 				
 				//sending object from client(front-end) to this serverthread(back-end)
 				Object object = ois.readObject();
