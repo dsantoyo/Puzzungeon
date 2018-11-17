@@ -58,7 +58,7 @@ public class GameLobbyScreen implements Screen{
 		
 		//setup background
 		atlas = game.assetLoader.manager.get("sprites.txt");
-		background = atlas.createSprite("dungeon");
+		background = atlas.createSprite("dungeon-hall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
 	}
