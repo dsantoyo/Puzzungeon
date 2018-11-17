@@ -236,7 +236,7 @@ public class ServerThread extends Thread{
 						        	//return game code to the client
 						        	foundAvailable = true;
 						        	System.out.println("serverThread: found room "+code+" empty. sending code back to client.");
-						        	sendGameRoomCode(new GameRoomCode(code));
+						        	sendGameRoomCode(gameRoomCode);
 						        	break;
 						        }
 						    }
@@ -246,27 +246,24 @@ public class ServerThread extends Thread{
 						}
 						if(lobbyChoice.choice.equals("use code")) {
 							System.out.println("serverthread: player asking to join room " + lobbyChoice.code);
+							String code = lobbyChoice.code;
+							Boolean roomAvailable = false;
 							
-							//check if the room is available
-							Boolean foundAvailable = false;
-							if(server.gameRoomMap.get(lobbyChoice.code) == null) {
+							if(server.gameRoomMap.containsKey(code)) {
+								if(!server.isGameFull(code)){
+						        	//assign this serverthread to the gameroom
+						        	server.gameRoomMap.get(code).serverThreads.add(this);
+						        	gameRoomCode.code = code;
+						        	//return game code to the client
+						        	roomAvailable = true;
+						        	System.out.println("serverThread: found room "+code+" available. sending code back to client.");
+						        	sendGameRoomCode(gameRoomCode);
+								}
+						     
+							}
+							if(!roomAvailable) {
 								sendGameRoomCode(new GameRoomCode("room not available"));
 							}
-							else if(server.isGameFull(lobbyChoice.code)) {
-								sendGameRoomCode(new GameRoomCode("room not available"));
-							}
-							else {
-								//assign this serverthread to the gameroom
-								String code = lobbyChoice.code;
-					        	server.gameRoomMap.get(code).serverThreads.add(this);
-					        	gameRoomCode.code = code;
-					        	//return game code to the client
-					        	foundAvailable = true;
-					        	System.out.println("serverThread: sending room code back to client.");
-					        	sendGameRoomCode(new GameRoomCode(lobbyChoice.code));
-					        	break;
-							}
-							
 							
 						}
 					}
