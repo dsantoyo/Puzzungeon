@@ -284,6 +284,17 @@ public class ServerThread extends Thread{
 					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true), gameRoomCode.code);
 				}
 			}
+			
+			if(serverThreadPlayerID == 0) {
+				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).playerID == -1) {
+					server.gameRoomMap.remove(gameRoomCode.code);
+				}
+			}
+			else if(serverThreadPlayerID == 1) {
+				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).playerID == -1) {
+					server.gameRoomMap.remove(gameRoomCode.code);
+				}
+			}
 			server.serverThreads.remove(this);
 			
 			//need to work on this
