@@ -71,7 +71,7 @@ public class GameLobbyScreen implements Screen{
 *                             start: actors functionality
 ****************************************************************************************/
 
-		gameTitle = new Label("Puzzungeon", game.skin);
+		gameTitle = new Label("Puzzungeon", game.skin, "title");
 		
 		newGameButton = new TextButton("Create Game", game.skin, "default");
 		newGameButton.addListener(new ClickListener(){

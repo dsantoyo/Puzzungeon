@@ -9,13 +9,13 @@ public class AssetLoader {
 	public final AssetManager manager = new AssetManager();
 	
 	//skin
-	public final String skin = "uiskin.json";
+	public final String skin = "pixungeon.json";
 	
 	//images pack
 	public final String imgs = "sprites.txt";
 	
 	public void loadSkin() {
-		SkinParameter params = new SkinParameter("uiskin.atlas");
+		SkinParameter params = new SkinParameter("pixungeon.atlas");
 		manager.load(skin, Skin.class, params);
 	}
 	

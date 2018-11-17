@@ -64,7 +64,7 @@ public class LoginScreen implements Screen{
 /****************************************************************************************
  *                             start: actors functionality
  ****************************************************************************************/
-		Label gameTitle = new Label("Puzzungeon", game.skin);
+		Label gameTitle = new Label("Puzzungeon", game.skin, "title");
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
 		final Label error = new Label("", game.skin);

@@ -77,7 +77,7 @@ public class MainMenuScreen implements Screen{
 *                             start: actors functionality
 ****************************************************************************************/
 
-		gameTitle = new Label("Puzzungeon", game.skin);
+		gameTitle = new Label("Puzzungeon", game.skin, "title");
 		
 		loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
