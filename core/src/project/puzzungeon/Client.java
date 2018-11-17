@@ -65,7 +65,6 @@ public class Client {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			
-			
 			//test connection to server
 			System.out.println("Testing if the connection is established");
 			@SuppressWarnings("unused")
@@ -118,10 +117,10 @@ public class Client {
 		            			
 		            			//if the serverThread sends the readyState of player1 AND player2
 		            			if(object instanceof ReadyState) {
-		            				ReadyState rs = (ReadyState)object;
+		            				@SuppressWarnings("unused")
+									ReadyState rs = (ReadyState)object;
 		            				//bothPlayerReady = rs.getReadyState();
 		            			}
-		            			
 		            			
 		            			if(loginState) {
 		            				//if the serverThread sends back otherPlayer
@@ -244,6 +243,7 @@ public class Client {
 		}
 	}
 	
+	//send lobby choice from a client to a serverThread
 	public void sendLobbyChoice(LobbyChoice lobbyChoice) {
 		try {
 			System.out.println("client: sendLobbyChoice: + " + lobbyChoice.choice);

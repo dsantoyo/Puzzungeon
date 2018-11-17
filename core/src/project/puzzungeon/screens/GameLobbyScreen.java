@@ -248,7 +248,6 @@ public class GameLobbyScreen implements Screen{
 				game.client.gameRoomCode = "";
 				noEmptyRoomDialog.show(stage);
 				displayDialog = false;
-			
 			}
 			
 			else if(game.client.gameRoomCode.equals("room not available")){
@@ -256,12 +255,10 @@ public class GameLobbyScreen implements Screen{
 				roomNotAvailableDialog.show(stage);
 				displayDialog = false;
 			}
-				
-
+			
 			else if(!game.client.gameRoomCode.equals("")) {
 				game.setScreen(new WaitingScreen(game));
 			}
 		}
-		
 	}
 }

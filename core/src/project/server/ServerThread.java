@@ -89,13 +89,8 @@ public class ServerThread extends Thread{
 					System.out.println("serverThread: password = "+ passswordStr);
 					System.out.println("serverThread: login/register = "+ loginRegisterStr);
 					
-					/*
-					   Back-end login/register features/validation should be done here
-					   
-					   
-					   //JDBCType database = new JDBCType();
-					    //String errorMessage = database.errorMessage();
-					*/
+					
+					//database validation
 					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);;
 
 					Boolean databaseConnectionResult = database.connectionSet();
@@ -145,18 +140,6 @@ public class ServerThread extends Thread{
 						}	
 					}
 					
-					/*
-					else if (server.isGameFull()) { // is 2 players are already in the game
-						try {
-							System.out.println("serverthread: denied. game is full.");
-							oos.writeObject(new LoginResult(false, "Game is Full.", 0));
-							oos.flush();
-							oos.reset();
-						} catch (IOException ioe) {
-							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
-						}
-					}
-					*/
 					else { // allow the client to login
 						
 						//read past score from the database
@@ -172,7 +155,6 @@ public class ServerThread extends Thread{
 							oos.reset();
 							
 							//send past score
-							
 							
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
