@@ -384,7 +384,7 @@ public class RegisterScreen implements Screen{
 		if(displayDialog == true) {
 			
 			if(game.client.loginState) {
-				game.setScreen(new WaitingScreen(game));
+				game.setScreen(new GameLobbyScreen(game));
 			}
 			
 			if(!game.client.loginState) {

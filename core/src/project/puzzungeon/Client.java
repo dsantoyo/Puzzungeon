@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.Vector;
 
 import project.server.ChatMessage;
+import project.server.GameRoomCode;
+import project.server.LobbyChoice;
 import project.server.LoginRegister;
 import project.server.LoginResult;
 import project.server.Password;
@@ -32,6 +34,8 @@ public class Client {
 	public Boolean connectState;
 	public Boolean disconnect;
 	
+	public String gameRoomCode;
+	
 	//client's own player
 	public Player localPlayer;
 	
@@ -48,6 +52,7 @@ public class Client {
 		this.loginStateMessage = "";
 		this.connectState = false;
 		this.disconnect = false;
+		this.gameRoomCode = "";
 	}
 	
 	//setting up connection between a client and the server
@@ -59,7 +64,6 @@ public class Client {
 			
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
-			
 			
 			//test connection to server
 			System.out.println("Testing if the connection is established");
@@ -110,10 +114,12 @@ public class Client {
 		            				localPlayer.playerID = integer.intValue();
 		            			}
 		            			
+		            			
 		            			//if the serverThread sends the readyState of player1 AND player2
 		            			if(object instanceof ReadyState) {
-		            				ReadyState rs = (ReadyState)object;
-		            				bothPlayerReady = rs.getReadyState();
+		            				@SuppressWarnings("unused")
+									ReadyState rs = (ReadyState)object;
+		            				//bothPlayerReady = rs.getReadyState();
 		            			}
 		            			
 		            			if(loginState) {
@@ -126,6 +132,7 @@ public class Client {
 		            					System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
 		            					System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
 		            					System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            					bothPlayerReady = localPlayer.readyState && otherPlayer.readyState;
 		            					
 		            					if(disconnect) {
 		            						
@@ -150,12 +157,24 @@ public class Client {
 		            					System.out.println("localPlayer highest score = " + Integer.toString(rs.pastScore));
 		            					localPlayer.pastScore = rs.pastScore;
 		            					otherPlayer = new Player("default");
-		            					updatePlayer();
 		            					System.out.println("logged in ");
 		            				}
 		            			}
 		            			
-		            			
+		            			if(object instanceof GameRoomCode) {
+		            				GameRoomCode grc = (GameRoomCode)object;
+		            				gameRoomCode = grc.code;
+		            				if(!grc.code.equals("no empty room") && !grc.code.equals("room not available") && !grc.code.equals("")) {
+		            					updatePlayer();
+		            					System.out.println("Client: got gameroomcode from server = " + gameRoomCode);
+		            				}
+		            				else if(grc.code.equals("no empty room")){
+		            					System.out.println("Client: 0 gameroom available");
+		            				}
+		            				else if(grc.code.equals("room not available")) {
+		            					System.out.println("Client: gameroom not available");
+		            				}
+		            			}
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
@@ -213,13 +232,26 @@ public class Client {
 	
 	//send/update a player from a client(front-end) to a serverthread(back-end)
 	public void updatePlayer() {
+		System.out.println("client: updatePlayer() called");
 		try {
 			oos.writeObject(localPlayer);
 			oos.flush();
-			//discard any cached references. this shit took me 1.5 hours to debug...
+			//discard any cached references.
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: updatePlayer() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	//send lobby choice from a client to a serverThread
+	public void sendLobbyChoice(LobbyChoice lobbyChoice) {
+		try {
+			System.out.println("client: sendLobbyChoice: + " + lobbyChoice.choice);
+			oos.writeObject(lobbyChoice);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("client: sendLobbyChoice() ioe: " + ioe.getMessage());
 		}
 	}
 }

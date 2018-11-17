@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Iterator;
 
 
 //a serverThread object(back-end) is connected to a client(front-end)
@@ -18,6 +19,8 @@ public class ServerThread extends Thread{
 	private Player player;
 	private Server server;
 	private Boolean clientLoginState;
+	private LobbyChoice lobbyChoice;
+	private GameRoomCode gameRoomCode;
 	
 	/* the localPlayerID of this serverThread's client's localPlayer
 	 * server uses this to know which player in server's playerVec is 
@@ -32,6 +35,9 @@ public class ServerThread extends Thread{
 		
 		//linked the server with this ServerThread object
 		this.server = server;
+		
+		gameRoomCode = new GameRoomCode("");
+		player = new Player("");
 		
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
@@ -51,6 +57,7 @@ public class ServerThread extends Thread{
 				
 				//call the server to check overall ready state for both players
 				server.checkAllReadyState();
+				System.out.println();
 				
 				//sending object from client(front-end) to this serverthread(back-end)
 				Object object = ois.readObject();
@@ -60,7 +67,7 @@ public class ServerThread extends Thread{
 					ChatMessage cm = (ChatMessage)object;
 					if( cm != null) {
 						//send new message to the server
-						server.broadcastMessage(cm);
+						server.broadcastMessage(cm, gameRoomCode.code);
 					}
 				}
 				
@@ -82,13 +89,8 @@ public class ServerThread extends Thread{
 					System.out.println("serverThread: password = "+ passswordStr);
 					System.out.println("serverThread: login/register = "+ loginRegisterStr);
 					
-					/*
-					   Back-end login/register features/validation should be done here
-					   
-					   
-					   //JDBCType database = new JDBCType();
-					    //String errorMessage = database.errorMessage();
-					*/
+					
+					//database validation
 					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);;
 
 					Boolean databaseConnectionResult = database.connectionSet();
@@ -138,16 +140,6 @@ public class ServerThread extends Thread{
 						}	
 					}
 					
-					else if (server.isGameFull()) { // is 2 players are already in the game
-						try {
-							System.out.println("serverthread: denied. game is full.");
-							oos.writeObject(new LoginResult(false, "Game is Full.", 0));
-							oos.flush();
-							oos.reset();
-						} catch (IOException ioe) {
-							System.out.println("serverthread: isGameFull(): " + ioe.getMessage());
-						}
-					}
 					else { // allow the client to login
 						
 						//read past score from the database
@@ -163,7 +155,6 @@ public class ServerThread extends Thread{
 							oos.reset();
 							
 							//send past score
-							
 							
 						} catch (IOException ioe) {
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
@@ -186,19 +177,80 @@ public class ServerThread extends Thread{
 						//if a new player is being added to the server
 						if(player.playerID == -1) {
 							//send player to the server and read its playerVec size
-							int newID = server.addServerPlayer(player);
+							System.out.println("serverthread: adding player for game room " + gameRoomCode.code);
+							int newID = server.addServerPlayer(player, gameRoomCode.code);
 							//set up PlayerID on client side
 							serverThreadPlayerID = newID;
 							setLocalPlayerID(newID);
-							server.updateServerPlayer(player.playerID, player);
+							server.updateServerPlayer(player.playerID, player, gameRoomCode.code);
 						}
 						else {
 							//update player on the server
-							server.updateServerPlayer(player.playerID, player);
+							server.updateServerPlayer(player.playerID, player, gameRoomCode.code);
 						}
 					}
 				}
-								
+				if(object instanceof LobbyChoice) {
+					lobbyChoice = (LobbyChoice)object;
+					if(lobbyChoice != null) {
+						if(lobbyChoice.choice.equals("new game")) {
+							System.out.println("serverthread: player asking from a new romm");
+							gameRoomCode = new GameRoomCode(server.generateGameRoomCode());
+							sendGameRoomCode(gameRoomCode);
+							
+							GameRoom gameroom = new GameRoom(gameRoomCode.code);
+							gameroom.serverThreads.add(this);
+							server.gameRoomMap.put(gameRoomCode.code, gameroom);
+						}
+						if(lobbyChoice.choice.equals("random game")) {
+							System.out.println("serverthread: player asking from a random romm");
+							
+							//find an available game room
+							Boolean foundAvailable = false;
+							for (String code : server.gameRoomMap.keySet()){
+						        //iterate over keys
+						        System.out.println("serverThread: checking if room " + code + " is available");
+						        
+						        //if find an available game room
+						        if(!server.isGameFull(code)){
+						        	//assign this serverthread to the gameroom
+						        	server.gameRoomMap.get(code).serverThreads.add(this);
+						        	gameRoomCode.code = code;
+						        	//return game code to the client
+						        	foundAvailable = true;
+						        	System.out.println("serverThread: found room "+code+" empty. sending code back to client.");
+						        	sendGameRoomCode(gameRoomCode);
+						        	break;
+						        }
+						    }
+							if(!foundAvailable) {
+								sendGameRoomCode(new GameRoomCode("no empty room"));
+							}
+						}
+						if(lobbyChoice.choice.equals("use code")) {
+							System.out.println("serverthread: player asking to join room " + lobbyChoice.code);
+							String code = lobbyChoice.code;
+							Boolean roomAvailable = false;
+							
+							if(server.gameRoomMap.containsKey(code)) {
+								if(!server.isGameFull(code)){
+						        	//assign this serverthread to the gameroom
+						        	server.gameRoomMap.get(code).serverThreads.add(this);
+						        	gameRoomCode.code = code;
+						        	//return game code to the client
+						        	roomAvailable = true;
+						        	System.out.println("serverThread: found room "+code+" available. sending code back to client.");
+						        	sendGameRoomCode(gameRoomCode);
+								}
+						     
+							}
+							if(!roomAvailable) {
+								sendGameRoomCode(new GameRoomCode("room not available"));
+							}
+							
+						}
+					}
+				}			
 			}
 		}catch(IOException ioe) {
 			System.out.println("serverthread: run() ioe: " + ioe.getMessage());
@@ -210,8 +262,19 @@ public class ServerThread extends Thread{
 			
 			if(clientLoginState != null) {
 				if(clientLoginState) {
-					server.updateServerPlayer(serverThreadPlayerID, new Player("default"));
-					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true));
+					server.updateServerPlayer(serverThreadPlayerID, new Player("default"), gameRoomCode.code);
+					server.broadcastMessage(new ChatMessage(serverThreadPlayerName, " has left.", true), gameRoomCode.code);
+				}
+			}
+			
+			if(serverThreadPlayerID == 0) {
+				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).playerID == -1) {
+					server.gameRoomMap.remove(gameRoomCode.code);
+				}
+			}
+			else if(serverThreadPlayerID == 1) {
+				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).playerID == -1) {
+					server.gameRoomMap.remove(gameRoomCode.code);
 				}
 			}
 			server.serverThreads.remove(this);
@@ -278,5 +341,15 @@ public class ServerThread extends Thread{
 	//return localPlayerID in this serverThread
 	public int getServerThreadPlayerID() {
 		return serverThreadPlayerID;
+	}
+	
+	public void sendGameRoomCode(GameRoomCode code) {
+		try {
+			oos.writeObject(code);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("serverthread: sendGameRoomCode() ioe: " + ioe.getMessage());
+		}
 	}
 }
