@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -35,10 +36,13 @@ public class GameLobbyScreen implements Screen{
 	private Label gameTitle;
 	private TextButton newGameButton;
 	private TextButton existGameButton;
-	private TextField existGameCodeInput;
+	private TextField codeInputField;
 	private TextButton randomGameButton;
 	private TextButton backButton;
 	private TextButton exitButton;
+	
+	private Dialog noEmptyRoomDialog;
+	private Dialog roomNotAvailableDialog;
 	
 	//shared by different methods
 	private Boolean displayDialog;
@@ -68,27 +72,34 @@ public class GameLobbyScreen implements Screen{
 
 		gameTitle = new Label("Puzzungeon", game.skin);
 		
-		newGameButton = new TextButton("New Game", game.skin, "default");
+		newGameButton = new TextButton("Create Game", game.skin, "default");
 		newGameButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-						game.client.sendLobbyChoice(new LobbyChoice("new game"));
+						game.client.sendLobbyChoice(new LobbyChoice("new game", ""));
+						displayDialog = true;
 		            }
 		        });
 		
-		existGameButton = new TextButton("Join Game by Code", game.skin, "default");
+		existGameButton = new TextButton("Use Code", game.skin, "default");
 		existGameButton.addListener(new ClickListener(){
 				@Override 
-	            	public void clicked(InputEvent event, float x, float y){
-						
+	            public void clicked(InputEvent event, float x, float y){
+					String code = codeInputField.getText();
+					game.client.sendLobbyChoice(new LobbyChoice("use code", code));
+					displayDialog = true;
+					
 	            	}
 	        	});
+		
+		codeInputField = new TextField("",game.skin);
 
-		randomGameButton = new TextButton("Join a Random Game", game.skin, "default");
+		randomGameButton = new TextButton("Random Game", game.skin, "default");
 		randomGameButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					game.client.sendLobbyChoice(new LobbyChoice("random game"));
+					game.client.sendLobbyChoice(new LobbyChoice("random game", ""));
+					displayDialog = true;
 				}
 			});
 
@@ -111,6 +122,18 @@ public class GameLobbyScreen implements Screen{
 				game.setScreen(new MainMenuScreen(game));
 			}
 		});
+		
+		
+		noEmptyRoomDialog = new Dialog("Error", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+		noEmptyRoomDialog.text("We don't have any room available");
+		noEmptyRoomDialog.button("Got it", false); //sends "false" as the result
+		
+		
+		roomNotAvailableDialog = new Dialog("Error", game.skin, "dialog") {
+		    public void result(Object obj) {}};
+		roomNotAvailableDialog.text("The room is not available");
+		roomNotAvailableDialog.button("Got it", false); //sends "false" as the result
 			
 /****************************************************************************************
 *                             end: actors functionality
@@ -134,7 +157,10 @@ public class GameLobbyScreen implements Screen{
 		mainMenuTable.row();
 		
 		mainMenuTable.add(newGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.row();
 		mainMenuTable.add(existGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(codeInputField).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.row();
 		mainMenuTable.add(randomGameButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
 		mainMenuTable.row();
 			
@@ -217,8 +243,26 @@ public class GameLobbyScreen implements Screen{
 	
 	public void update() {
 		
-		if(!game.client.gameRoomCode.equals("") && !game.client.gameRoomCode.equals("no empty room")) {
-			game.setScreen(new WaitingScreen(game));
+		if(displayDialog == true) {
+			if(game.client.gameRoomCode.equals("no empty room")){
+				
+				game.client.gameRoomCode = "";
+				noEmptyRoomDialog.show(stage);
+				displayDialog = false;
+			
+			}
+			
+			else if(game.client.gameRoomCode.equals("room not available")){
+				game.client.gameRoomCode = "";
+				roomNotAvailableDialog.show(stage);
+				displayDialog = false;
+			}
+				
+
+			else if(!game.client.gameRoomCode.equals("")) {
+				game.setScreen(new WaitingScreen(game));
+			}
 		}
+		
 	}
 }

@@ -163,11 +163,14 @@ public class Client {
 		            				GameRoomCode grc = (GameRoomCode)object;
 		            				if(!grc.code.equals("no empty room") && !grc.code.equals("")) {
 		            					gameRoomCode = grc.code;
-		            					updatePlayer();
-		            					System.out.println("Client: got gameroomcode from server = "+gameRoomCode);
+		            					//updatePlayer();
+		            					System.out.println("Client: got gameroomcode from server = " + gameRoomCode);
 		            				}
 		            				else if(grc.code.equals("no empty room")){
 		            					System.out.println("Client: 0 gameroom available");
+		            				}
+		            				else if(grc.code.equals("room not available")) {
+		            					System.out.println("Client: gameroom not available");
 		            				}
 		            			}
 		            		}

@@ -244,6 +244,31 @@ public class ServerThread extends Thread{
 								sendGameRoomCode(new GameRoomCode("no empty room"));
 							}
 						}
+						if(lobbyChoice.choice.equals("use code")) {
+							System.out.println("serverthread: player asking to join room " + lobbyChoice.code);
+							
+							//check if the room is available
+							Boolean foundAvailable = false;
+							if(server.gameRoomMap.get(lobbyChoice.code) == null) {
+								sendGameRoomCode(new GameRoomCode("room not available"));
+							}
+							else if(server.isGameFull(lobbyChoice.code)) {
+								sendGameRoomCode(new GameRoomCode("room not available"));
+							}
+							else {
+								//assign this serverthread to the gameroom
+								String code = lobbyChoice.code;
+					        	server.gameRoomMap.get(code).serverThreads.add(this);
+					        	gameRoomCode.code = code;
+					        	//return game code to the client
+					        	foundAvailable = true;
+					        	System.out.println("serverThread: sending room code back to client.");
+					        	sendGameRoomCode(new GameRoomCode(lobbyChoice.code));
+					        	break;
+							}
+							
+							
+						}
 					}
 				}			
 			}
