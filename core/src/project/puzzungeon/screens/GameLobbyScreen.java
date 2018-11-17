@@ -126,7 +126,7 @@ public class GameLobbyScreen implements Screen{
 		
 		noEmptyRoomDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {}};
-		noEmptyRoomDialog.text("We don't have any room available");
+		noEmptyRoomDialog.text("We don't have any rooms available");
 		noEmptyRoomDialog.button("Got it", false); //sends "false" as the result
 		
 		
