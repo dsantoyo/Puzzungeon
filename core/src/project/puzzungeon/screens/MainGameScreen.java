@@ -207,7 +207,6 @@ public class MainGameScreen implements Screen{
 				}
 			});
 		
-			
 /****************************************************************************************
 *                             start: game logic functionality
 ****************************************************************************************/	
@@ -485,15 +484,12 @@ public class MainGameScreen implements Screen{
 			player2LeftDialog.show(stage);
 			displayDialog = false;
 		}
-		if (game.client.incomingPieceID!=-1)
-		{
+		if (game.client.incomingPieceID!=-1){
 			System.out.println("receiving a piece id = " + game.client.incomingPieceID);
 			pieceList.get(game.client.incomingPieceID-1).setVisible(true);
 			pieceList.get(game.client.incomingPieceID-1).setPosition(375, 700);
 			pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
-			//pieceList.get(game.client.incomingPieceID-1).setVisible(true);
 			game.client.incomingPieceID = -1;
 		}
-		
 	}
 }
