@@ -43,6 +43,7 @@ public class GameLobbyScreen implements Screen{
 	
 	private Dialog noEmptyRoomDialog;
 	private Dialog roomNotAvailableDialog;
+	private Dialog connectionLostDialog;
 	
 	//shared by different methods
 	private Boolean displayDialog;
@@ -54,7 +55,7 @@ public class GameLobbyScreen implements Screen{
 		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
-		displayDialog = false;
+		displayDialog = true;
 		
 		//setup background
 		atlas = game.assetLoader.manager.get("sprites.txt");
@@ -134,6 +135,13 @@ public class GameLobbyScreen implements Screen{
 		    public void result(Object obj) {}};
 		roomNotAvailableDialog.text("The room is not available");
 		roomNotAvailableDialog.button("Got it", false); //sends "false" as the result
+		
+		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	game.setScreen(new MainMenuScreen(game));
+		    }};
+		connectionLostDialog.text("Connection lost.");
+		connectionLostDialog.button("Got it", false); //sends "false" as the result
 			
 /****************************************************************************************
 *                             end: actors functionality
@@ -258,6 +266,12 @@ public class GameLobbyScreen implements Screen{
 			
 			else if(!game.client.gameRoomCode.equals("")) {
 				game.setScreen(new WaitingScreen(game));
+			}
+			
+			if(!game.client.connectState) {
+				connectionLostDialog.show(stage);
+				displayDialog = false;
+				System.out.println("GameLobbyScreen: connection lost.");
 			}
 		}
 	}

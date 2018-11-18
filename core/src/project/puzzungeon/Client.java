@@ -40,7 +40,11 @@ public class Client {
 	public Player localPlayer;
 	
 	//the other player. constantly updated by the server
-	public Player otherPlayer;
+	public Player otherPlayer; 
+	
+	//player login username/password
+	public String username;
+	public String password;
 	
 	//constructor
 	public Client(String hostname, int port) {

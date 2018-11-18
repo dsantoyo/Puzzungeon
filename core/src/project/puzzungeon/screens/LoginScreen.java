@@ -109,6 +109,10 @@ public class LoginScreen implements Screen{
 		                passwordInput.setText(passwordInputStr);
 		                String usernameStr = usernameInput.getText();
 						String passwordStr = passwordInput.getText();
+						
+						game.client.username = usernameStr;
+						game.client.password = passwordStr;
+						
 						//front-end input format validation
 						if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 							error.setText("Please enter a valid username and password.");
@@ -178,6 +182,10 @@ public class LoginScreen implements Screen{
 				public void clicked(InputEvent event, float x, float y){
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
+					
+					game.client.username = usernameStr;
+					game.client.password = passwordStr;
+					
 					//front-end input format validation
 					if (usernameStr.trim().isEmpty() && passwordStr.trim().isEmpty()) {
 						error.setText("Please enter a valid username and password.");
@@ -234,6 +242,8 @@ public class LoginScreen implements Screen{
 								game.client = new Client(game.serverAddress, game.serverPort);
 							}
 							else {
+								game.client.username = "guest";
+								game.client.password = "guest";
 								game.client.sendUsername(new Username("guest"));
 								game.client.sendPassword(new Password("guest"));
 								game.client.sendLoginRegister(new LoginRegister("guest"));
@@ -241,6 +251,8 @@ public class LoginScreen implements Screen{
 							}
 						}
 						else {
+							game.client.username = "guest";
+							game.client.password = "guest";
 							game.client.sendUsername(new Username("guest"));
 							game.client.sendPassword(new Password("guest"));
 							game.client.sendLoginRegister(new LoginRegister("guest"));
