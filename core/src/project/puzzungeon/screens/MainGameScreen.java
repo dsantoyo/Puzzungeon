@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
@@ -110,8 +111,6 @@ public class MainGameScreen implements Screen{
 ****************************************************************************************/
 				
 		//create the actors
-		Label gameTitle = new Label("Main Game Screen", game.skin);
-		
 		Label chatTitle = new Label("Chat",game.skin);
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
@@ -123,7 +122,7 @@ public class MainGameScreen implements Screen{
 		
 		showLocalPlayerPC = new Label(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16", game.skin);
 		showOtherPlayerPC = new Label(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16", game.skin);
-		showGameTime = new Label(" Time: 10:10", game.skin);
+		showGameTime = new Label(" Time: 10:10", game.skin, "subtitle");
 				
 		final TextArea inputBox = new TextArea("",game.skin);
 			//when ENTER key is pressed, send message to the serverthread
@@ -278,11 +277,10 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: topbar UI
 ****************************************************************************************/
-		
+		/*
 		Table topbar = new Table().top().left();
 		topbar.setFillParent(true);
 		topbar.pad(0);
-		topbar.add(gameTitle);
 		topbar.row();
 		topbar.add(showLocalPlayerName);
 		topbar.add(showLocalPlayerPC);
@@ -291,6 +289,7 @@ public class MainGameScreen implements Screen{
 		topbar.add(showOtherPlayerPC);
 		topbar.row();
 		topbar.add(showGameTime);
+		*/
 	
 /****************************************************************************************
 *                             end: topbar UI
@@ -300,35 +299,60 @@ public class MainGameScreen implements Screen{
 *                             start: chatroom UI
 ****************************************************************************************/	
 		
-		//set colors of the labels
-		chatTitle.setColor(Color.GREEN);
-		
 		Table chatRoom = new Table().bottom().left();
 		chatRoom.pad(0);
-		chatRoom.add(chatTitle).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage4).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage3).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage2).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage1).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
+		Table chatRoomCol1 = new Table();
+		Drawable chatRoomBackground = game.skin.getDrawable("window");
+		if (chatRoomBackground != null) {
+			chatRoomCol1.setBackground(chatRoomBackground);
+		} else {
+			System.out.println("Drawable of name 'window' not found.");
+		}
+		chatRoomCol1.pad(0);
+		chatRoomCol1.add(chatTitle).width((Puzzungeon.WIDTH / 2) + 100).colspan(2).fillX().align(Align.left);
+		chatRoomCol1.getCell(chatTitle).padTop(15).padLeft(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage4).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage3).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage2).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage1).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(inputBox).fillX().padLeft(15);
+		chatRoomCol1.add(sendButton).align(Align.left);
+		chatRoom.add(chatRoomCol1);
 		
-		chatRoom.add(inputBox).width(Puzzungeon.WIDTH*0.7f);
-		chatRoom.add(sendButton).width(Puzzungeon.WIDTH*0.3f).colspan(2);
-		chatRoom.row();
+		Table chatRoomCol2 = new Table();
+		chatRoomCol2.pad(0);
+		chatRoomCol2.add(showLocalPlayerName);
+		chatRoomCol2.row();
+		chatRoomCol2.add(showLocalPlayerPC);
+		chatRoomCol2.row();
+		chatRoomCol2.add(showOtherPlayerName);
+		chatRoomCol2.row();
+		chatRoomCol2.add(showOtherPlayerPC);
+		chatRoom.add(chatRoomCol2);
 		
-		chatRoom.add(new Label("",game.skin)).width(Puzzungeon.WIDTH*0.7f);
-		chatRoom.add(backButton).width(Puzzungeon.WIDTH*0.15f).pad(0);
-		chatRoom.add(exitButton).width(Puzzungeon.WIDTH*0.15f).pad(0);
+		Table chatRoomCol3 = new Table();
+		Table timerCell = new Table().pad(0);
+		Drawable timerBackground = game.skin.getDrawable("textfield");
+		timerCell.add(showGameTime);
+		if (timerBackground != null) {
+			timerCell.setBackground(timerBackground);
+		}
+		chatRoomCol3.add(timerCell).width(400).padBottom(10);
+		chatRoomCol3.row();
+		chatRoomCol3.add(backButton).width(220).height(90);
+		chatRoomCol3.row();
+		chatRoomCol3.add(exitButton).width(220).height(90);
+		chatRoom.add(chatRoomCol3);
 		
 /****************************************************************************************
 *                             end: chatroom UI
 ****************************************************************************************/
 
-		stage.addActor(topbar);
 		stage.addActor(chatRoom);
 		
 		//draw debugline to see the boundary of each actor
