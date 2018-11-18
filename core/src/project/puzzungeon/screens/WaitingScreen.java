@@ -198,12 +198,12 @@ public class WaitingScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+
+					String username = new String(game.client.username);
+					String password = new String(game.client.password);
 					game.client.disconnect = true;
 					game.client.localPlayer.disconnect = true;
 					game.client.updatePlayer();
-					
-					String username = game.client.username;
-					String password = game.client.username;
 					game.client = new Client(game.serverAddress, game.serverPort);
 					
 					if(username.equals("guest")) {
@@ -227,6 +227,7 @@ public class WaitingScreen implements Screen{
 						}
 					}
 					else {
+						game.client.clientUsername = username;
 						if(!game.client.connectState) {
 							//set up connection to the server
 							System.out.println("Trying to connect...");
@@ -237,6 +238,8 @@ public class WaitingScreen implements Screen{
 							}
 							else {
 								//send username and password to back-end
+								game.client.username = username;
+								game.client.password = password;
 								game.client.sendUsername(new Username(username));
 								game.client.sendPassword(new Password(password));
 								game.client.sendLoginRegister(new LoginRegister("login"));
