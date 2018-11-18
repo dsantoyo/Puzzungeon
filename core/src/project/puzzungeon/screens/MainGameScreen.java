@@ -273,30 +273,9 @@ public class MainGameScreen implements Screen{
 *                             start: actors layout
 ****************************************************************************************/
 			
-		
+
 /****************************************************************************************
-*                             start: topbar UI
-****************************************************************************************/
-		/*
-		Table topbar = new Table().top().left();
-		topbar.setFillParent(true);
-		topbar.pad(0);
-		topbar.row();
-		topbar.add(showLocalPlayerName);
-		topbar.add(showLocalPlayerPC);
-		topbar.row();
-		topbar.add(showOtherPlayerName);
-		topbar.add(showOtherPlayerPC);
-		topbar.row();
-		topbar.add(showGameTime);
-		*/
-	
-/****************************************************************************************
-*                             end: topbar UI
-****************************************************************************************/
-		
-/****************************************************************************************
-*                             start: chatroom UI
+*                             start: bottom bar UI
 ****************************************************************************************/	
 		
 		Table chatRoom = new Table().bottom().left();
@@ -320,19 +299,24 @@ public class MainGameScreen implements Screen{
 		chatRoomCol1.row();
 		chatRoomCol1.add(showMessage1).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
 		chatRoomCol1.row();
-		chatRoomCol1.add(inputBox).fillX().padLeft(15);
+		chatRoomCol1.add(inputBox).fillX().padLeft(15).minWidth(Puzzungeon.WIDTH / 4 + 30);
 		chatRoomCol1.add(sendButton).align(Align.left);
 		chatRoom.add(chatRoomCol1);
 		
 		Table chatRoomCol2 = new Table();
+		if (chatRoomBackground != null) {
+			chatRoomCol2.setBackground(chatRoomBackground);
+		} else {
+			System.out.println("Drawable of name 'window' not found.");
+		}
 		chatRoomCol2.pad(0);
-		chatRoomCol2.add(showLocalPlayerName);
+		chatRoomCol2.add(showLocalPlayerName).align(Align.left).width(370).pad(15);
 		chatRoomCol2.row();
-		chatRoomCol2.add(showLocalPlayerPC);
+		chatRoomCol2.add(showLocalPlayerPC).align(Align.left).pad(15);
 		chatRoomCol2.row();
-		chatRoomCol2.add(showOtherPlayerName);
+		chatRoomCol2.add(showOtherPlayerName).align(Align.left).pad(15);
 		chatRoomCol2.row();
-		chatRoomCol2.add(showOtherPlayerPC);
+		chatRoomCol2.add(showOtherPlayerPC).align(Align.left).pad(15);
 		chatRoom.add(chatRoomCol2);
 		
 		Table chatRoomCol3 = new Table();
@@ -342,7 +326,7 @@ public class MainGameScreen implements Screen{
 		if (timerBackground != null) {
 			timerCell.setBackground(timerBackground);
 		}
-		chatRoomCol3.add(timerCell).width(400).padBottom(10);
+		chatRoomCol3.add(timerCell).width(450).padBottom(10);
 		chatRoomCol3.row();
 		chatRoomCol3.add(backButton).width(220).height(90);
 		chatRoomCol3.row();
@@ -350,7 +334,7 @@ public class MainGameScreen implements Screen{
 		chatRoom.add(chatRoomCol3);
 		
 /****************************************************************************************
-*                             end: chatroom UI
+*                             end: bottom bar UI
 ****************************************************************************************/
 
 		stage.addActor(chatRoom);
