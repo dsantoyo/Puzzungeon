@@ -158,20 +158,16 @@ public class GameLobbyScreen implements Screen{
 *                             start: Main Menu UI
 ****************************************************************************************/
 		
-		//set label color and size
-		gameTitle.setColor(Color.GREEN);
-		
 		Table mainMenuTable = new Table();
 		mainMenuTable.setFillParent(true);
-		mainMenuTable.add(gameTitle).colspan(3);
+		mainMenuTable.add(gameTitle).colspan(3).padBottom(20);
 		mainMenuTable.row();
-		
-		mainMenuTable.add(newGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(newGameButton).padBottom(15).uniform();
 		mainMenuTable.row();
-		mainMenuTable.add(existGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
-		mainMenuTable.add(codeInputField).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(existGameButton).uniform().padBottom(15);
+		mainMenuTable.add(codeInputField).uniform().fillX();
 		mainMenuTable.row();
-		mainMenuTable.add(randomGameButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
+		mainMenuTable.add(randomGameButton).uniform();
 		mainMenuTable.row();
 			
 /****************************************************************************************

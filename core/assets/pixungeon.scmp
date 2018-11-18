@@ -554,6 +554,40 @@ atlasData: {
 			minHeight: 0
 			customized: false
 		}
+		{
+			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/gamegirl-36.png"
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			visible: false
+			tint: null
+			tintName: null
+			name: gamegirl-36
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+		{
+			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/gamegirl-76.png"
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			visible: false
+			tint: null
+			tintName: null
+			name: gamegirl-76
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
 	]
 }
 jsonData: {
@@ -674,6 +708,16 @@ jsonData: {
 			class: com.ray3k.skincomposer.data.FontData
 			name: font
 			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/pixungeon_data/font-export.fnt"
+		}
+		{
+			class: com.ray3k.skincomposer.data.FontData
+			name: gamegirl-36
+			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/gamegirl-36.fnt"
+		}
+		{
+			class: com.ray3k.skincomposer.data.FontData
+			name: gamegirl-76
+			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/gamegirl-76.fnt"
 		}
 		{
 			class: com.ray3k.skincomposer.data.FontData
@@ -1064,7 +1108,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: subtitle
+						value: gamegirl-36
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1564,7 +1608,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: subtitle
+						value: gamegirl-36
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1752,7 +1796,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: subtitle
+						value: gamegirl-36
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1782,7 +1826,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: title
+						value: gamegirl-76
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1814,7 +1858,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: subtitle
+						value: gamegirl-36
 					}
 					fontColorSelected: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -2189,7 +2233,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: subtitle
+						value: gamegirl-36
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -2457,7 +2501,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: subtitle
+						value: gamegirl-36
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty

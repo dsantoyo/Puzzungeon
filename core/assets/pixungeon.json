@@ -3,6 +3,12 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font: {
 		file: font-export.fnt
 	}
+	gamegirl-36: {
+		file: gamegirl-36.fnt
+	}
+	gamegirl-76: {
+		file: gamegirl-76.fnt
+	}
 	subtitle: {
 		file: font-subtitle-export.fnt
 	}
@@ -140,7 +146,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
 		checkboxOn: checkbox-on
 		checkboxOff: checkbox-off
-		font: subtitle
+		font: gamegirl-36
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
@@ -156,7 +162,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 	default: {
-		font: subtitle
+		font: gamegirl-36
 		checkedOverFontColor: Blue
 		up: button
 		down: button-pressed
@@ -168,17 +174,17 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		fontColor: white
 	}
 	subtitle: {
-		font: subtitle
+		font: gamegirl-36
 		fontColor: white
 	}
 	title: {
-		font: title
+		font: gamegirl-76
 		fontColor: Teal
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {
-		font: subtitle
+		font: gamegirl-36
 		fontColorSelected: Orange
 		fontColorUnselected: white
 		selection: transparent
@@ -205,7 +211,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
-		font: subtitle
+		font: gamegirl-36
 		fontColor: white
 		background: select-box
 		scrollStyle: default
@@ -232,7 +238,7 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
-		font: subtitle
+		font: gamegirl-36
 		up: button
 		down: button-pressed
 	}

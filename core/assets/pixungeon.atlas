@@ -2,11 +2,38 @@
 pixungeon.png
 size: 1024,1024
 format: RGBA8888
-filter: Linear,Linear
+filter: Linear, Nearest
 repeat: none
+font-title-export
+  rotate: false
+  xy: 1, 1
+  size: 619, 620
+  orig: 619, 620
+  offset: 0, 0
+  index: -1
+
+pixungeon2.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear, Nearest
+repeat: none
+gamegirl-36
+  rotate: false
+  xy: 515, 752
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+gamegirl-76
+  rotate: false
+  xy: 1, 496
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
 button
   rotate: false
-  xy: 622, 745
+  xy: 773, 894
   size: 102, 114
   split: 33, 33, 33, 45
   pad: 28, 28, 22, 33
@@ -15,7 +42,7 @@ button
   index: -1
 button-pressed
   rotate: false
-  xy: 784, 909
+  xy: 163, 75
   size: 102, 114
   split: 33, 33, 42, 36
   pad: 28, 28, 30, 24
@@ -24,42 +51,35 @@ button-pressed
   index: -1
 checkbox-off
   rotate: false
-  xy: 784, 865
+  xy: 163, 31
   size: 50, 42
   orig: 50, 42
   offset: 0, 0
   index: -1
 checkbox-on
   rotate: false
-  xy: 227, 54
+  xy: 306, 340
   size: 50, 42
   orig: 50, 42
   offset: 0, 0
   index: -1
 font-export
   rotate: false
-  xy: 622, 861
+  xy: 1, 27
   size: 160, 162
   orig: 160, 162
   offset: 0, 0
   index: -1
 font-subtitle-export
   rotate: false
-  xy: 1, 98
+  xy: 1, 191
   size: 303, 303
   orig: 303, 303
   offset: 0, 0
   index: -1
-font-title-export
-  rotate: false
-  xy: 1, 403
-  size: 619, 620
-  orig: 619, 620
-  offset: 0, 0
-  index: -1
 list
   rotate: false
-  xy: 306, 287
+  xy: 515, 636
   size: 114, 114
   split: 48, 48, 42, 48
   pad: 48, 48, 9, 9
@@ -68,7 +88,7 @@ list
   index: -1
 progress-bar-horizontal
   rotate: false
-  xy: 684, 698
+  xy: 835, 847
   size: 9, 45
   split: 3, 3, 3, 3
   orig: 9, 45
@@ -76,14 +96,14 @@ progress-bar-horizontal
   index: -1
 progress-bar-horizontal-knob
   rotate: false
-  xy: 726, 764
+  xy: 401, 387
   size: 1, 39
   orig: 1, 39
   offset: 0, 0
   index: -1
 progress-bar-vertical
   rotate: false
-  xy: 132, 43
+  xy: 515, 569
   size: 45, 9
   split: 3, 3, 3, 3
   orig: 45, 9
@@ -91,14 +111,14 @@ progress-bar-vertical
   index: -1
 progress-bar-vertical-knob
   rotate: false
-  xy: 1, 1
+  xy: 702, 749
   size: 39, 1
   orig: 39, 1
   offset: 0, 0
   index: -1
 scrollbar-horizontal
   rotate: false
-  xy: 493, 358
+  xy: 773, 772
   size: 21, 43
   split: 9, 9, 17, 17
   pad: 0, 0, 0, 0
@@ -107,7 +127,7 @@ scrollbar-horizontal
   index: -1
 scrollbar-horizontal-knob
   rotate: false
-  xy: 132, 54
+  xy: 306, 384
   size: 93, 42
   split: 24, 24, 0, 0
   pad: 0, 0, 0, 0
@@ -116,7 +136,7 @@ scrollbar-horizontal-knob
   index: -1
 scrollbar-vertical
   rotate: false
-  xy: 306, 208
+  xy: 631, 652
   size: 43, 21
   split: 17, 17, 9, 9
   pad: 0, 0, 0, 0
@@ -125,7 +145,7 @@ scrollbar-vertical
   index: -1
 scrollbar-vertical-knob
   rotate: false
-  xy: 622, 573
+  xy: 306, 245
   size: 42, 93
   split: 0, 0, 24, 24
   pad: 0, 0, 0, 0
@@ -134,7 +154,7 @@ scrollbar-vertical-knob
   index: -1
 select-box
   rotate: false
-  xy: 1, 30
+  xy: 306, 428
   size: 129, 66
   split: 9, 69, 9, 30
   pad: 16, 76, 13, 12
@@ -143,7 +163,7 @@ select-box
   index: -1
 slider-horizontal
   rotate: false
-  xy: 306, 231
+  xy: 515, 580
   size: 84, 54
   split: 36, 36, 15, 15
   pad: 0, 0, 0, 0
@@ -152,14 +172,14 @@ slider-horizontal
   index: -1
 slider-knob
   rotate: false
-  xy: 726, 805
+  xy: 437, 440
   size: 54, 54
   orig: 54, 54
   offset: 0, 0
   index: -1
 slider-vertical
   rotate: false
-  xy: 888, 939
+  xy: 877, 924
   size: 54, 84
   split: 15, 15, 36, 36
   pad: 0, 0, 0, 0
@@ -168,7 +188,7 @@ slider-vertical
   index: -1
 split-pane-horizontal
   rotate: false
-  xy: 392, 237
+  xy: 601, 586
   size: 24, 48
   split: 3, 3, 3, 3
   pad: 0, 0, 0, 0
@@ -177,7 +197,7 @@ split-pane-horizontal
   index: -1
 split-pane-vertical
   rotate: false
-  xy: 1, 4
+  xy: 1, 1
   size: 48, 24
   split: 3, 3, 3, 3
   pad: 0, 0, 0, 0
@@ -186,7 +206,7 @@ split-pane-vertical
   index: -1
 textfield
   rotate: false
-  xy: 422, 326
+  xy: 631, 675
   size: 69, 75
   split: 21, 21, 21, 21
   pad: 28, 28, 23, 23
@@ -195,14 +215,14 @@ textfield
   index: -1
 white
   rotate: false
-  xy: 42, 1
+  xy: 437, 437
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 window
   rotate: false
-  xy: 51, 1
+  xy: 267, 162
   size: 27, 27
   split: 9, 9, 9, 9
   orig: 27, 27
@@ -210,7 +230,7 @@ window
   index: -1
 window-round
   rotate: false
-  xy: 622, 668
+  xy: 773, 817
   size: 60, 75
   split: 18, 30, 18, 30
   pad: 6, 6, 18, 30

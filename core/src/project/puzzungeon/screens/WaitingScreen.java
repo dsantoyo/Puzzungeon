@@ -22,8 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
@@ -56,6 +58,9 @@ public class WaitingScreen implements Screen{
 	private Dialog connectionLostDialog;
 	private Boolean displayDialog;
 	
+	//global Table variable
+	private Table waitingTable;
+	
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
@@ -82,15 +87,17 @@ public class WaitingScreen implements Screen{
 ****************************************************************************************/
 		
 		//create the actors
-		Label gameTitle = new Label("Waiting Room", game.skin);
-		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin);
-		Label localPlayerPastScore = new Label("Highest score: " + Integer.toString(game.client.localPlayer.pastScore), game.skin);
-		otherPlayerPastScore = new Label("", game.skin);
-		otherPlayerUsername = new Label("", game.skin);
+		Label gameTitle = new Label("Waiting Room", game.skin, "subtitle");
+		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin, "subtitle");
+		localPlayerUsername.setColor(game.skin.getColor("Teal"));
+		Label localPlayerPastScore = new Label("High score: " + Integer.toString(game.client.localPlayer.pastScore), game.skin, "subtitle");
+		otherPlayerPastScore = new Label("", game.skin, "subtitle");
+		otherPlayerUsername = new Label("", game.skin, "subtitle");
+		otherPlayerUsername.setColor(game.skin.getColor("Red"));
 		roomCode = new Label("Code:" + game.client.gameRoomCode, game.skin);
 		waitingState = new Label("Waiting for another player...", game.skin);
 		
-		Label chatTitle = new Label("Chat",game.skin);
+		Label chatTitle = new Label("Chat",game.skin, "subtitle");
 		
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
@@ -173,14 +180,18 @@ public class WaitingScreen implements Screen{
 		String instructions3Str = "You may have some of the other player’s"
 				+ " pieces, and vice versa. Use the teleporter to send puzzle"
 				+ " pieces to the other player!";
+		Label tutorial = new Label("Tutorial", game.skin, "subtitle");
+		tutorial.setAlignment(Align.center);
 		Label instruct1 = new Label(instructions1Str, game.skin, "default");
+		instruct1.setAlignment(Align.center);
+		instruct1.setWrap(true);
 		Label instruct2 = new Label(instructions2Str, game.skin, "default");
 		Label instruct3 = new Label(instructions3Str, game.skin, "default");
-		Image mouse = new Image(new SpriteDrawable(mouseSprite));
-		mouse.setScale(0.5f);
-		Image teleporter = new Image(new SpriteDrawable(teleporterSprite));
-		instruct1.setWrap(true);
 		instruct3.setWrap(true);
+		Image mouse = new Image(new SpriteDrawable(mouseSprite));
+		mouse.setScaling(Scaling.fit);
+		Image teleporter = new Image(new SpriteDrawable(teleporterSprite));
+		teleporter.setScaling(Scaling.fit);
 
 		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
@@ -223,7 +234,7 @@ public class WaitingScreen implements Screen{
 *                             start: Waiting state UI
 ****************************************************************************************/
 		
-		Table waitingTable = new Table().top();
+		waitingTable = new Table().top().padTop(30);
 		waitingTable.setFillParent(true);
 		waitingTable.add(gameTitle).colspan(2);
 		waitingTable.row();
@@ -233,11 +244,11 @@ public class WaitingScreen implements Screen{
 		waitingTable.add(otherPlayerUsername).padRight(10);;
 		waitingTable.add(otherPlayerPastScore).padLeft(10);;
 		waitingTable.row();
-		waitingTable.add(readyButton).colspan(2);
+		waitingTable.add(readyButton).colspan(2).height(0);
 		waitingTable.row();
-		waitingTable.add(waitingState).colspan(2);
+		waitingTable.add(waitingState).colspan(2).height(90);
 		waitingTable.row();
-		waitingTable.add(roomCode).colspan(2);
+		waitingTable.add(roomCode).colspan(2).padBottom(15);
 		
 			
 /****************************************************************************************
@@ -248,33 +259,27 @@ public class WaitingScreen implements Screen{
 *                             start: instructions UI
 ****************************************************************************************/
 		
-		Table instructionTable = new Table().left();
-		instructionTable.setFillParent(true);
-		instructionTable.add(instruct1);
-		instructionTable.row();
-		instructionTable.add(mouse);
-		instructionTable.add(instruct2);
-		instructionTable.row();
-		instructionTable.add(instruct3);
-		instructionTable.row();
-		instructionTable.add(teleporter);
+		waitingTable.row();
 		
+		Table instructionTable = new Table();
+		Drawable tableBackground = game.skin.getDrawable("window");
+		if (tableBackground != null) {
+			instructionTable.setBackground(tableBackground);
+		} else {
+			System.out.println("Drawable of name 'window' not found.");
+		}
+		instructionTable.pad(0).padTop(30);
+		instructionTable.add(tutorial).colspan(2).width(800).align(Align.center).padBottom(15);
+		instructionTable.row();
+		instructionTable.add(instruct1).colspan(2).align(Align.center).fillX().padBottom(15);
+		instructionTable.row();
+		instructionTable.add(mouse).fill().padBottom(15).padRight(10);
+		instructionTable.add(instruct2).fillX().height(70).padBottom(15);
+		instructionTable.row();
+		instructionTable.add(teleporter).fill().padRight(10).padBottom(15);
+		instructionTable.add(instruct3).fillX().height(200).padBottom(15);
 		
-		stage.addActor(instructionTable);
-		
-		/*
-		//controls instructions widget setup
-		VerticalGroup instructs = new VerticalGroup();
-		HorizontalGroup line2 = new HorizontalGroup();
-		line2.rowAlign(Align.center);
-		line2.addActor(mouse);
-		line2.addActor(instruct2);
-		instructs.addActor(instruct1);
-		instructs.addActor(line2);
-		instructs.addActor(instruct3);
-		instructs.addActor(teleporter);
-		stage.addActor(instructs);
-		*/
+		waitingTable.add(instructionTable).fillX().align(Align.center).colspan(2);
 		
 /****************************************************************************************
 *                             end: instructions UI
@@ -282,33 +287,39 @@ public class WaitingScreen implements Screen{
 				
 /****************************************************************************************
 *                             start: chatroom UI
-****************************************************************************************/	
-		
-		//set colors of the labels
-		chatTitle.setColor(Color.GREEN);
-		
+****************************************************************************************/			
 		
 		Table chatRoom = new Table().bottom().left();
 		chatRoom.pad(0);
-		chatRoom.add(chatTitle).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage4).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage3).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage2).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
-		chatRoom.add(showMessage1).width(Puzzungeon.WIDTH).colspan(3);
-		chatRoom.row();
+		Table chatRoomCol1 = new Table();
+		Drawable chatRoomBackground = game.skin.getDrawable("window");
+		if (chatRoomBackground != null) {
+			chatRoomCol1.setBackground(chatRoomBackground);
+		} else {
+			System.out.println("Drawable of name 'window' not found.");
+		}
+		chatRoomCol1.pad(0);
+		chatRoomCol1.add(chatTitle).width(Puzzungeon.WIDTH - 220).colspan(2).fillX().align(Align.left);
+		chatRoomCol1.getCell(chatTitle).padTop(15).padLeft(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage4).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage3).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage2).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(showMessage1).colspan(2).fillX().align(Align.left).padLeft(15).padRight(15);
+		chatRoomCol1.row();
+		chatRoomCol1.add(inputBox).fillX().padLeft(15);
+		chatRoomCol1.add(sendButton).align(Align.left);
+		chatRoom.add(chatRoomCol1);
 		
-		chatRoom.add(inputBox).width(Puzzungeon.WIDTH*0.7f);
-		chatRoom.add(sendButton).width(Puzzungeon.WIDTH*0.3f).colspan(2);
-		chatRoom.row();
-		
-		chatRoom.add(new Label("",game.skin)).width(Puzzungeon.WIDTH*0.7f);
-		chatRoom.add(backButton).width(Puzzungeon.WIDTH*0.15f).pad(0);
-		chatRoom.add(exitButton).width(Puzzungeon.WIDTH*0.15f).pad(0);
-		
+		Table chatRoomCol2 = new Table();
+		chatRoomCol2.add(backButton);
+		chatRoomCol2.row();
+		chatRoomCol2.add(exitButton);
+		chatRoom.add(chatRoomCol2);
+
 /****************************************************************************************
 *                             end: chatroom UI
 ****************************************************************************************/
@@ -333,6 +344,7 @@ public class WaitingScreen implements Screen{
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		//draw background
 		viewport.apply();
 		game.batch.begin();
@@ -377,23 +389,27 @@ public class WaitingScreen implements Screen{
 		if(game.client.otherPlayer.playerID != -1) {
 			
 			//update the visibility of Ready button
+			waitingTable.getCell(readyButton).height(90);
 			readyButton.setVisible(true);
 			
 			//update waiting state
 			waitingState.setText("");
+			waitingTable.getCell(waitingState).height(0);
 			otherPlayerUsername.setText("Player2: " + game.client.otherPlayer.playerName);
-			otherPlayerPastScore.setText("Highest score: " + Integer.toString(game.client.otherPlayer.pastScore));
+			otherPlayerPastScore.setText("High score: " + Integer.toString(game.client.otherPlayer.pastScore));
 		}
 		
 		if(game.client.otherPlayer.playerID == -1) {
 			
 			//update the visibility of Ready button
 			readyButton.setVisible(false);
+			waitingTable.getCell(readyButton).height(0);
 			
 			//update waiting state
 			otherPlayerUsername.setText("");
 			otherPlayerPastScore.setText("");
 			waitingState.setText("Waiting for another player...");
+			waitingTable.getCell(waitingState).height(60);
 		}
 		
 		//update chatroom
