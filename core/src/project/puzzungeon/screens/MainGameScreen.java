@@ -226,11 +226,30 @@ public class MainGameScreen implements Screen{
 					temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
 					temp.setSize(100, 100);
 					temp.addListener(new DragListener() {
-						public void drag(InputEvent event, float x, float y, int pointer) {		
+						public void drag(InputEvent event, float x, float y, int pointer) {	
+							
+							float distanceToMinY = temp.getY() - 300;
+							float distanceToMinX = temp.getX() - 0;
+							System.out.println("distanceToMinX = " +  distanceToMinX);
+							System.out.println("distanceToMinY = " +  distanceToMinY);
+							
 							if(!temp.checkrightLocation()) {
-								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+								if(distanceToMinY > 0) {
+									temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);	
+								}
+								else if(distanceToMinY < 0){
+									float Ymove = y - temp.getHeight()/2;
+									
+									if(Ymove < 0){
+										temp.moveBy(x - temp.getWidth()/2, 0);
+									}
+									else {
+										temp.moveBy(x - temp.getWidth()/2, Ymove);
+									}
+								}
 							}
 						}
+						
 						
 						public void dragStop(InputEvent event, float x, float y, int pointer) {
 							System.out.println("temp: " + temp.getX() + "," + temp.getY());
