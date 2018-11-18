@@ -1,33 +1,38 @@
 package project.puzzungeon.screens;
 
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -45,11 +50,12 @@ public class MainGameScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	FitViewport viewport;
+	private int count1 = 0;
+	private int count2 = 0;
 	
 	//background references
 	TextureAtlas atlas;
 	Sprite background;
-	ArrayList<Sprite> dragon;
 	
 	//shared by different methods
 	private Label showMessage1;
@@ -69,6 +75,7 @@ public class MainGameScreen implements Screen{
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
 	private long startTime;
+	ShapeRenderer shapeRenderer;
 	
 	
 	public int correctPieceCount;
@@ -251,31 +258,12 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: game logic functionality
 ****************************************************************************************/	
-			
+	/*		
 			pieces = new ArrayList<PuzzlePiece>();
-			TextureRegion puzzle = atlas.findRegion("dragon");
-			int numTilesHorizontal = 4;
-			int numTilesVertical = 2;
-			int imageWidth = puzzle.getRegionWidth() ;
-		    int imageHeight = puzzle.getRegionHeight() ;
-		    int pieceWidth = imageWidth / numTilesHorizontal;
-		    int pieceHeight = imageHeight / numTilesVertical;
-			TextureRegion[][] pieceRegions = puzzle.split(pieceWidth, pieceHeight);
-			for (int i = 0; i < pieceRegions.length; i++) {
-				System.out.println("Row " + i + ": " + pieceRegions[i].length);
-			}
-			System.out.println("Column: " + pieceRegions.length);
 			
-			int j = 1;
-			for(int i = 0; i < 2; i++) {
-				for (int k = 1; k < 3; k++) {
-					//pieces.add(new PuzzlePiece(new Texture(Gdx.files.internal("image/pup"+(i+1)+".jpg")), i));
-					PuzzlePiece to_add = new PuzzlePiece(pieceRegions[i][k], j);
-					pieces.add(to_add);
-					j++;
-				}
+			for(int i = 0; i < 4; i++) {
+				pieces.add(new PuzzlePiece(new Texture(Gdx.files.internal("image/pup"+(i+1)+".jpg")), i));
 			}
-			System.out.println("Number of pieces: " + j);
 			
 			
 			dragAndDrop = new DragAndDrop();
@@ -329,7 +317,7 @@ public class MainGameScreen implements Screen{
 				//final Table
 				final int index = i;
 				final Table targetTableNew = new Table();
-				targetTableNew.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")), -1)).width(80).height(80);
+				targetTableNew.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")), -1, )).width(80).height(80);
 				targetTables.add(targetTableNew);
 				dragAndDrop.addTarget(new Target(targetTableNew) {
 					public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
@@ -435,7 +423,82 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-		
+			shapeRenderer=new ShapeRenderer();
+			
+			final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
+			
+			int k = 0;
+			System.out.println(k);
+			for(int i = 500; i <= 800; i+=100) {
+				
+				for(int j = 1400; j<= 1700; j+=100) {
+				
+				//final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup" + i + ".jpg")), 1, 500, 600);
+				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), k,j, i, true);
+				k++;
+				
+				temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
+				temp.setSize(100, 100);
+				 
+				temp.addListener(new DragListener() {
+					public void drag(InputEvent event, float x, float y, int pointer) {
+						
+						if(!temp.checkrightLocation()) {
+						temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+						}
+					}
+					
+					public void dragStop(InputEvent event, float x, float y, int pointer) {
+						System.out.println("temp: " + temp.getX() + "," + temp.getY());
+						if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
+								&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
+						(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50)))
+						{
+							temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+							temp.setrightLocation();
+						}
+						
+						if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
+								&& (((temp.getY()+50) >= 350) &&
+									(temp.getY()+50) < 550))
+						{
+							//temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+							temp.setrightLocation();
+							game.client.sendPiece(temp.getPieceID());
+							temp.remove();
+;							
+						}
+					}
+				});
+				listOfPieces.add(temp);
+			
+//				final PuzzlePiece test1 = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), 1, 500, 600);
+//				test1.setPosition(300, 300);
+//				test1.setSize(100, 100);
+//				test1.addListener(new DragListener() {
+//				    	public void drag(InputEvent event, float x, float y, int pointer) {
+//				    		test1.moveBy(x - test1.getWidth() / 2, y - test1.getHeight() / 2);
+//				    	
+//				    	}
+//				    
+//				    	public void dragStop(InputEvent event, float x, float y, int pointer) {
+//				    		if(x == test1.getPieceX() && y == test1.getPieceY()) {
+//				    			count1++;
+//				    			//System.out.println("count1: " + count1);
+//				    		}
+//				    		else {
+//				    			count1--;
+//				    			//System.out.println("count1: " + count1);
+//				    		}
+//				    		System.out.println("test1: " + 	test1.getX() +"," + test1.getY() );
+//				    	}
+//					});
+//			
+//			;
+//				stage.addActor(test2);
+				stage.addActor(temp);
+		}
+	}
 		
 /****************************************************************************************
 *                             start: topbar UI
@@ -509,17 +572,49 @@ public class MainGameScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		
 		//draw background
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);
 		game.batch.end();
+	
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+			shapeRenderer.begin(ShapeType.Line);
 		
-		//draw stage
+		for(int i=450; i<=750;i+=100)
+		{
+			for( int j=1350; j<=1650;j+=100)
+			{
+				shapeRenderer.rect(j,i,100,100);
+			}
+		}
+		
+		shapeRenderer.rect(700,450,400,400);
+		
+		shapeRenderer.rect(350,650,200,200);
+		shapeRenderer.rect(350,350,200,200);
+
+		
+		shapeRenderer.end();
+		
+		//update and draw stage
 		stage.getViewport().apply();
 		stage.act(Gdx.graphics.getDeltaTime());
 		update();
 		stage.draw();
+		
+//		//draw background
+//		viewport.apply();
+//		game.batch.begin();
+//		background.draw(game.batch);
+//		game.batch.end();
+//		
+//		//draw stage
+//		stage.getViewport().apply();
+//		stage.act(Gdx.graphics.getDeltaTime());
+//		update();
+//		stage.draw();
 		
 	}
 
@@ -604,5 +699,50 @@ public class MainGameScreen implements Screen{
 			player2LeftDialog.show(stage);
 			displayDialog = false;
 		}
+		if (game.client.incomingPieceID!=-1)
+		{
+			System.out.println("incoming piece id: " + game.client.incomingPieceID);
+			//stage.addActor(actor);
+			
+			final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), game.client.incomingPieceID,0, 0, true);
+			//k++;
+			
+			temp.setPosition(375, 700);
+			temp.setSize(100, 100);
+			 
+			temp.addListener(new DragListener() {
+				public void drag(InputEvent event, float x, float y, int pointer) {
+					
+					if(!temp.checkrightLocation()) {
+					temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+					}
+				}
+				
+				public void dragStop(InputEvent event, float x, float y, int pointer) {
+					System.out.println("temp: " + temp.getX() + "," + temp.getY());
+					if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
+							&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
+					(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50)))
+					{
+						temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+						temp.setrightLocation();
+					}
+					
+					if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
+							&& (((temp.getY()+50) >= 350) &&
+								(temp.getY()+50) < 550))
+					{
+						//temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+						temp.setrightLocation();
+						game.client.sendPiece(temp.getPieceID());
+						temp.remove();
+;							
+					}
+				}
+			});
+			stage.addActor(temp);
+			game.client.incomingPieceID = -1;
+		}
+		
 	}
 }
