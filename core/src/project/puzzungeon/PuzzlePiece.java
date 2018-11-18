@@ -9,13 +9,13 @@ public class PuzzlePiece extends Image{
 	private float pieceY;
 	private int pieceID;
 	
-	public boolean playerID;
+	public int playerID;
 	private boolean inRightLocation;
 	private float pieceCorrectLocX;
 	private float pieceCorrectLocY;
 	private boolean visible;
 	
-	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, boolean playerID){
+	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, int playerID){
 
 		super(texture);
 		this.pieceID = pieceID;
