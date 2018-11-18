@@ -25,7 +25,8 @@ public class Player implements Serializable{
 		this.pastScore = 0;
 		this.outgoingPiece = -1;
 		this.incomingPiece = -1;
-		playerPieceSet = new HashSet<Integer>();
+		this.correctPieceCount = 0;
+		this.playerPieceSet = new HashSet<Integer>();
 	}
 	
 	public String playerName;
@@ -48,5 +49,7 @@ public class Player implements Serializable{
 	public int incomingPiece;
 	
 	public HashSet<Integer> playerPieceSet;
+	
+	public int correctPieceCount;
 }
 

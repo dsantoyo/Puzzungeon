@@ -99,8 +99,6 @@ public class MainGameScreen implements Screen{
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
-
-		correctPieceCount = 0;
 		totalPieces = 4;
 	}
 
@@ -123,8 +121,8 @@ public class MainGameScreen implements Screen{
 		showLocalPlayerName = new Label("Player1: " + game.client.localPlayer.playerName, game.skin);
 		showOtherPlayerName = new Label("Player2: " + game.client.otherPlayer.playerName, game.skin);
 		
-		showLocalPlayerPC = new Label(" Pieces Completed: 1/10", game.skin);
-		showOtherPlayerPC = new Label(" Pieces Completed: 2/10", game.skin);
+		showLocalPlayerPC = new Label(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16", game.skin);
+		showOtherPlayerPC = new Label(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16", game.skin);
 		showGameTime = new Label(" Time: 10:10", game.skin);
 				
 		final TextArea inputBox = new TextArea("",game.skin);
@@ -221,36 +219,38 @@ public class MainGameScreen implements Screen{
 			for(int i = 500; i <= 800; i+=100) {
 				
 				for(int j = 1400; j<= 1700; j+=100, k++) {
-				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("testImage/test"+k+".png")), k, j , i, id);
-				pieceList.add(temp);
-		
-				temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
-				temp.setSize(100, 100);
-				temp.addListener(new DragListener() {
-					public void drag(InputEvent event, float x, float y, int pointer) {		
-						//if(!temp.checkrightLocation()) {
-							temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
-						//}
-					}
-					
-					public void dragStop(InputEvent event, float x, float y, int pointer) {
-						System.out.println("temp: " + temp.getX() + "," + temp.getY());
-						if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
-								&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
-						(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
-							temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
-							temp.setrightLocation();
+					final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("testImage/test"+k+".png")), k, j , i, id);
+					pieceList.add(temp);
+			
+					temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
+					temp.setSize(100, 100);
+					temp.addListener(new DragListener() {
+						public void drag(InputEvent event, float x, float y, int pointer) {		
+							//if(!temp.checkrightLocation()) {
+								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+							//}
 						}
 						
-						if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550) 
-								&& (((temp.getY()+50) >= 350) &&
-									(temp.getY()+50) < 550)){
-							temp.setrightLocation();
-							game.client.sendPiece(temp.getPieceID());
-							temp.setVisible(false);				
+						public void dragStop(InputEvent event, float x, float y, int pointer) {
+							System.out.println("temp: " + temp.getX() + "," + temp.getY());
+							if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
+									&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
+							(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
+								temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+								temp.setrightLocation();
+								game.client.localPlayer.correctPieceCount++;
+								game.client.updatePlayer();
+							}
+							
+							if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550) 
+									&& (((temp.getY()+50) >= 350) &&
+										(temp.getY()+50) < 550)){
+								temp.setrightLocation();
+								game.client.sendPiece(temp.getPieceID());
+								temp.setVisible(false);				
+							}
 						}
-					}
-				});
+					});
 				}
 			}
 		}
@@ -347,7 +347,6 @@ public class MainGameScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		
 		//draw background
 		viewport.apply();
 		game.batch.begin();
@@ -428,6 +427,10 @@ public class MainGameScreen implements Screen{
 	}
 	
 	public void update() {
+		
+		//update piececount display
+		showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
+		showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
 		
 		//update chatroom
 		showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
