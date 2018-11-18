@@ -465,6 +465,14 @@ public class MainGameScreen implements Screen{
 			showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
 			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
 			
+			
+			//if local player finishes the puzzle
+			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+				game.client.localPlayer.isFinished = true;
+				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+                game.client.sendMessage(cm);
+			}
+			
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
 			showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
@@ -525,7 +533,7 @@ public class MainGameScreen implements Screen{
 			if (game.client.incomingPieceID!=-1){
 				System.out.println("receiving a piece id = " + game.client.incomingPieceID);
 				pieceList.get(game.client.incomingPieceID-1).setVisible(true);
-				pieceList.get(game.client.incomingPieceID-1).setPosition(375, 700);
+				pieceList.get(game.client.incomingPieceID-1).setPosition(new Random().nextInt((100)+1)+350,new Random().nextInt((100)+1)+650);
 				pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
 				game.client.incomingPieceID = -1;
 			}
