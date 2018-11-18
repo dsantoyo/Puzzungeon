@@ -196,7 +196,7 @@ public class WaitingScreen implements Screen{
 		Image teleporter = new Image(new SpriteDrawable(teleporterSprite));
 		teleporter.setScaling(Scaling.fit);
 
-		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
+		connectionLostDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};

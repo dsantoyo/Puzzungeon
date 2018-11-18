@@ -258,22 +258,22 @@ public class RegisterScreen implements Screen{
 				}
 			});
 			
-		registerFailDialog = new Dialog("Error", game.skin, "dialog") {
+		registerFailDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		registerFailDialog.text("Use other username/password");
 		registerFailDialog.button("Got it", false); //sends "false" as the result
 		
-		gameFullDialog = new Dialog("Error", game.skin, "dialog") {
+		gameFullDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
-		connectionFailDialog = new Dialog("Error", game.skin, "dialog") {
+		connectionFailDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
 		
-		databaseFailDialog = new Dialog("Error", game.skin, "dialog") {
+		databaseFailDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {}};
 		databaseFailDialog.text("Couldn't connect to the database");
 		databaseFailDialog.button("Got it", false); //sends "false" as the result
