@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Iterator;
 
 
@@ -324,8 +325,15 @@ public class ServerThread extends Thread{
 	//set up PlayerID on client side(front-end). ID = index-1 in server's playerVec(back-end)
 	public void setLocalPlayerID(int ID) {
 		try {
-			Integer IDInt = new Integer(ID); 
-			oos.writeObject(IDInt);
+			HashSet<Integer> playerPieceSet;
+			if(ID == 0) {
+				playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player0PieceSet;
+			}
+			else {
+				playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player1PieceSet;
+			}
+			PlayerIDnPieceSet pips = new PlayerIDnPieceSet(ID, playerPieceSet);
+			oos.writeObject(pips);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("serverthread: setLocalPlayerID() ioe: " + ioe.getMessage());
