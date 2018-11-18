@@ -380,14 +380,14 @@ public class MainGameScreen implements Screen{
 			
 			final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
 			
-			int k = 0;
-			System.out.println(k);
+			int k = (16*game.client.localPlayer.playerID)+1;
+			System.out.println(1);
 			for(int i = 500; i <= 800; i+=100) {
 				
 				for(int j = 1400; j<= 1700; j+=100) {
 				
 				//final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup" + i + ".jpg")), 1, 500, 600);
-				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), k,j, i, true);
+				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("testImage/test"+k+".png")), k,j, i, true);
 				k++;
 				
 				temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
