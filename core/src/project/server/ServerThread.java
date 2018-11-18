@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Iterator;
 
 
@@ -42,6 +43,13 @@ public class ServerThread extends Thread{
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
+			try {
+				oos.writeObject("test");
+				oos.flush();
+				oos.reset();
+			} catch (IOException ioe) {
+				System.out.println("serverthread: ServerThread() ioe: " + ioe.getMessage());
+			}
 			this.start();
 			
 		} catch(IOException ioe) {
@@ -56,7 +64,6 @@ public class ServerThread extends Thread{
 			while(true) {
 				
 				//call the server to check overall ready state for both players
-				server.checkAllReadyState();
 				System.out.println();
 				
 				//sending object from client(front-end) to this serverthread(back-end)
@@ -190,6 +197,17 @@ public class ServerThread extends Thread{
 						}
 					}
 				}
+				if(object instanceof PieceID) {
+					PieceID pid = (PieceID)object;
+					if(serverThreadPlayerID == 0) {
+						server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(1).sendPiece(pid);
+					}
+					if(serverThreadPlayerID == 1) {
+						server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(0).sendPiece(pid);
+					}
+				}
+				
+				
 				if(object instanceof LobbyChoice) {
 					lobbyChoice = (LobbyChoice)object;
 					if(lobbyChoice != null) {
@@ -307,23 +325,18 @@ public class ServerThread extends Thread{
 	//set up PlayerID on client side(front-end). ID = index-1 in server's playerVec(back-end)
 	public void setLocalPlayerID(int ID) {
 		try {
-			Integer IDInt = new Integer(ID); 
-			oos.writeObject(IDInt);
+			HashSet<Integer> playerPieceSet;
+			if(ID == 0) {
+				playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player0PieceSet;
+			}
+			else {
+				playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player1PieceSet;
+			}
+			PlayerIDnPieceSet pips = new PlayerIDnPieceSet(ID, playerPieceSet);
+			oos.writeObject(pips);
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("serverthread: setLocalPlayerID() ioe: " + ioe.getMessage());
-		}
-	}
-	
-	//send ReadyState from this serverthread to the client
-	public void broadcastReadyState(Boolean readyState) {
-		try {
-			ReadyState rs = new ReadyState(readyState);
-			oos.writeObject(rs);
-			oos.flush();
-			oos.reset();
-		} catch (IOException ioe) {
-			System.out.println("serverthread: broadcastReadyState() ioe: " + ioe.getMessage());
 		}
 	}
 	
@@ -350,6 +363,16 @@ public class ServerThread extends Thread{
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("serverthread: sendGameRoomCode() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	public void sendPiece(PieceID pieceID) {
+		try {
+			oos.writeObject(pieceID);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("serverthread: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
 }

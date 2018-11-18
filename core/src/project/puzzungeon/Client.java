@@ -12,7 +12,9 @@ import project.server.LobbyChoice;
 import project.server.LoginRegister;
 import project.server.LoginResult;
 import project.server.Password;
+import project.server.PieceID;
 import project.server.Player;
+import project.server.PlayerIDnPieceSet;
 import project.server.ReadyState;
 import project.server.Username;
 
@@ -40,7 +42,12 @@ public class Client {
 	public Player localPlayer;
 	
 	//the other player. constantly updated by the server
-	public Player otherPlayer;
+	public Player otherPlayer; 
+	
+	//player login username/password
+	public String username;
+	public String password;
+	public int incomingPieceID;
 	
 	//constructor
 	public Client(String hostname, int port) {
@@ -53,6 +60,7 @@ public class Client {
 		this.connectState = false;
 		this.disconnect = false;
 		this.gameRoomCode = "";
+		this.incomingPieceID = -1;
 	}
 	
 	//setting up connection between a client and the server
@@ -109,9 +117,13 @@ public class Client {
 		            				messageVec.add(newMessage);
 		            			}
 		            			//if the serverThread sends the size of server PlayerVec to the client
-		            			if(object instanceof Integer) {
-		            				Integer integer = (Integer)object;
-		            				localPlayer.playerID = integer.intValue();
+		            			if(object instanceof PlayerIDnPieceSet) {
+		            				PlayerIDnPieceSet pips  = (PlayerIDnPieceSet)object;
+		            				localPlayer.playerID = pips.id;
+		            				localPlayer.playerPieceSet = pips.playerPieceSet;
+		            				System.out.println("Client: server assigned id = " + pips.id);
+		            				System.out.print("Client: server assigned pieceset = ");
+		            				System.out.print(pips.playerPieceSet);
 		            			}
 		            			
 		            			
@@ -139,6 +151,11 @@ public class Client {
 		            						throw new IOException();
 		            					}
 		            				}
+		            			}
+		            			
+		            			if(object instanceof PieceID) {
+		            				PieceID pid = (PieceID)object;
+		            				incomingPieceID = pid.id;
 		            			}
 		            			
 		            			//if the serverThread sends back login result
@@ -246,12 +263,23 @@ public class Client {
 	//send lobby choice from a client to a serverThread
 	public void sendLobbyChoice(LobbyChoice lobbyChoice) {
 		try {
-			System.out.println("client: sendLobbyChoice: + " + lobbyChoice.choice);
+			System.out.println("client: sendLobbyChoice: " + lobbyChoice.choice);
 			oos.writeObject(lobbyChoice);
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: sendLobbyChoice() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	public void sendPiece(int pieceID) {
+		try {
+			System.out.println("client: sendPiece: id = " + pieceID );
+			oos.writeObject(new PieceID(pieceID));
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("client: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
 }

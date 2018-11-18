@@ -119,6 +119,8 @@ public class MainMenuScreen implements Screen{
 							game.client = new Client(game.serverAddress, game.serverPort);
 						}
 						else {
+							game.client.username = "guest";
+							game.client.password = "guest";
 							game.client.sendUsername(new Username("guest"));
 							game.client.sendPassword(new Password("guest"));
 							game.client.sendLoginRegister(new LoginRegister("guest"));
@@ -126,6 +128,8 @@ public class MainMenuScreen implements Screen{
 						}
 					}
 					else {
+						game.client.username = "guest";
+						game.client.password = "guest";
 						game.client.sendUsername(new Username("guest"));
 						game.client.sendPassword(new Password("guest"));
 						game.client.sendLoginRegister(new LoginRegister("guest"));
