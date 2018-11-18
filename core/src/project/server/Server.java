@@ -178,30 +178,6 @@ public class Server {
 		sendServerOtherPlayer(roomCode);
 	}
 	
-	/* Get called when a serverThread wants to know if every player is ready to play
-	 * Check the readyState of every player on the server
-	 * Call every serverThread to to update ove
-	 */
-	public void checkAllReadyState() {
-		
-		System.out.println("server: checkAllReadyState() called");
-		
-		
-		
-		Boolean allReady = true;
-		
-		for(Player playerIterate : playerVec) {
-			if(!playerIterate.readyState) {
-				allReady = false;
-			}
-		}
-
-		//broadcast the overall ready state to every serverThread
-		for(ServerThread thread : serverThreads) {
-				thread.broadcastReadyState(allReady);
-		}
-		
-	}
 	
 	/* For updating every client's otherPlayer 
 	 * Send corresponding player object in server's playerVec to each serverThread

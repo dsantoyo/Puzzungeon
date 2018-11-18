@@ -29,6 +29,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
+import project.server.LoginRegister;
+import project.server.Password;
+import project.server.Username;
 
 //waitroom screen
 public class WaitingScreen implements Screen{
@@ -198,8 +201,50 @@ public class WaitingScreen implements Screen{
 					game.client.disconnect = true;
 					game.client.localPlayer.disconnect = true;
 					game.client.updatePlayer();
+					
+					String username = game.client.username;
+					String password = game.client.username;
 					game.client = new Client(game.serverAddress, game.serverPort);
-					game.setScreen(new MainMenuScreen(game));
+					
+					if(username.equals("guest")) {
+						game.client.clientUsername = "Guest";
+						if(!game.client.connectState) {
+							//set up connection to the server
+							System.out.println("Trying to connect...");
+							if(!game.client.connect()) {
+								System.out.println("Unable to connect to the server");
+								displayDialog = true;
+								game.client = new Client(game.serverAddress, game.serverPort);
+							}
+							else {
+								game.client.username = "guest";
+								game.client.password = "guest";
+								game.client.sendUsername(new Username("guest"));
+								game.client.sendPassword(new Password("guest"));
+								game.client.sendLoginRegister(new LoginRegister("guest"));
+								displayDialog = true;
+							}
+						}
+					}
+					else {
+						if(!game.client.connectState) {
+							//set up connection to the server
+							System.out.println("Trying to connect...");
+							if(!game.client.connect()) {
+								System.out.println("Unable to connect to the server");
+								displayDialog = true;
+								game.client = new Client(game.serverAddress, game.serverPort);
+							}
+							else {
+								//send username and password to back-end
+								game.client.sendUsername(new Username(username));
+								game.client.sendPassword(new Password(password));
+								game.client.sendLoginRegister(new LoginRegister("login"));
+								displayDialog = true;
+							}
+						}
+					}
+					game.setScreen(new GameLobbyScreen(game));
 				}
 			});
 		

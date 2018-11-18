@@ -42,6 +42,13 @@ public class ServerThread extends Thread{
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
+			try {
+				oos.writeObject("test");
+				oos.flush();
+				oos.reset();
+			} catch (IOException ioe) {
+				System.out.println("serverthread: ServerThread() ioe: " + ioe.getMessage());
+			}
 			this.start();
 			
 		} catch(IOException ioe) {
@@ -56,7 +63,6 @@ public class ServerThread extends Thread{
 			while(true) {
 				
 				//call the server to check overall ready state for both players
-				server.checkAllReadyState();
 				System.out.println();
 				
 				//sending object from client(front-end) to this serverthread(back-end)
@@ -312,18 +318,6 @@ public class ServerThread extends Thread{
 			oos.flush();
 		} catch (IOException ioe) {
 			System.out.println("serverthread: setLocalPlayerID() ioe: " + ioe.getMessage());
-		}
-	}
-	
-	//send ReadyState from this serverthread to the client
-	public void broadcastReadyState(Boolean readyState) {
-		try {
-			ReadyState rs = new ReadyState(readyState);
-			oos.writeObject(rs);
-			oos.flush();
-			oos.reset();
-		} catch (IOException ioe) {
-			System.out.println("serverthread: broadcastReadyState() ioe: " + ioe.getMessage());
 		}
 	}
 	
