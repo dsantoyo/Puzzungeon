@@ -57,6 +57,8 @@ public class MainGameScreen implements Screen{
 	//background references
 	TextureAtlas atlas;
 	Sprite background;
+	Sprite teleporter;
+	Sprite mockScreen;
 	
 	//shared by different methods
 	private Label showMessage1;
@@ -71,6 +73,9 @@ public class MainGameScreen implements Screen{
 	private Label showOtherPlayerPC;
 	
 	private Label showGameTime;
+	
+	private Label teleporterLabel1;
+	private Label teleporterLabel2;
 	
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
@@ -100,6 +105,9 @@ public class MainGameScreen implements Screen{
 		
 
 		atlas = game.assetLoader.manager.get("sprites.txt");
+		teleporter = atlas.createSprite("teleporter");
+		teleporter.setPosition(200, 420);
+		teleporter.setScale(9f);
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
@@ -116,6 +124,12 @@ public class MainGameScreen implements Screen{
 				
 		//create the actors
 		Label chatTitle = new Label("Chat",game.skin);
+		
+		teleporterLabel1 = new Label("Send/Recieve", game.skin, "subtitle");
+		teleporterLabel2 = new Label("Pieces Here", game.skin, "subtitle");
+		teleporterLabel1.setAlignment(Align.center);
+		teleporterLabel2.setAlignment(Align.center);
+		
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
@@ -226,8 +240,7 @@ public class MainGameScreen implements Screen{
 					temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
 					temp.setSize(100, 100);
 					temp.addListener(new DragListener() {
-						public void drag(InputEvent event, float x, float y, int pointer) {	
-							
+						public void drag(InputEvent event, float x, float y, int pointer) {
 							float distanceToMinY = temp.getY() - 300;
 							float distanceToMinX = temp.getX() - 0;
 							System.out.println("distanceToMinX = " +  distanceToMinX);
@@ -296,8 +309,21 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-			
 
+/****************************************************************************************
+*                             start: game instructions UI
+****************************************************************************************/	
+
+		Table teleportLabel = new Table().left().top();
+		teleportLabel.setFillParent(true);
+		teleportLabel.add(teleporterLabel1).padLeft(80).padTop(120).width(450).align(Align.center);
+		teleportLabel.row();
+		teleportLabel.add(teleporterLabel2).padLeft(80).width(450).align(Align.center);
+		
+/****************************************************************************************
+*                             end: game instructions UI
+****************************************************************************************/			
+		
 /****************************************************************************************
 *                             start: bottom bar UI
 ****************************************************************************************/	
@@ -341,7 +367,7 @@ public class MainGameScreen implements Screen{
 		chatRoomCol2.add(showOtherPlayerName).align(Align.left).pad(15);
 		chatRoomCol2.row();
 		chatRoomCol2.add(showOtherPlayerPC).align(Align.left).pad(15);
-		chatRoom.add(chatRoomCol2);
+		chatRoom.add(chatRoomCol2).fillY();
 		
 		Table chatRoomCol3 = new Table();
 		Table timerCell = new Table().pad(0);
@@ -350,17 +376,18 @@ public class MainGameScreen implements Screen{
 		if (timerBackground != null) {
 			timerCell.setBackground(timerBackground);
 		}
-		chatRoomCol3.add(timerCell).width(450).padBottom(10);
+		chatRoomCol3.add(timerCell).width(450).padBottom(10).minHeight(90);
 		chatRoomCol3.row();
-		chatRoomCol3.add(backButton).width(220).height(90);
+		chatRoomCol3.add(backButton).width(220).minHeight(90);
 		chatRoomCol3.row();
-		chatRoomCol3.add(exitButton).width(220).height(90);
-		chatRoom.add(chatRoomCol3);
+		chatRoomCol3.add(exitButton).width(220).minHeight(90);
+		chatRoom.add(chatRoomCol3).fillY();
 		
 /****************************************************************************************
 *                             end: bottom bar UI
 ****************************************************************************************/
 
+		stage.addActor(teleportLabel);
 		stage.addActor(chatRoom);
 		
 		//draw debugline to see the boundary of each actor
@@ -383,6 +410,7 @@ public class MainGameScreen implements Screen{
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);
+		teleporter.draw(game.batch);
 		game.batch.end();
 	
 		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);

@@ -93,7 +93,7 @@ public class WaitingScreen implements Screen{
 		Label gameTitle = new Label("Waiting Room", game.skin, "subtitle");
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin, "subtitle");
 		localPlayerUsername.setColor(game.skin.getColor("Teal"));
-		Label localPlayerPastScore = new Label("High score: " + Integer.toString(game.client.localPlayer.pastScore), game.skin, "subtitle");
+		Label localPlayerPastScore = new Label("Best Time: " + Integer.toString(game.client.localPlayer.pastScore), game.skin, "subtitle");
 		otherPlayerPastScore = new Label("", game.skin, "subtitle");
 		otherPlayerUsername = new Label("", game.skin, "subtitle");
 		otherPlayerUsername.setColor(game.skin.getColor("Red"));
@@ -443,7 +443,7 @@ public class WaitingScreen implements Screen{
 			waitingState.setText("");
 			waitingTable.getCell(waitingState).height(0);
 			otherPlayerUsername.setText("Player2: " + game.client.otherPlayer.playerName);
-			otherPlayerPastScore.setText("High score: " + Integer.toString(game.client.otherPlayer.pastScore));
+			otherPlayerPastScore.setText("Best time: " + Integer.toString(game.client.otherPlayer.pastScore));
 		}
 		
 		if(game.client.otherPlayer.playerID == -1) {
