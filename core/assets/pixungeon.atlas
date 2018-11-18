@@ -2,7 +2,7 @@
 pixungeon.png
 size: 1024,1024
 format: RGBA8888
-filter: Linear, Nearest
+filter: Linear,Nearest
 repeat: none
 font-title-export
   rotate: false

@@ -207,6 +207,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">dungeon-hall.png</key>
             <key type="filename">dungeon-wall.png</key>
             <key type="filename">dungeon.png</key>
             <struct type="IndividualSpriteSettings">

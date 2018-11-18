@@ -499,28 +499,6 @@ atlasData: {
 			visible: true
 			tint: {
 				r: 0
-				g: 0.12156863
-				b: 0.11372549
-				a: 1
-			}
-			tintName: null
-			name: shadow
-			tiled: false
-			minWidth: 0
-			minHeight: 0
-			customized: false
-		}
-		{
-			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/pixungeon_data/white.png"
-			bgColor: {
-				r: 0
-				g: 0
-				b: 0
-				a: 1
-			}
-			visible: true
-			tint: {
-				r: 0
 				g: 0.25882354
 				b: 0.2509804
 				a: 1
@@ -583,6 +561,28 @@ atlasData: {
 			tint: null
 			tintName: null
 			name: gamegirl-76
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+		{
+			file: "/Users/hayleypike/Documents/GitHub/Puzzungeon/core/assets/pixungeon_data/white.png"
+			bgColor: {
+				r: 1
+				g: 1
+				b: 1
+				a: 1
+			}
+			visible: true
+			tint: {
+				r: 0.047058824
+				g: 0.101960786
+				b: 0.14901961
+				a: 0.68333334
+			}
+			tintName: null
+			name: shadow
 			tiled: false
 			minWidth: 0
 			minHeight: 0
@@ -3027,7 +3027,7 @@ jsonData: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
 						name: selection
 						optional: true
-						value: shadow
+						value: null
 					}
 					messageFont: {
 						class: com.ray3k.skincomposer.data.StyleProperty
