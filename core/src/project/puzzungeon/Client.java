@@ -12,6 +12,7 @@ import project.server.LobbyChoice;
 import project.server.LoginRegister;
 import project.server.LoginResult;
 import project.server.Password;
+import project.server.PieceID;
 import project.server.Player;
 import project.server.ReadyState;
 import project.server.Username;
@@ -45,6 +46,7 @@ public class Client {
 	//player login username/password
 	public String username;
 	public String password;
+	public int incomingPieceID;
 	
 	//constructor
 	public Client(String hostname, int port) {
@@ -57,6 +59,7 @@ public class Client {
 		this.connectState = false;
 		this.disconnect = false;
 		this.gameRoomCode = "";
+		this.incomingPieceID = -1;
 	}
 	
 	//setting up connection between a client and the server
@@ -143,6 +146,11 @@ public class Client {
 		            						throw new IOException();
 		            					}
 		            				}
+		            			}
+		            			
+		            			if(object instanceof PieceID) {
+		            				PieceID pid = (PieceID)object;
+		            				incomingPieceID = pid.id;
 		            			}
 		            			
 		            			//if the serverThread sends back login result
@@ -250,12 +258,23 @@ public class Client {
 	//send lobby choice from a client to a serverThread
 	public void sendLobbyChoice(LobbyChoice lobbyChoice) {
 		try {
-			System.out.println("client: sendLobbyChoice: + " + lobbyChoice.choice);
+			System.out.println("client: sendLobbyChoice: " + lobbyChoice.choice);
 			oos.writeObject(lobbyChoice);
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: sendLobbyChoice() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	public void sendPiece(int pieceID) {
+		try {
+			System.out.println("client: sendPiece: id = " + pieceID );
+			oos.writeObject(new PieceID(pieceID));
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("client: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
 }

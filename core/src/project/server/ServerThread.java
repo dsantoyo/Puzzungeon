@@ -196,6 +196,17 @@ public class ServerThread extends Thread{
 						}
 					}
 				}
+				if(object instanceof PieceID) {
+					PieceID pid = (PieceID)object;
+					if(serverThreadPlayerID == 0) {
+						server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(1).sendPiece(pid);
+					}
+					if(serverThreadPlayerID == 1) {
+						server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(0).sendPiece(pid);
+					}
+				}
+				
+				
 				if(object instanceof LobbyChoice) {
 					lobbyChoice = (LobbyChoice)object;
 					if(lobbyChoice != null) {
@@ -344,6 +355,16 @@ public class ServerThread extends Thread{
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("serverthread: sendGameRoomCode() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	public void sendPiece(PieceID pieceID) {
+		try {
+			oos.writeObject(pieceID);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("serverthread: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
 }

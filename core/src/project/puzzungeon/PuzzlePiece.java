@@ -9,27 +9,30 @@ public class PuzzlePiece extends Image{
 	private float pieceY;
 	private int pieceID;
 	
+	public boolean playerID;
+	private boolean inRightLocation;
 	private float pieceCorrectLocX;
 	private float pieceCorrectLocY;
+	private boolean visible;
 	
-	private boolean inRightLocation;
-	
-	
-	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY){
+	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, boolean playerID){
+
 		super(texture);
 		this.pieceID = pieceID;
 		this.pieceCorrectLocX = pieceX;
 		this.pieceCorrectLocY = pieceY;
 		inRightLocation=false;
 		//this.pieceCorrectLoc = pieceCorrectLoc;
+		visible=true;
+		this.playerID=playerID;
 	}
 
 	public float getPieceX() {
-		return this.pieceX;
+		return this.pieceX+50;
 	}
 	
 	public float getPieceY() {
-		return this.pieceY;
+		return this.pieceY+50;
 	}
 	
 	public int getPieceID(){
@@ -38,18 +41,29 @@ public class PuzzlePiece extends Image{
 	}
 	
 	public int getPieceCorrectLocX(){
-		return (int) this.pieceCorrectLocX;
+	return (int) this.pieceCorrectLocX;
 	}
 	public int getPieceCorrectLocY(){
-		return (int)this.pieceCorrectLocY;
-	}
-	public boolean checkRightLocation()
-	{
-		return inRightLocation;
-	}
-	public void setRightLocation()
-	{
-		inRightLocation=true;
+	  return (int)this.pieceCorrectLocY;
 	}
 	
+	public boolean checkrightLocation(){
+		return inRightLocation;
+	}
+	public void setrightLocation()
+	{
+		inRightLocation=true;
+	
+	}
+	public boolean getVisible()
+	{
+		return visible;
+	}
+	public void setVisible()
+	{
+		visible=false;
+		
+	}
 }
+
+		

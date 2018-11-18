@@ -1,14 +1,15 @@
 package project.puzzungeon.screens;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -375,6 +376,30 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
+			shapeRenderer=new ShapeRenderer();
+			
+			final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
+			
+			int k = 0;
+			System.out.println(k);
+			for(int i = 500; i <= 800; i+=100) {
+				
+				for(int j = 1400; j<= 1700; j+=100) {
+				
+				//final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup" + i + ".jpg")), 1, 500, 600);
+				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), k,j, i, true);
+				k++;
+				
+				temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
+				temp.setSize(100, 100);
+				 
+				temp.addListener(new DragListener() {
+					public void drag(InputEvent event, float x, float y, int pointer) {
+						
+						if(!temp.checkrightLocation()) {
+						temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+						}
+  /*
 			shapeRenderer = new ShapeRenderer();
 			
 			//final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
@@ -400,10 +425,34 @@ public class MainGameScreen implements Screen{
 						{
 								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
 					}
+          */
 					}
 					
 					public void dragStop(InputEvent event, float x, float y, int pointer) {
 						System.out.println("temp: " + temp.getX() + "," + temp.getY());
+						if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
+								&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
+						(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50)))
+						{
+							temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+							temp.setrightLocation();
+						}
+						
+						if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
+								&& (((temp.getY()+50) >= 350) &&
+									(temp.getY()+50) < 550))
+						{
+							//temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+							temp.setrightLocation();
+							game.client.sendPiece(temp.getPieceID());
+							temp.remove();
+;							
+						}
+					}
+				});
+				listOfPieces.add(temp);
+
+  /*
 						if(((temp.getX() >= (temp.getPieceCorrectLocX()-50)) && temp.getX() <( temp.getPieceCorrectLocX() + 50))
 								&& ((temp.getY() >= (temp.getPieceCorrectLocY()-50)) &&
 						temp.getY() < (temp.getPieceCorrectLocY() + 50)))
@@ -415,6 +464,8 @@ public class MainGameScreen implements Screen{
 				});
 				
 				setOfPieces.add(temp);
+        */
+
 			
 //				final PuzzlePiece test1 = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), 1, 500, 600);
 //				test1.setPosition(300, 300);
@@ -522,7 +573,23 @@ public class MainGameScreen implements Screen{
 		game.batch.begin();
 		background.draw(game.batch);
 		game.batch.end();
+	
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+			shapeRenderer.begin(ShapeType.Line);
 		
+		for(int i=450; i<=750;i+=100)
+		{
+			for( int j=1350; j<=1650;j+=100)
+			{
+				shapeRenderer.rect(j,i,100,100);
+			}
+		}
+		
+		shapeRenderer.rect(700,450,400,400);
+		shapeRenderer.rect(350,650,200,200);
+		shapeRenderer.rect(350,350,200,200);
+
+  /*
 		shapeRenderer.begin(ShapeType.Line);
 		
 		for(int i=150; i<=450;i+=100)
@@ -532,6 +599,8 @@ public class MainGameScreen implements Screen{
 				shapeRenderer.rect(j,i,100,100);
 			}
 		}
+    */
+
 		shapeRenderer.end();
 		
 		//update and draw stage
@@ -635,5 +704,50 @@ public class MainGameScreen implements Screen{
 			player2LeftDialog.show(stage);
 			displayDialog = false;
 		}
+		if (game.client.incomingPieceID!=-1)
+		{
+			System.out.println("incoming piece id: " + game.client.incomingPieceID);
+			//stage.addActor(actor);
+			
+			final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), game.client.incomingPieceID,0, 0, true);
+			//k++;
+			
+			temp.setPosition(375, 700);
+			temp.setSize(100, 100);
+			 
+			temp.addListener(new DragListener() {
+				public void drag(InputEvent event, float x, float y, int pointer) {
+					
+					if(!temp.checkrightLocation()) {
+					temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+					}
+				}
+				
+				public void dragStop(InputEvent event, float x, float y, int pointer) {
+					System.out.println("temp: " + temp.getX() + "," + temp.getY());
+					if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
+							&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
+					(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50)))
+					{
+						temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+						temp.setrightLocation();
+					}
+					
+					if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
+							&& (((temp.getY()+50) >= 350) &&
+								(temp.getY()+50) < 550))
+					{
+						//temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+						temp.setrightLocation();
+						game.client.sendPiece(temp.getPieceID());
+						temp.remove();
+;							
+					}
+				}
+			});
+			stage.addActor(temp);
+			game.client.incomingPieceID = -1;
+		}
+		
 	}
 }
