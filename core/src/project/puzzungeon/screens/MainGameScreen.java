@@ -86,7 +86,7 @@ public class MainGameScreen implements Screen{
 	public ArrayList<PuzzlePiece> pieceList;
 	
 
-	public DragAndDrop dragAndDrop;
+	public Boolean update;
 	
 	
 	//constructor
@@ -104,6 +104,7 @@ public class MainGameScreen implements Screen{
 		background.setOrigin(0, 0);
 		background.setScale(9f);
 		totalPieces = 4;
+		update = true;
 	}
 
 	@Override
@@ -180,9 +181,10 @@ public class MainGameScreen implements Screen{
 		
 		player2LeftDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
-		    	game.client.localPlayer.readyState = false;
-		    	game.client.updatePlayer();
-		    	game.setScreen(new WaitingScreen(game));
+		    	//game.client.localPlayer.readyState = false;
+		    	//game.client.updatePlayer();
+		    	game.setScreen(new GameLobbyScreen(game));
+		    	//game.setScreen(new WaitingScreen(game));
 		    }};
 		player2LeftDialog.text("Player2 has left.");
 		player2LeftDialog.button("Got it", false); //sends "false" as the result
@@ -191,54 +193,7 @@ public class MainGameScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					String username = new String(game.client.username);
-					String password = new String(game.client.password);
-					game.client.disconnect = true;
-					game.client.localPlayer.disconnect = true;
-					game.client.updatePlayer();
-					game.client = new Client(game.serverAddress, game.serverPort);
-					
-					if(username.equals("guest")) {
-						game.client.clientUsername = "Guest";
-						if(!game.client.connectState) {
-							//set up connection to the server
-							System.out.println("Trying to connect...");
-							if(!game.client.connect()) {
-								System.out.println("Unable to connect to the server");
-								displayDialog = true;
-								game.client = new Client(game.serverAddress, game.serverPort);
-							}
-							else {
-								game.client.username = "guest";
-								game.client.password = "guest";
-								game.client.sendUsername(new Username("guest"));
-								game.client.sendPassword(new Password("guest"));
-								game.client.sendLoginRegister(new LoginRegister("guest"));
-								displayDialog = true;
-							}
-						}
-					}
-					else {
-						game.client.clientUsername = username;
-						if(!game.client.connectState) {
-							//set up connection to the server
-							System.out.println("Trying to connect...");
-							if(!game.client.connect()) {
-								System.out.println("Unable to connect to the server");
-								displayDialog = true;
-								game.client = new Client(game.serverAddress, game.serverPort);
-							}
-							else {
-								//send username and password to back-end
-								game.client.username = username;
-								game.client.password = password;
-								game.client.sendUsername(new Username(username));
-								game.client.sendPassword(new Password(password));
-								game.client.sendLoginRegister(new LoginRegister("login"));
-								displayDialog = true;
-							}
-						}
-					}
+					backToLobby();
 					game.setScreen(new GameLobbyScreen(game));
 				}
 			});
@@ -485,72 +440,128 @@ public class MainGameScreen implements Screen{
 	}
 	
 	public void update() {
+		if(update) {
 		
-		//update piececount display
-		showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
-		showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
+			//update piececount display
+			showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
+			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
+			
+			//update chatroom
+			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
+			showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
+			showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
+			showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
+			if(game.client.messageVec.get(3).isSystemMessage()) {
+				showMessage1.setColor(Color.RED);
+				//showMessage1.setAlignment(Align.center);
+			}
+			else {
+				showMessage1.setColor(Color.WHITE);
+				//showMessage1.setAlignment(Align.left);
+			}
+			if(game.client.messageVec.get(2).isSystemMessage()) {
+				showMessage2.setColor(Color.RED);
+				//showMessage2.setAlignment(Align.center);
+			}
+			else {
+				showMessage2.setColor(Color.WHITE);
+				//showMessage2.setAlignment(Align.left);
+			}
+			if(game.client.messageVec.get(1).isSystemMessage()) {
+				showMessage3.setColor(Color.RED);
+				//showMessage3.setAlignment(Align.center);
+			}
+			else {
+				showMessage3.setColor(Color.WHITE);
+				showMessage3.setAlignment(Align.left);
+			}
+			if(game.client.messageVec.get(0).isSystemMessage()) {
+				showMessage4.setColor(Color.RED);
+				//showMessage4.setAlignment(Align.center);
+			}
+			else {
+				showMessage4.setColor(Color.WHITE);
+				//showMessage4.setAlignment(Align.left);
+			}
+			
+			//update elapsed time. should change this to be updated by the server.
+			Long currentTime = (System.nanoTime()-startTime)/1000000000;
+			showGameTime.setText("Time: " + Long.toString(currentTime));
+			
+			//if connection is lost
+			if(!game.client.connectState & displayDialog) {
+				update = false;
+				System.out.println("MainGameScreen: connection lost.");
+				connectionLostDialog.show(stage);
+				displayDialog = false;
+			}
+			
+			//if player2 has left
+			else if((game.client.otherPlayer.playerID == -1) & displayDialog) {
+				System.out.println("MainGameScreen: player2 has left.");
+				player2LeftDialog.show(stage);
+				displayDialog = false;
+				backToLobby();
+			}
+			if (game.client.incomingPieceID!=-1){
+				System.out.println("receiving a piece id = " + game.client.incomingPieceID);
+				pieceList.get(game.client.incomingPieceID-1).setVisible(true);
+				pieceList.get(game.client.incomingPieceID-1).setPosition(375, 700);
+				pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
+				game.client.incomingPieceID = -1;
+			}
+		}
+	}
+	
+	public void backToLobby() {
+		update = false;
+		String username = new String(game.client.username);
+		String password = new String(game.client.password);
+		game.client.disconnect = true;
+		game.client.localPlayer.disconnect = true;
+		game.client.updatePlayer();
+		game.client = new Client(game.serverAddress, game.serverPort);
 		
-		//update chatroom
-		showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
-		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
-		showMessage3.setText(game.client.messageVec.get(1).getUsername()+" " + game.client.messageVec.get(1).getMessage());
-		showMessage4.setText(game.client.messageVec.get(0).getUsername()+" " + game.client.messageVec.get(0).getMessage());
-		if(game.client.messageVec.get(3).isSystemMessage()) {
-			showMessage1.setColor(Color.RED);
-			//showMessage1.setAlignment(Align.center);
+		if(username.equals("guest")) {
+			game.client.clientUsername = "Guest";
+			if(!game.client.connectState) {
+				//set up connection to the server
+				System.out.println("Trying to connect...");
+				if(!game.client.connect()) {
+					System.out.println("Unable to connect to the server");
+					displayDialog = true;
+					game.client = new Client(game.serverAddress, game.serverPort);
+				}
+				else {
+					game.client.username = "guest";
+					game.client.password = "guest";
+					game.client.sendUsername(new Username("guest"));
+					game.client.sendPassword(new Password("guest"));
+					game.client.sendLoginRegister(new LoginRegister("guest"));
+					displayDialog = true;
+				}
+			}
 		}
 		else {
-			showMessage1.setColor(Color.WHITE);
-			//showMessage1.setAlignment(Align.left);
-		}
-		if(game.client.messageVec.get(2).isSystemMessage()) {
-			showMessage2.setColor(Color.RED);
-			//showMessage2.setAlignment(Align.center);
-		}
-		else {
-			showMessage2.setColor(Color.WHITE);
-			//showMessage2.setAlignment(Align.left);
-		}
-		if(game.client.messageVec.get(1).isSystemMessage()) {
-			showMessage3.setColor(Color.RED);
-			//showMessage3.setAlignment(Align.center);
-		}
-		else {
-			showMessage3.setColor(Color.WHITE);
-			showMessage3.setAlignment(Align.left);
-		}
-		if(game.client.messageVec.get(0).isSystemMessage()) {
-			showMessage4.setColor(Color.RED);
-			//showMessage4.setAlignment(Align.center);
-		}
-		else {
-			showMessage4.setColor(Color.WHITE);
-			//showMessage4.setAlignment(Align.left);
-		}
-		
-		//update elapsed time. should change this to be updated by the server.
-		Long currentTime = (System.nanoTime()-startTime)/1000000000;
-		showGameTime.setText("Time: " + Long.toString(currentTime));
-		
-		//if connection is lost
-		if(!game.client.connectState & displayDialog) {
-			System.out.println("MainGameScreen: connection lost.");
-			connectionLostDialog.show(stage);
-			displayDialog = false;
-		}
-		
-		//if player2 has left
-		else if((game.client.otherPlayer.playerID == -1) & displayDialog) {
-			System.out.println("MainGameScreen: player2 has left.");
-			player2LeftDialog.show(stage);
-			displayDialog = false;
-		}
-		if (game.client.incomingPieceID!=-1){
-			System.out.println("receiving a piece id = " + game.client.incomingPieceID);
-			pieceList.get(game.client.incomingPieceID-1).setVisible(true);
-			pieceList.get(game.client.incomingPieceID-1).setPosition(375, 700);
-			pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
-			game.client.incomingPieceID = -1;
+			game.client.clientUsername = username;
+			if(!game.client.connectState) {
+				//set up connection to the server
+				System.out.println("Trying to connect...");
+				if(!game.client.connect()) {
+					System.out.println("Unable to connect to the server");
+					displayDialog = true;
+					game.client = new Client(game.serverAddress, game.serverPort);
+				}
+				else {
+					//send username and password to back-end
+					game.client.username = username;
+					game.client.password = password;
+					game.client.sendUsername(new Username(username));
+					game.client.sendPassword(new Password(password));
+					game.client.sendLoginRegister(new LoginRegister("login"));
+					displayDialog = true;
+				}
+			}
 		}
 	}
 }
