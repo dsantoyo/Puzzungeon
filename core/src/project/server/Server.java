@@ -46,7 +46,7 @@ public class Server {
 		InetAddress inetAddress;
 		try {
 			inetAddress = InetAddress.getLocalHost();
-			System.out.println("Server IP Address: " + inetAddress.getHostAddress());
+			System.out.println("server: server IP Address: " + inetAddress.getHostAddress());
 		} catch (UnknownHostException e) {
 			
 			e.printStackTrace();
@@ -67,17 +67,16 @@ public class Server {
 			
 			*/
 			
-			
 			//connect server to a hard-coded port
-			System.out.println("trying to bind to port " + port);
+			System.out.println("server: trying to bind to port " + port);
 			ss = new ServerSocket(port);
-			System.out.println("bound to port " + port);
+			System.out.println("server: bound to port " + port);
 			
 			serverThreads = new Vector<ServerThread>();
 			
 			while(true) { // constantly waiting for any new connection
 				Socket s = ss.accept();
-				System.out.println("Connection from " + s.getInetAddress());
+				System.out.println("server: connection from " + s.getInetAddress());
 				
 				//assign the socket(connected to a client) to a serverThread
 				ServerThread st = new ServerThread(s, this);
@@ -120,7 +119,7 @@ public class Server {
 	 */
 	public void broadcastMessage(ChatMessage cm, String roomCode) {
 		
-		System.out.println("server:: broadcastMessage called with roomCode = " + roomCode);
+		System.out.println("server: broadcastMessage() called with roomCode = " + roomCode);
 		
 		if(cm != null) {
 			
@@ -129,7 +128,7 @@ public class Server {
 			
 			// add the newest message
 			gameRoomMap.get(roomCode).messageVec.add(cm);
-			System.out.println("Server new message: " + cm.getUsername()+" "+cm.getMessage());
+			System.out.println("server: server new message for room "+roomCode+" : " + cm.getUsername()+" "+cm.getMessage());
 			//send the newest message to every serverThread
 			for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
 				thread.sendMessage(gameRoomMap.get(roomCode).messageVec.get(3));
@@ -145,7 +144,7 @@ public class Server {
 	public int addServerPlayer(Player player, String roomCode) {
 		
 		if(gameRoomMap.size() == 0) {
-			System.out.println("addServerPlayer 0 rooms");
+			System.out.println("server: addServerPlayer 0 rooms");
 		}
 		if(player != null) {
 			
@@ -158,11 +157,10 @@ public class Server {
 				}
 			}
 			
-			System.out.println("Server: room " + roomCode +"new player: username = " + player.playerName +", playerID = " + player.playerID);
+			System.out.println("server: room " + roomCode +"new player: username = " + player.playerName +", playerID = " + player.playerID);
 		}
 		return player.playerID;
 	}
-	
 	
 	/* For updating an existing server on the server.
 	 * Get player object from a serverthread and update it in server's playerVec
@@ -171,13 +169,12 @@ public class Server {
 	public void updateServerPlayer(int playerID, Player player, String roomCode) {
 		gameRoomMap.get(roomCode).playerVec.set(playerID,player);
 
-		System.out.println("Server updated player: username = " + player.playerName +", playerID = " + player.playerID);
+		System.out.println("server: server updated room "+roomCode+" player: username = " + player.playerName +", playerID = " + player.playerID);
 		
 		//when a player is updated in server's playerVec,
 		//also update front-end's otherPlayer
 		sendServerOtherPlayer(roomCode);
 	}
-	
 	
 	/* For updating every client's otherPlayer 
 	 * Send corresponding player object in server's playerVec to each serverThread
@@ -198,7 +195,7 @@ public class Server {
 	
 	public Boolean isGameFull(String roomCode) {
 		
-		System.out.println("server: isGameFull(); called");
+		System.out.println("server: isGameFull() called on room " + roomCode);
 		System.out.println(gameRoomMap.get(roomCode).playerVec.get(0).playerID);
 		System.out.println(gameRoomMap.get(roomCode).playerVec.get(1).playerID);
 		

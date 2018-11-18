@@ -67,19 +67,19 @@ public class Client {
 	public Boolean connect() {
 		
 		try {
-			System.out.println("Trying to connect to " + hostname + ":" + port);
+			System.out.println("client: Trying to connect to " + hostname + ":" + port);
 			s = new Socket(hostname,port);
 			
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			
 			//test connection to server
-			System.out.println("Testing if the connection is established");
+			System.out.println("client: Testing if the connection is established");
 			@SuppressWarnings("unused")
 			Object TestObject = ois.readObject();
 			
 			connectState = true;
-			System.out.println("Connected to " + hostname + ":" + port);
+			System.out.println("client: Connected to " + hostname + ":" + port);
 			
 			//only store the last 3 messages on the client side
 			messageVec = new Vector<ChatMessage>(4);
@@ -94,10 +94,10 @@ public class Client {
 			//updatePlayer();
 				
 		} catch (IOException ioe) {
-			System.out.println("Client: connection() ioe: " + ioe.getMessage());
+			System.out.println("client: connection() ioe: " + ioe.getMessage());
 			return false;
 		} catch (ClassNotFoundException cnfe) {
-			System.out.println("Client: connection() cnfe: " + cnfe.getMessage());
+			System.out.println("client: connection() cnfe: " + cnfe.getMessage());
 		}
 		
 		//use a thread to receive objects from the assigned serverThread
@@ -121,33 +121,24 @@ public class Client {
 		            				PlayerIDnPieceSet pips  = (PlayerIDnPieceSet)object;
 		            				localPlayer.playerID = pips.id;
 		            				localPlayer.playerPieceSet = pips.playerPieceSet;
-		            				System.out.println("Client: server assigned id = " + pips.id);
-		            				System.out.print("Client: server assigned pieceset = ");
-		            				System.out.print(pips.playerPieceSet);
+		            				System.out.println("client: server assigned playerid = " + pips.id);
+		            				System.out.print("client: server assigned pieceset = ");
+		            				System.out.print("client: pieces in the set: " + pips.playerPieceSet);
 		            			}
-		            			
-		            			
-		            			//if the serverThread sends the readyState of player1 AND player2
-		            			if(object instanceof ReadyState) {
-		            				@SuppressWarnings("unused")
-									ReadyState rs = (ReadyState)object;
-		            				//bothPlayerReady = rs.getReadyState();
-		            			}
-		            			
+		            					            					            			
 		            			if(loginState) {
 		            				//if the serverThread sends back otherPlayer
 		            				if(object instanceof Player) {
 		            					otherPlayer = (Player)object;
 		            					System.out.println();
-		            					System.out.println("Client: Player updated by Server.");
-		            					System.out.println("Client: localPlayer is "+localPlayer.playerName);
-		            					System.out.println("Client: localPlayer ready state is " + localPlayer.readyState);
-		            					System.out.println("Client: otherPlayer is "+otherPlayer.playerName);
-		            					System.out.println("Client: otherPlayer ready state is " + otherPlayer.readyState);
+		            					System.out.println("client: players updated by Server.");
+		            					System.out.println("client: localPlayer is "+localPlayer.playerName);
+		            					System.out.println("client: localPlayer ready state is " + localPlayer.readyState);
+		            					System.out.println("client: otherPlayer is "+otherPlayer.playerName);
+		            					System.out.println("client: otherPlayer ready state is " + otherPlayer.readyState);
 		            					bothPlayerReady = localPlayer.readyState && otherPlayer.readyState;
 		            					
 		            					if(disconnect) {
-		            						
 		            						throw new IOException();
 		            					}
 		            				}
@@ -156,6 +147,7 @@ public class Client {
 		            			if(object instanceof PieceID) {
 		            				PieceID pid = (PieceID)object;
 		            				incomingPieceID = pid.id;
+		            				System.out.println("client: Incoming piece ID = " + pid.id);
 		            			}
 		            			
 		            			//if the serverThread sends back login result
@@ -164,17 +156,17 @@ public class Client {
 		            				LoginResult rs = (LoginResult)object;
 		            				loginState = rs.getLoginResult();
 		            				loginStateMessage = rs.getMessage();
-		            				System.out.println("Client: update loginState = "+loginState);
+		            				System.out.println("client: update loginState = "+loginState);
 		            				if(!loginState) {
-		            					System.out.println("failed to log in");
+		            					System.out.println("client: failed to log in");
 		            					System.out.println(loginStateMessage);
 		            				}
 		            				else {
 		            					localPlayer = new Player(clientUsername);
-		            					System.out.println("localPlayer highest score = " + Integer.toString(rs.pastScore));
+		            					System.out.println("client: localPlayer highest score = " + Integer.toString(rs.pastScore));
 		            					localPlayer.pastScore = rs.pastScore;
 		            					otherPlayer = new Player("default");
-		            					System.out.println("logged in ");
+		            					System.out.println("client: logged in ");
 		            				}
 		            			}
 		            			
@@ -183,13 +175,13 @@ public class Client {
 		            				gameRoomCode = grc.code;
 		            				if(!grc.code.equals("no empty room") && !grc.code.equals("room not available") && !grc.code.equals("")) {
 		            					updatePlayer();
-		            					System.out.println("Client: got gameroomcode from server = " + gameRoomCode);
+		            					System.out.println("client: got gameroomcode from server = " + gameRoomCode);
 		            				}
 		            				else if(grc.code.equals("no empty room")){
-		            					System.out.println("Client: 0 gameroom available");
+		            					System.out.println("client: 0 gameroom available");
 		            				}
 		            				else if(grc.code.equals("room not available")) {
-		            					System.out.println("Client: gameroom not available");
+		            					System.out.println("client: gameroom not available");
 		            				}
 		            			}
 		            		}
@@ -249,7 +241,6 @@ public class Client {
 	
 	//send/update a player from a client(front-end) to a serverthread(back-end)
 	public void updatePlayer() {
-		System.out.println("client: updatePlayer() called");
 		try {
 			oos.writeObject(localPlayer);
 			oos.flush();
