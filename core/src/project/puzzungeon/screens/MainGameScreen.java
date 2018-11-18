@@ -226,9 +226,9 @@ public class MainGameScreen implements Screen{
 					temp.setSize(100, 100);
 					temp.addListener(new DragListener() {
 						public void drag(InputEvent event, float x, float y, int pointer) {		
-							//if(!temp.checkrightLocation()) {
+							if(!temp.checkrightLocation()) {
 								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
-							//}
+							}
 						}
 						
 						public void dragStop(InputEvent event, float x, float y, int pointer) {
@@ -237,15 +237,18 @@ public class MainGameScreen implements Screen{
 									&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
 							(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
 								temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+								
+								if(!temp.checkrightLocation()) {
+									game.client.localPlayer.correctPieceCount++;
+								}
 								temp.setrightLocation();
-								game.client.localPlayer.correctPieceCount++;
 								game.client.updatePlayer();
 							}
 							
 							if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550) 
 									&& (((temp.getY()+50) >= 350) &&
 										(temp.getY()+50) < 550)){
-								temp.setrightLocation();
+								//temp.setrightLocation();
 								game.client.sendPiece(temp.getPieceID());
 								temp.setVisible(false);				
 							}
