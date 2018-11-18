@@ -92,9 +92,9 @@ public class ServerThread extends Thread{
 					String passswordStr = password.getPassword();
 					String loginRegisterStr = loginRegister.getloginRegister();
 					
-					System.out.println("serverThread: username = "+ usernameStr);
-					System.out.println("serverThread: password = "+ passswordStr);
-					System.out.println("serverThread: login/register = "+ loginRegisterStr);
+					System.out.println("serverthread: username = "+ usernameStr);
+					System.out.println("serverthread: password = "+ passswordStr);
+					System.out.println("serverthread: login/register = "+ loginRegisterStr);
 					
 					
 					//database validation
@@ -116,11 +116,11 @@ public class ServerThread extends Thread{
 						}
 					}
 
-					System.out.println("trying to login...");
-					System.out.println("serverThread: current player0 name on server: " + server.playerVec.get(0).playerName);
-					System.out.println("serverThread: current player0 id on server: " + server.playerVec.get(0).playerID);
-					System.out.println("serverThread: current player1 name on server: " + server.playerVec.get(1).playerName);
-					System.out.println("serverThread: current player1 id on server: " + server.playerVec.get(1).playerID);
+					System.out.println("serverthread: trying to login...");
+					System.out.println("serverthread: current player0 name on server: " + server.playerVec.get(0).playerName);
+					System.out.println("serverthread: current player0 id on server: " + server.playerVec.get(0).playerID);
+					System.out.println("serverthread: current player1 name on server: " + server.playerVec.get(1).playerName);
+					System.out.println("serverthread: current player1 id on server: " + server.playerVec.get(1).playerID);
 					
 					//send server validation result from this serverthread back to its client
 					
@@ -151,11 +151,9 @@ public class ServerThread extends Thread{
 						
 						//read past score from the database
 						int pastScore = database.getHighScore();
-						System.out.println("past score = " + pastScore);	
-						
-						System.out.println("if we can log in");
+						System.out.println("serverthread: past score = " + pastScore);	
 						try {
-							System.out.println("logged in.");
+							System.out.println("serverthread: logged in.");
 							clientLoginState = true;
 							oos.writeObject(new LoginResult(true, "Login/Register done", pastScore));
 							oos.flush();
@@ -227,7 +225,7 @@ public class ServerThread extends Thread{
 							Boolean foundAvailable = false;
 							for (String code : server.gameRoomMap.keySet()){
 						        //iterate over keys
-						        System.out.println("serverThread: checking if room " + code + " is available");
+						        System.out.println("serverthread: checking if room " + code + " is available");
 						        
 						        //if find an available game room
 						        if(!server.isGameFull(code)){
@@ -236,7 +234,7 @@ public class ServerThread extends Thread{
 						        	gameRoomCode.code = code;
 						        	//return game code to the client
 						        	foundAvailable = true;
-						        	System.out.println("serverThread: found room "+code+" empty. sending code back to client.");
+						        	System.out.println("serverthread: found room "+code+" empty. sending code back to client.");
 						        	sendGameRoomCode(gameRoomCode);
 						        	break;
 						        }
@@ -257,7 +255,7 @@ public class ServerThread extends Thread{
 						        	gameRoomCode.code = code;
 						        	//return game code to the client
 						        	roomAvailable = true;
-						        	System.out.println("serverThread: found room "+code+" available. sending code back to client.");
+						        	System.out.println("serverthread: found room "+code+" available. sending code back to client.");
 						        	sendGameRoomCode(gameRoomCode);
 								}
 						     
@@ -302,7 +300,7 @@ public class ServerThread extends Thread{
 		}catch(ClassNotFoundException cnfe) {
 			System.out.println("serverthread: run() cnfe: " + cnfe.getMessage());
 		} catch (SQLException sqle) {
-			System.out.println("sqle: " + sqle.getMessage());
+			System.out.println("sserverthread: run() sqle: " + sqle.getMessage());
 		}
 	}
 
