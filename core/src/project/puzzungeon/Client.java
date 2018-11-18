@@ -14,6 +14,7 @@ import project.server.LoginResult;
 import project.server.Password;
 import project.server.PieceID;
 import project.server.Player;
+import project.server.PlayerIDnPieceSet;
 import project.server.ReadyState;
 import project.server.Username;
 
@@ -116,9 +117,13 @@ public class Client {
 		            				messageVec.add(newMessage);
 		            			}
 		            			//if the serverThread sends the size of server PlayerVec to the client
-		            			if(object instanceof Integer) {
-		            				Integer integer = (Integer)object;
-		            				localPlayer.playerID = integer.intValue();
+		            			if(object instanceof PlayerIDnPieceSet) {
+		            				PlayerIDnPieceSet pips  = (PlayerIDnPieceSet)object;
+		            				localPlayer.playerID = pips.id;
+		            				localPlayer.playerPieceSet = pips.playerPieceSet;
+		            				System.out.println("Client: server assigned id = " + pips.id);
+		            				System.out.print("Client: server assigned pieceset = ");
+		            				System.out.print(pips.playerPieceSet);
 		            			}
 		            			
 		            			

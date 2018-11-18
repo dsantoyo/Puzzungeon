@@ -79,7 +79,7 @@ public class MainGameScreen implements Screen{
 	
 	public int totalPieces;
 	
-	public ArrayList<PuzzlePiece> pieces;
+	public ArrayList<PuzzlePiece> pieceList;
 	
 
 	public DragAndDrop dragAndDrop;
@@ -99,8 +99,6 @@ public class MainGameScreen implements Screen{
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
-
-		correctPieceCount = 0;
 		totalPieces = 4;
 	}
 
@@ -123,8 +121,8 @@ public class MainGameScreen implements Screen{
 		showLocalPlayerName = new Label("Player1: " + game.client.localPlayer.playerName, game.skin);
 		showOtherPlayerName = new Label("Player2: " + game.client.otherPlayer.playerName, game.skin);
 		
-		showLocalPlayerPC = new Label(" Pieces Completed: 1/10", game.skin);
-		showOtherPlayerPC = new Label(" Pieces Completed: 2/10", game.skin);
+		showLocalPlayerPC = new Label(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16", game.skin);
+		showOtherPlayerPC = new Label(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16", game.skin);
 		showGameTime = new Label(" Time: 10:10", game.skin);
 				
 		final TextArea inputBox = new TextArea("",game.skin);
@@ -207,163 +205,62 @@ public class MainGameScreen implements Screen{
 				}
 			});
 		
-			
 /****************************************************************************************
 *                             start: game logic functionality
 ****************************************************************************************/	
-	/*		
-			pieces = new ArrayList<PuzzlePiece>();
-			
-			for(int i = 0; i < 4; i++) {
-				pieces.add(new PuzzlePiece(new Texture(Gdx.files.internal("image/pup"+(i+1)+".jpg")), i));
-			}
-			
-			
-			dragAndDrop = new DragAndDrop();
-			
-			final ArrayList<Table> sourceTables = new ArrayList<Table>();
-			final Table sourceTable = new Table().right();
-			sourceTable.setFillParent(true);
-			
-			for(int i = 0; i < 4; i++) {
-				final Table sourceTableNew = new Table();
-				sourceTableNew.add(pieces.get(i)).width(80).height(80);
-				sourceTables.add(sourceTableNew);
-				
-				dragAndDrop.addSource(new Source(sourceTableNew) {
-					public Payload dragStart (InputEvent event, float x, float y, int pointer) {
-						Payload payload = new Payload();
-						payload.setObject(sourceTableNew.getCells().get(0).getActor());
-						payload.setDragActor(sourceTableNew.getCells().get(0).getActor());
-						return payload;
-					}
-					
-					public void dragStop(InputEvent event,
-		                     float x,
-		                     float y,
-		                     int pointer,
-		                     DragAndDrop.Payload payload,
-		                     DragAndDrop.Target target) {
-						
-						if(target == null) {
-							System.out.println("lose piece");
-							sourceTableNew.clearChildren();
-							sourceTableNew.add((PuzzlePiece)payload.getObject()).width(80).height(80);
-							
-						}
-					}
-					
-				});
+	
+		pieceList = new ArrayList<PuzzlePiece>(32);
+		//generate all 32 puzzle pieces
+		shapeRenderer=new ShapeRenderer();
 		
-			}
+		for(int id = 0; id < 2; id++) {
+			int k = (id*16) + 1;
 			
-			for(Table t : sourceTables) {
-				sourceTable.add(t);
-				sourceTable.row();
-			}
+			for(int i = 500; i <= 800; i+=100) {
 				
-			final ArrayList<Table> targetTables = new ArrayList<Table>();
-			final Table targetTable = new Table();
-			targetTable.setFillParent(true);
+				for(int j = 1400; j<= 1700; j+=100, k++) {
+					final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("testImage/test"+k+".png")), k, j , i, id);
+					pieceList.add(temp);
 			
-			for(int i = 0; i < 4; i++) {
-				//final Table
-				final int index = i;
-				final Table targetTableNew = new Table();
-				targetTableNew.add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")), -1, )).width(80).height(80);
-				targetTables.add(targetTableNew);
-				dragAndDrop.addTarget(new Target(targetTableNew) {
-					public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
-						return true;
-					}
-
-					public void drop (Source source, Payload payload, float x, float y, int pointer) {
-						System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
+					temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
+					temp.setSize(100, 100);
+					temp.addListener(new DragListener() {
+						public void drag(InputEvent event, float x, float y, int pointer) {		
+							//if(!temp.checkrightLocation()) {
+								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+							//}
+						}
 						
-						((Table)source.getActor()).clearChildren();
-						((Table)source.getActor()).add(((Table)getActor()).getCells().get(0).getActor()).width(80).height(80);
-						
-						
-						((Table) getActor()).clearChildren();
-						//System.out.println("PuzzlePiece " + Integer.toString(((PuzzlePiece)payload.getObject()).getPieceID()) + " dropped on table1");
-						((Table) getActor()).add((PuzzlePiece)payload.getObject()).width(80).height(80);
-						
-						//check if every piece is in the correct location
-						for(int i = 0; i < targetTables.size(); i++) {
+						public void dragStop(InputEvent event, float x, float y, int pointer) {
+							System.out.println("temp: " + temp.getX() + "," + temp.getY());
+							if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
+									&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
+							(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
+								temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+								temp.setrightLocation();
+								game.client.localPlayer.correctPieceCount++;
+								game.client.updatePlayer();
+							}
 							
-							System.out.println("checking piece:" + i);
-							//get pieceIn every table
-							int pieceID = ((PuzzlePiece)(targetTables.get(i).getCells().get(0).getActor())).getPieceID();
-							
-							if(i == pieceID) {
-								//dragAndDrop.removeTarget( (Target)(targetTables.get(i)));
-								correctPieceCount++;
-								if(correctPieceCount == totalPieces) {
-									System.out.println("All pieces are in correct location");
-								
-								}
+							if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550) 
+									&& (((temp.getY()+50) >= 350) &&
+										(temp.getY()+50) < 550)){
+								temp.setrightLocation();
+								game.client.sendPiece(temp.getPieceID());
+								temp.setVisible(false);				
 							}
 						}
-						
-						
-						
-						int pieceID = ((PuzzlePiece)payload.getObject()).getPieceID();
-						int targetCellID = index;
-						System.out.println("piece " + pieceID + " dropped in cell " + targetCellID);
-						
-						if(pieceID == targetCellID) {
-							dragAndDrop.removeTarget(this);
-							correctPieceCount++;
-							if(correctPieceCount == totalPieces) {
-								System.out.println("All pieces are in correct location");
-							
-							}
-						}
-						else {
-							dragAndDrop.addSource(new Source(targetTables.get(index)) {
-								public Payload dragStart (InputEvent event, float x, float y, int pointer) {
-									Payload payload = new Payload();
-									payload.setObject(targetTables.get(index).getCells().get(0).getActor());
-									payload.setDragActor(targetTables.get(index).getCells().get(0).getActor());
-									targetTables.get(index).clearChildren();
-									targetTables.get(index).add(new PuzzlePiece(new Texture(Gdx.files.internal("empty.png")),-1)).width(80).height(80);
-									
-									//dragAndDrop.removeSource(this);
-									return payload;
-								}
-								
-								public void dragStop(InputEvent event,
-					                     float x,
-					                     float y,
-					                     int pointer,
-					                     DragAndDrop.Payload payload,
-					                     DragAndDrop.Target target) {
-									
-									if(target == null) {
-										System.out.println("lose piece");
-										targetTableNew.clearChildren();
-										targetTableNew.add((PuzzlePiece)payload.getObject()).width(80).height(80);
-										
-									}
-								}
-							});
-						}
-					}
-				});
+					});
+				}
 			}
-
-
-			
-			for(int i = 0; i < targetTables.size();i=i+2) {
-				targetTable.add(targetTables.get(i));
-				targetTable.add(targetTables.get(i+1));
-				targetTable.row();
-				
+		}
+		
+		for(int i = 0; i < 32; i++) {
+			if(!game.client.localPlayer.playerPieceSet.contains(pieceList.get(i).pieceID)) {
+				pieceList.get(i).setVisible(false);
 			}
-			
-			stage.addActor(sourceTable);
-			stage.addActor(targetTable);
-			
+			stage.addActor(pieceList.get(i));
+		}
 			
 /****************************************************************************************
 *                             end: game logic functionality
@@ -376,124 +273,7 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-			shapeRenderer=new ShapeRenderer();
 			
-			final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
-			
-			int k = 0;
-			System.out.println(k);
-			for(int i = 500; i <= 800; i+=100) {
-				
-				for(int j = 1400; j<= 1700; j+=100) {
-				
-				//final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup" + i + ".jpg")), 1, 500, 600);
-				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), k,j, i, true);
-				k++;
-				
-				temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
-				temp.setSize(100, 100);
-				 
-				temp.addListener(new DragListener() {
-					public void drag(InputEvent event, float x, float y, int pointer) {
-						
-						if(!temp.checkrightLocation()) {
-						temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
-						}
-  /*
-			shapeRenderer = new ShapeRenderer();
-			
-			//final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
-			
-			final Set<PuzzlePiece> setOfPieces = new HashSet<PuzzlePiece>();
-			
-			int k = 0;
-			System.out.println(k);
-			for(int i = 200; i <= 500; i+=100) {
-				
-				for(int j = 500; j<= 800; j+=100) {
-				
-				//final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup" + i + ".jpg")), 1, 500, 600);
-				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), k,j, i);
-				k++;
-				System.out.println(k);
-				temp.setPosition(300, 300);
-				temp.setSize(100, 100);
-			
-				temp.addListener(new DragListener() {
-					public void drag(InputEvent event, float x, float y, int pointer) {
-						if(!temp.checkRightLocation()) 
-						{
-								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
-					}
-          */
-					}
-					
-					public void dragStop(InputEvent event, float x, float y, int pointer) {
-						System.out.println("temp: " + temp.getX() + "," + temp.getY());
-						if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
-								&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
-						(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50)))
-						{
-							temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
-							temp.setrightLocation();
-						}
-						
-						if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
-								&& (((temp.getY()+50) >= 350) &&
-									(temp.getY()+50) < 550))
-						{
-							//temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
-							temp.setrightLocation();
-							game.client.sendPiece(temp.getPieceID());
-							temp.remove();
-;							
-						}
-					}
-				});
-				listOfPieces.add(temp);
-
-  /*
-						if(((temp.getX() >= (temp.getPieceCorrectLocX()-50)) && temp.getX() <( temp.getPieceCorrectLocX() + 50))
-								&& ((temp.getY() >= (temp.getPieceCorrectLocY()-50)) &&
-						temp.getY() < (temp.getPieceCorrectLocY() + 50)))
-						{
-							temp.setPosition((temp.getPieceCorrectLocX())-50, temp.getPieceCorrectLocY()-35);
-							temp.setRightLocation();
-						}
-					}
-				});
-				
-				setOfPieces.add(temp);
-        */
-
-			
-//				final PuzzlePiece test1 = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), 1, 500, 600);
-//				test1.setPosition(300, 300);
-//				test1.setSize(100, 100);
-//				test1.addListener(new DragListener() {
-//				    	public void drag(InputEvent event, float x, float y, int pointer) {
-//				    		test1.moveBy(x - test1.getWidth() / 2, y - test1.getHeight() / 2);
-//				    	
-//				    	}
-//				    
-//				    	public void dragStop(InputEvent event, float x, float y, int pointer) {
-//				    		if(x == test1.getPieceX() && y == test1.getPieceY()) {
-//				    			count1++;
-//				    			//System.out.println("count1: " + count1);
-//				    		}
-//				    		else {
-//				    			count1--;
-//				    			//System.out.println("count1: " + count1);
-//				    		}
-//				    		System.out.println("test1: " + 	test1.getX() +"," + test1.getY() );
-//				    	}
-//					});
-//			
-//			;
-//				stage.addActor(test2);
-				stage.addActor(temp);
-		}
-	}
 		
 /****************************************************************************************
 *                             start: topbar UI
@@ -566,7 +346,6 @@ public class MainGameScreen implements Screen{
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
 		
 		//draw background
 		viewport.apply();
@@ -649,6 +428,10 @@ public class MainGameScreen implements Screen{
 	
 	public void update() {
 		
+		//update piececount display
+		showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
+		showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
+		
 		//update chatroom
 		showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
 		showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
@@ -704,50 +487,12 @@ public class MainGameScreen implements Screen{
 			player2LeftDialog.show(stage);
 			displayDialog = false;
 		}
-		if (game.client.incomingPieceID!=-1)
-		{
-			System.out.println("incoming piece id: " + game.client.incomingPieceID);
-			//stage.addActor(actor);
-			
-			final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), game.client.incomingPieceID,0, 0, true);
-			//k++;
-			
-			temp.setPosition(375, 700);
-			temp.setSize(100, 100);
-			 
-			temp.addListener(new DragListener() {
-				public void drag(InputEvent event, float x, float y, int pointer) {
-					
-					if(!temp.checkrightLocation()) {
-					temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
-					}
-				}
-				
-				public void dragStop(InputEvent event, float x, float y, int pointer) {
-					System.out.println("temp: " + temp.getX() + "," + temp.getY());
-					if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
-							&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
-					(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50)))
-					{
-						temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
-						temp.setrightLocation();
-					}
-					
-					if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
-							&& (((temp.getY()+50) >= 350) &&
-								(temp.getY()+50) < 550))
-					{
-						//temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
-						temp.setrightLocation();
-						game.client.sendPiece(temp.getPieceID());
-						temp.remove();
-;							
-					}
-				}
-			});
-			stage.addActor(temp);
+		if (game.client.incomingPieceID!=-1){
+			System.out.println("receiving a piece id = " + game.client.incomingPieceID);
+			pieceList.get(game.client.incomingPieceID-1).setVisible(true);
+			pieceList.get(game.client.incomingPieceID-1).setPosition(375, 700);
+			pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
 			game.client.incomingPieceID = -1;
 		}
-		
 	}
 }

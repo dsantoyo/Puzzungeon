@@ -1,6 +1,7 @@
 package project.server;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 /*
  * 
@@ -24,6 +25,8 @@ public class Player implements Serializable{
 		this.pastScore = 0;
 		this.outgoingPiece = -1;
 		this.incomingPiece = -1;
+		this.correctPieceCount = 0;
+		this.playerPieceSet = new HashSet<Integer>();
 	}
 	
 	public String playerName;
@@ -44,5 +47,9 @@ public class Player implements Serializable{
 	
 	public int outgoingPiece;
 	public int incomingPiece;
+	
+	public HashSet<Integer> playerPieceSet;
+	
+	public int correctPieceCount;
 }
 

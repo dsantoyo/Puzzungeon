@@ -7,15 +7,15 @@ public class PuzzlePiece extends Image{
 	
 	private float pieceX;
 	private float pieceY;
-	private int pieceID;
+	public int pieceID;
 	
-	public boolean playerID;
+	public int playerID;
 	private boolean inRightLocation;
 	private float pieceCorrectLocX;
 	private float pieceCorrectLocY;
 	private boolean visible;
 	
-	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, boolean playerID){
+	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, int playerID){
 
 		super(texture);
 		this.pieceID = pieceID;
@@ -55,15 +55,7 @@ public class PuzzlePiece extends Image{
 		inRightLocation=true;
 	
 	}
-	public boolean getVisible()
-	{
-		return visible;
-	}
-	public void setVisible()
-	{
-		visible=false;
-		
-	}
+
 }
 
 		
