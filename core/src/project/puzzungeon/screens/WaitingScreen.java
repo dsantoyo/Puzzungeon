@@ -198,7 +198,6 @@ public class WaitingScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-
 					String username = new String(game.client.username);
 					String password = new String(game.client.password);
 					game.client.disconnect = true;
