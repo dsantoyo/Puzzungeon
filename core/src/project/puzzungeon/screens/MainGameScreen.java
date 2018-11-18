@@ -79,7 +79,7 @@ public class MainGameScreen implements Screen{
 	
 	public int totalPieces;
 	
-	public ArrayList<PuzzlePiece> pieces;
+	public ArrayList<PuzzlePiece> pieceList;
 	
 
 	public DragAndDrop dragAndDrop;
@@ -212,6 +212,7 @@ public class MainGameScreen implements Screen{
 *                             start: game logic functionality
 ****************************************************************************************/	
 	
+		pieceList = new ArrayList<PuzzlePiece>(32);
 		//generate all 32 puzzle pieces
 		shapeRenderer=new ShapeRenderer();
 		
@@ -222,40 +223,44 @@ public class MainGameScreen implements Screen{
 				
 				for(int j = 1400; j<= 1700; j+=100, k++) {
 				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("testImage/test"+k+".png")), k, j , i, id);
+				pieceList.add(temp);
 		
 				temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
 				temp.setSize(100, 100);
 				temp.addListener(new DragListener() {
 					public void drag(InputEvent event, float x, float y, int pointer) {		
-						if(!temp.checkrightLocation()) {
+						//if(!temp.checkrightLocation()) {
 							temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
-						}
+						//}
 					}
 					
 					public void dragStop(InputEvent event, float x, float y, int pointer) {
 						System.out.println("temp: " + temp.getX() + "," + temp.getY());
 						if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
-								&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) &&
+								&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
 						(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
 							temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
 							temp.setrightLocation();
 						}
 						
-						if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550)
+						if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550) 
 								&& (((temp.getY()+50) >= 350) &&
 									(temp.getY()+50) < 550)){
 							temp.setrightLocation();
 							game.client.sendPiece(temp.getPieceID());
-							temp.remove();							
+							temp.setVisible(false);				
 						}
 					}
 				});
-				
-					if((game.client.localPlayer.playerPieceSet.contains(k))) {
-							stage.addActor(temp);
-					}
 				}
 			}
+		}
+		
+		for(int i = 0; i < 32; i++) {
+			if(!game.client.localPlayer.playerPieceSet.contains(pieceList.get(i).pieceID)) {
+				pieceList.get(i).setVisible(false);
+			}
+			stage.addActor(pieceList.get(i));
 		}
 			
 /****************************************************************************************
@@ -482,6 +487,11 @@ public class MainGameScreen implements Screen{
 		}
 		if (game.client.incomingPieceID!=-1)
 		{
+			System.out.println("receiving a piece id = " + game.client.incomingPieceID);
+			pieceList.get(game.client.incomingPieceID-1).setVisible(true);
+			pieceList.get(game.client.incomingPieceID-1).setPosition(375, 700);
+			pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
+			//pieceList.get(game.client.incomingPieceID-1).setVisible(true);
 			game.client.incomingPieceID = -1;
 		}
 		
