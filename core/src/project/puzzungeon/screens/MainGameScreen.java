@@ -40,9 +40,6 @@ import project.puzzungeon.Client;
 import project.puzzungeon.PuzzlePiece;
 import project.puzzungeon.Puzzungeon;
 import project.server.ChatMessage;
-import project.server.LoginRegister;
-import project.server.Password;
-import project.server.Username;
 
 //Main Gameplay screen
 public class MainGameScreen implements Screen{
@@ -194,55 +191,11 @@ public class MainGameScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					String username = new String(game.client.username);
-					String password = new String(game.client.password);
 					game.client.disconnect = true;
 					game.client.localPlayer.disconnect = true;
 					game.client.updatePlayer();
 					game.client = new Client(game.serverAddress, game.serverPort);
-					
-					if(username.equals("guest")) {
-						game.client.clientUsername = "Guest";
-						if(!game.client.connectState) {
-							//set up connection to the server
-							System.out.println("Trying to connect...");
-							if(!game.client.connect()) {
-								System.out.println("Unable to connect to the server");
-								displayDialog = true;
-								game.client = new Client(game.serverAddress, game.serverPort);
-							}
-							else {
-								game.client.username = "guest";
-								game.client.password = "guest";
-								game.client.sendUsername(new Username("guest"));
-								game.client.sendPassword(new Password("guest"));
-								game.client.sendLoginRegister(new LoginRegister("guest"));
-								displayDialog = true;
-							}
-						}
-					}
-					else {
-						game.client.clientUsername = username;
-						if(!game.client.connectState) {
-							//set up connection to the server
-							System.out.println("Trying to connect...");
-							if(!game.client.connect()) {
-								System.out.println("Unable to connect to the server");
-								displayDialog = true;
-								game.client = new Client(game.serverAddress, game.serverPort);
-							}
-							else {
-								//send username and password to back-end
-								game.client.username = username;
-								game.client.password = password;
-								game.client.sendUsername(new Username(username));
-								game.client.sendPassword(new Password(password));
-								game.client.sendLoginRegister(new LoginRegister("login"));
-								displayDialog = true;
-							}
-						}
-					}
-					game.setScreen(new GameLobbyScreen(game));
+					game.setScreen(new MainMenuScreen(game));
 				}
 			});
 	
@@ -446,6 +399,33 @@ public class MainGameScreen implements Screen{
 						if(!temp.checkrightLocation()) {
 						temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
 						}
+  /*
+			shapeRenderer = new ShapeRenderer();
+			
+			//final ArrayList<PuzzlePiece> listOfPieces = new ArrayList<PuzzlePiece>();
+			
+			final Set<PuzzlePiece> setOfPieces = new HashSet<PuzzlePiece>();
+			
+			int k = 0;
+			System.out.println(k);
+			for(int i = 200; i <= 500; i+=100) {
+				
+				for(int j = 500; j<= 800; j+=100) {
+				
+				//final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup" + i + ".jpg")), 1, 500, 600);
+				final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), k,j, i);
+				k++;
+				System.out.println(k);
+				temp.setPosition(300, 300);
+				temp.setSize(100, 100);
+			
+				temp.addListener(new DragListener() {
+					public void drag(InputEvent event, float x, float y, int pointer) {
+						if(!temp.checkRightLocation()) 
+						{
+								temp.moveBy(x - temp.getWidth()/2, y - temp.getHeight()/2);
+					}
+          */
 					}
 					
 					public void dragStop(InputEvent event, float x, float y, int pointer) {
@@ -471,6 +451,21 @@ public class MainGameScreen implements Screen{
 					}
 				});
 				listOfPieces.add(temp);
+
+  /*
+						if(((temp.getX() >= (temp.getPieceCorrectLocX()-50)) && temp.getX() <( temp.getPieceCorrectLocX() + 50))
+								&& ((temp.getY() >= (temp.getPieceCorrectLocY()-50)) &&
+						temp.getY() < (temp.getPieceCorrectLocY() + 50)))
+						{
+							temp.setPosition((temp.getPieceCorrectLocX())-50, temp.getPieceCorrectLocY()-35);
+							temp.setRightLocation();
+						}
+					}
+				});
+				
+				setOfPieces.add(temp);
+        */
+
 			
 //				final PuzzlePiece test1 = new PuzzlePiece(new Texture(Gdx.files.internal("image/pup1.jpg")), 1, 500, 600);
 //				test1.setPosition(300, 300);
@@ -591,11 +586,21 @@ public class MainGameScreen implements Screen{
 		}
 		
 		shapeRenderer.rect(700,450,400,400);
-		
 		shapeRenderer.rect(350,650,200,200);
 		shapeRenderer.rect(350,350,200,200);
 
+  /*
+		shapeRenderer.begin(ShapeType.Line);
 		
+		for(int i=150; i<=450;i+=100)
+		{
+			for( int j=450; j<=750;j+=100)
+			{
+				shapeRenderer.rect(j,i,100,100);
+			}
+		}
+    */
+
 		shapeRenderer.end();
 		
 		//update and draw stage

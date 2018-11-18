@@ -16,6 +16,7 @@ public class PuzzlePiece extends Image{
 	private boolean visible;
 	
 	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, boolean playerID){
+
 		super(texture);
 		this.pieceID = pieceID;
 		this.pieceCorrectLocX = pieceX;
@@ -43,11 +44,10 @@ public class PuzzlePiece extends Image{
 	return (int) this.pieceCorrectLocX;
 	}
 	public int getPieceCorrectLocY(){
-	return (int)this.pieceCorrectLocY;
+	  return (int)this.pieceCorrectLocY;
 	}
 	
-	public boolean checkrightLocation()
-	{
+	public boolean checkrightLocation(){
 		return inRightLocation;
 	}
 	public void setrightLocation()
@@ -65,3 +65,5 @@ public class PuzzlePiece extends Image{
 		
 	}
 }
+
+		
