@@ -68,7 +68,8 @@ public class RegisterScreen implements Screen{
  *                             start: actors functionality
 ****************************************************************************************/				
 		//create the actors
-		Label gameTitle = new Label("Puzzungeon", game.skin);
+		Label gameTitle = new Label("Puzzungeon", game.skin, "title");
+		gameTitle.setFontScale(1.5f);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
 		final Label error = new Label("", game.skin);
@@ -290,25 +291,30 @@ public class RegisterScreen implements Screen{
 ****************************************************************************************/
 			
 		//set label color and size
-		gameTitle.setColor(Color.GREEN);
-		gameTitle.setFontScale(2);
 		error.setColor(Color.RED);
 		
 		Table registerMenuTable = new Table();
 		registerMenuTable.setFillParent(true);
-		registerMenuTable.add(gameTitle).colspan(3);
-		registerMenuTable.row();
+		registerMenuTable.add(gameTitle).colspan(4).padBottom(30);
 		
-		registerMenuTable.add(username).width(Puzzungeon.WIDTH*0.3f).pad(5);
-		registerMenuTable.add(usernameInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 		registerMenuTable.row();
-		registerMenuTable.add(password).width(Puzzungeon.WIDTH*0.3f).pad(5);
-		registerMenuTable.add(passwordInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
+		registerMenuTable.add().width(50).uniform();
+		registerMenuTable.add(username).uniform();
+		registerMenuTable.add(usernameInput).uniform().height(80).fillX();
+		registerMenuTable.add().uniform();
+		
 		registerMenuTable.row();
-		registerMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(5);
-		registerMenuTable.add(registerButton).width(Puzzungeon.WIDTH*0.2f).pad(5);
+		registerMenuTable.add().uniform();
+		registerMenuTable.add(password).uniform();
+		registerMenuTable.add(passwordInput).uniform().height(80).fillX();
+		registerMenuTable.add().uniform();
+		
 		registerMenuTable.row();
-		registerMenuTable.add(error).colspan(2);
+		registerMenuTable.add(guestButton).colspan(2);
+		registerMenuTable.add(registerButton).colspan(2);
+		
+		registerMenuTable.row();
+		registerMenuTable.add(error).colspan(4);
 
 			
 /****************************************************************************************

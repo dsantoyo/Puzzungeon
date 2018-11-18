@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
@@ -43,6 +45,7 @@ public class MainMenuScreen implements Screen{
 	Sprite background;
 	
 	//actor references
+	//private Image gameTitle;
 	private Label gameTitle;
 	private TextButton loginButton;
 	private TextButton newUserButton;
@@ -77,7 +80,14 @@ public class MainMenuScreen implements Screen{
 *                             start: actors functionality
 ****************************************************************************************/
 
-		gameTitle = new Label("Puzzungeon", game.skin);
+		/*
+		gameTitle = new Image(atlas.createSprite("title"));
+		gameTitle.setScaling(Scaling.fit);
+		gameTitle.setOrigin(0,0);
+		gameTitle.setScale(6f);
+		*/
+		
+		gameTitle = new Label("Puzzungeon", game.skin, "title");
 		
 		loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
@@ -166,17 +176,17 @@ public class MainMenuScreen implements Screen{
 *                             start: Main Menu UI
 ****************************************************************************************/
 		
-		//set label color and size
-		gameTitle.setColor(Color.GREEN);
+		gameTitle.setFontScale(2);
 		
 		Table mainMenuTable = new Table();
 		mainMenuTable.setFillParent(true);
-		mainMenuTable.add(gameTitle).colspan(3);
+		mainMenuTable.padTop(100);
+		mainMenuTable.add(gameTitle).colspan(3).padBottom(20).prefHeight(200);
 		mainMenuTable.row();
 		
-		mainMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
-		mainMenuTable.add(newUserButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
-		mainMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
+		mainMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.16f).pad(20);
+		mainMenuTable.add(newUserButton).width(Puzzungeon.WIDTH*0.22f).pad(20);
+		mainMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.34f).pad(20);
 		mainMenuTable.row();
 			
 /****************************************************************************************

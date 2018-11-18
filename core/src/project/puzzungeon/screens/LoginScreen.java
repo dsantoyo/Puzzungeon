@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
@@ -64,7 +65,8 @@ public class LoginScreen implements Screen{
 /****************************************************************************************
  *                             start: actors functionality
  ****************************************************************************************/
-		Label gameTitle = new Label("Puzzungeon", game.skin);
+		Label gameTitle = new Label("Puzzungeon", game.skin, "title");
+		gameTitle.setFontScale(1.5f);
 		Label username = new Label("Username: ", game.skin);
 		Label password = new Label("Password: ", game.skin);
 		final Label error = new Label("", game.skin);
@@ -291,25 +293,30 @@ public class LoginScreen implements Screen{
 ****************************************************************************************/
 			
 			//set label color and size
-			gameTitle.setColor(Color.GREEN);
-			gameTitle.setFontScale(2);
 			error.setColor(Color.RED);
 			
 			Table loginMenuTable = new Table();
 			loginMenuTable.setFillParent(true);
-			loginMenuTable.add(gameTitle).colspan(3);
-			loginMenuTable.row();
+			loginMenuTable.add(gameTitle).colspan(4).padBottom(30);
 			
-			loginMenuTable.add(username).width(Puzzungeon.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(usernameInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
 			loginMenuTable.row();
-			loginMenuTable.add(password).width(Puzzungeon.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(passwordInput).width(Puzzungeon.WIDTH*0.4f).pad(5);
+			loginMenuTable.add().width(50).uniform();
+			loginMenuTable.add(username).uniform();
+			loginMenuTable.add(usernameInput).uniform().height(80).fillX();
+			loginMenuTable.add().uniform();
+			
 			loginMenuTable.row();
-			loginMenuTable.add(guestButton).width(Puzzungeon.WIDTH*0.3f).pad(5);
-			loginMenuTable.add(loginButton).width(Puzzungeon.WIDTH*0.2f).pad(5);
+			loginMenuTable.add().uniform();
+			loginMenuTable.add(password).uniform();
+			loginMenuTable.add(passwordInput).pad(5).uniform().height(80).fillX();
+			loginMenuTable.add().uniform();
+			
 			loginMenuTable.row();
-			loginMenuTable.add(error).colspan(2);
+			loginMenuTable.add(guestButton).colspan(2);
+			loginMenuTable.add(loginButton).colspan(2);
+			
+			loginMenuTable.row();
+			loginMenuTable.add(error).colspan(4);
 
 			
 				

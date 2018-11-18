@@ -43,6 +43,7 @@ public class GameLobbyScreen implements Screen{
 	
 	private Dialog noEmptyRoomDialog;
 	private Dialog roomNotAvailableDialog;
+	private Dialog didntEnterCodeDialog;
 	private Dialog connectionLostDialog;
 	
 	//shared by different methods
@@ -59,7 +60,7 @@ public class GameLobbyScreen implements Screen{
 		
 		//setup background
 		atlas = game.assetLoader.manager.get("sprites.txt");
-		background = atlas.createSprite("dungeon");
+		background = atlas.createSprite("dungeon-hall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
 	}
@@ -71,7 +72,7 @@ public class GameLobbyScreen implements Screen{
 *                             start: actors functionality
 ****************************************************************************************/
 
-		gameTitle = new Label("Puzzungeon", game.skin);
+		gameTitle = new Label("Puzzungeon", game.skin, "title");
 		
 		newGameButton = new TextButton("Create Game", game.skin, "default");
 		newGameButton.addListener(new ClickListener(){
@@ -87,9 +88,13 @@ public class GameLobbyScreen implements Screen{
 				@Override 
 	            public void clicked(InputEvent event, float x, float y){
 					String code = codeInputField.getText();
-					game.client.sendLobbyChoice(new LobbyChoice("use code", code));
-					displayDialog = true;
-					
+						if (code.trim().isEmpty()) {
+							game.client.gameRoomCode = "didnt enter room";
+							displayDialog = true;
+						} else {
+							game.client.sendLobbyChoice(new LobbyChoice("use code", code));
+							displayDialog = true;
+						}
 	            	}
 	        	});
 		
@@ -127,7 +132,7 @@ public class GameLobbyScreen implements Screen{
 		
 		noEmptyRoomDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {}};
-		noEmptyRoomDialog.text("We don't have any room available");
+		noEmptyRoomDialog.text("We don't have any rooms available");
 		noEmptyRoomDialog.button("Got it", false); //sends "false" as the result
 		
 		
@@ -136,12 +141,19 @@ public class GameLobbyScreen implements Screen{
 		roomNotAvailableDialog.text("The room is not available");
 		roomNotAvailableDialog.button("Got it", false); //sends "false" as the result
 		
+
+		didntEnterCodeDialog = new Dialog("Error", game.skin, "dialog") {
+			public void result(Object obj) {}};
+		didntEnterCodeDialog.text("Please enter a code!");
+		didntEnterCodeDialog.button("Got it", false);
+
 		connectionLostDialog = new Dialog("Error", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
 		connectionLostDialog.text("Connection lost.");
 		connectionLostDialog.button("Got it", false); //sends "false" as the result
+
 			
 /****************************************************************************************
 *                             end: actors functionality
@@ -156,20 +168,16 @@ public class GameLobbyScreen implements Screen{
 *                             start: Main Menu UI
 ****************************************************************************************/
 		
-		//set label color and size
-		gameTitle.setColor(Color.GREEN);
-		
 		Table mainMenuTable = new Table();
 		mainMenuTable.setFillParent(true);
-		mainMenuTable.add(gameTitle).colspan(3);
+		mainMenuTable.add(gameTitle).colspan(3).padBottom(20);
 		mainMenuTable.row();
-		
-		mainMenuTable.add(newGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(newGameButton).padBottom(15).uniform();
 		mainMenuTable.row();
-		mainMenuTable.add(existGameButton).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
-		mainMenuTable.add(codeInputField).width(Puzzungeon.WIDTH*0.2f).pad(0.3f);
+		mainMenuTable.add(existGameButton).uniform().padBottom(15);
+		mainMenuTable.add(codeInputField).uniform().fillX();
 		mainMenuTable.row();
-		mainMenuTable.add(randomGameButton).width(Puzzungeon.WIDTH*0.3f).pad(0.3f);
+		mainMenuTable.add(randomGameButton).uniform();
 		mainMenuTable.row();
 			
 /****************************************************************************************
@@ -264,6 +272,12 @@ public class GameLobbyScreen implements Screen{
 				displayDialog = false;
 			}
 			
+			else if (game.client.gameRoomCode.equals("didnt enter room")) {
+				game.client.gameRoomCode = "";
+				didntEnterCodeDialog.show(stage);
+				displayDialog = false;
+			}
+		
 			else if(!game.client.gameRoomCode.equals("")) {
 				game.setScreen(new WaitingScreen(game));
 			}

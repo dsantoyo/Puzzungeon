@@ -38,7 +38,7 @@ public class Puzzungeon extends Game {
 		//load pre-loading assets
 		assetLoader.loadSkin();
 		assetLoader.manager.finishLoading();
-		skin = assetLoader.manager.get("uiskin.json", Skin.class);
+		skin = assetLoader.manager.get("pixungeon.json", Skin.class);
 				
 		//queue loading for other assets
 		assetLoader.loadAtlas();
