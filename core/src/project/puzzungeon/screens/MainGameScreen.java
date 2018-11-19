@@ -89,6 +89,7 @@ public class MainGameScreen implements Screen{
 	private int greenGridCounter;
 	
 	private ArrayList<Sprite> puzzleSprites;
+
 	public int puzzleID;
 
 	public Boolean update;
@@ -313,8 +314,12 @@ public class MainGameScreen implements Screen{
 		TextureRegion puzzle;
 		if (puzzleID == 1) {
 			puzzle = atlas.findRegion("dragon");
-		} else {
+		} else if (puzzleID == 2) {
 			puzzle = atlas.findRegion("castle-small");
+		} else if (puzzleID == 3) {
+			puzzle = atlas.findRegion("griffin");
+		} else {
+			puzzle = atlas.findRegion("sea-serpent");
 		}
 		int imageWidth = puzzle.getRegionWidth();
 	    int imageHeight = puzzle.getRegionHeight();
