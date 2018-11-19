@@ -32,7 +32,7 @@ public class JDBCType {
 	public Boolean connectionSet() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?allowPublicKeyRetrieval=true&user=root&password=Florence100!&useSSL=false");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Puzzungeon_database?allowPublicKeyRetrieval=true&user=root&password=root&useSSL=false");
 			st = conn.createStatement();
 			
 		} catch (SQLException sqle) {
