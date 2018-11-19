@@ -1,8 +1,8 @@
 package project.server;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.locks.ReentrantLock;
 
 /*
  * 
@@ -58,5 +58,6 @@ public class Player implements Serializable{
 	public Boolean isFinished;
 	
 	public int gameCounter;
+	
 }
 
