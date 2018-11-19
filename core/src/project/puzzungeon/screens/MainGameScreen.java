@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,6 +58,8 @@ public class MainGameScreen implements Screen{
 	//background references
 	TextureAtlas atlas;
 	Sprite background;
+	Sprite teleporter;
+	Sprite mockScreen;
 	
 	//shared by different methods
 	private Label showMessage1;
@@ -72,19 +75,25 @@ public class MainGameScreen implements Screen{
 	
 	private Label showGameTime;
 	
+	private Label teleporterLabel1;
+	private Label teleporterLabel2;
+	
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
 	private long startTime;
 	ShapeRenderer shapeRenderer;
+	ShapeRenderer greenGridRenderer;
 	
-	
+	//puzzle pieces
 	public int correctPieceCount;
-	
 	public int totalPieces;
-	
 	public ArrayList<PuzzlePiece> pieceList;
+	private int[][] greenGrid;
+	private int greenGridCounter;
 	
+	private ArrayList<Sprite> puzzleSprites;
+	public int puzzleID = 1;
 
 	public Boolean update;
 	
@@ -100,22 +109,35 @@ public class MainGameScreen implements Screen{
 		
 
 		atlas = game.assetLoader.manager.get("sprites.txt");
+		teleporter = atlas.createSprite("teleporter");
+		teleporter.setPosition(200, 420);
+		teleporter.setScale(9f);
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
-		totalPieces = 4;
+		
+		greenGridRenderer = new ShapeRenderer();
+		totalPieces = 16;
 		update = true;
+		greenGrid = new int[16][3];
+		greenGridCounter = 0;
 	}
 
 	@Override
 	public void show() {
-				
+		
 /****************************************************************************************
 *                             start: actors functionality
 ****************************************************************************************/
 				
 		//create the actors
 		Label chatTitle = new Label("Chat",game.skin);
+		
+		teleporterLabel1 = new Label("Send/Recieve", game.skin, "subtitle");
+		teleporterLabel2 = new Label("Pieces Here", game.skin, "subtitle");
+		teleporterLabel1.setAlignment(Align.center);
+		teleporterLabel2.setAlignment(Align.center);
+		
 		showMessage1 = new Label("",game.skin);
 		showMessage2 = new Label("",game.skin);
 		showMessage3 = new Label("",game.skin);
@@ -209,29 +231,42 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: game logic functionality
 ****************************************************************************************/	
-	
+			
+		//make puzzle from TextureRegion
+		TextureRegion puzzle;
+		if (puzzleID == 1) {
+			puzzle = atlas.findRegion("dragon");
+		} else {
+			puzzle = atlas.findRegion("castle-small");
+		}
+		int numTilesHorizontal = 8;
+		int numTilesVertical = 4;
+		int imageWidth = puzzle.getRegionWidth() ;
+	    int imageHeight = puzzle.getRegionHeight() ;
+	    int pieceWidth = imageWidth / numTilesHorizontal;
+	    int pieceHeight = imageHeight / numTilesVertical;
+		TextureRegion[][] pieceRegions = puzzle.split(pieceWidth, pieceHeight);
+		
 		pieceList = new ArrayList<PuzzlePiece>(32);
 		//generate all 32 puzzle pieces
 		shapeRenderer=new ShapeRenderer();
 		
 		for(int id = 0; id < 2; id++) {
 			int k = (id*16) + 1;
+			int regionX = id * 4;
 			
-			for(int i = 500; i <= 800; i+=100) {
-				
-				for(int j = 1400; j<= 1700; j+=100, k++) {
-					final PuzzlePiece temp = new PuzzlePiece(new Texture(Gdx.files.internal("testImage/test"+k+".png")), k, j , i, id);
+			for(int i = 500, y = 3; i <= 800 && y >= 0; i+=100, y--) {
+				regionX = id * 4;
+				for(int j = 1400; j<= 1700; j+=100, k++, regionX++) {
+					final PuzzlePiece temp = new PuzzlePiece(pieceRegions[y][regionX], k, j , i, id);
 					pieceList.add(temp);
 			
 					temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
 					temp.setSize(100, 100);
 					temp.addListener(new DragListener() {
-						public void drag(InputEvent event, float x, float y, int pointer) {	
-							
+						public void drag(InputEvent event, float x, float y, int pointer) {
 							float distanceToMinY = temp.getY() - 300;
 							float distanceToMinX = temp.getX() - 0;
-							System.out.println("distanceToMinX = " +  distanceToMinX);
-							System.out.println("distanceToMinY = " +  distanceToMinY);
 							
 							if(!temp.checkrightLocation()) {
 								if(distanceToMinY > 0) {
@@ -252,7 +287,6 @@ public class MainGameScreen implements Screen{
 						
 						
 						public void dragStop(InputEvent event, float x, float y, int pointer) {
-							System.out.println("temp: " + temp.getX() + "," + temp.getY());
 							if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
 									&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
 							(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
@@ -260,6 +294,12 @@ public class MainGameScreen implements Screen{
 								
 								if(!temp.checkrightLocation()) {
 									game.client.localPlayer.correctPieceCount++;
+									if (greenGridCounter != 16) {
+										greenGrid[greenGridCounter][0] = temp.getPieceCorrectLocX()- 50;
+										greenGrid[greenGridCounter][1] = temp.getPieceCorrectLocY() - 50;
+										greenGrid[greenGridCounter][2] = 100;
+										greenGridCounter++;
+									}
 								}
 								temp.setrightLocation();
 								game.client.updatePlayer();
@@ -277,14 +317,16 @@ public class MainGameScreen implements Screen{
 				}
 			}
 		}
-		
+		int number = 0;
 		for(int i = 0; i < 32; i++) {
 			if(!game.client.localPlayer.playerPieceSet.contains(pieceList.get(i).pieceID)) {
 				pieceList.get(i).setVisible(false);
+			} else {
+				System.out.println(i);
+				number++;
 			}
 			stage.addActor(pieceList.get(i));
 		}
-			
 /****************************************************************************************
 *                             end: game logic functionality
 ****************************************************************************************/
@@ -296,8 +338,21 @@ public class MainGameScreen implements Screen{
 /****************************************************************************************
 *                             start: actors layout
 ****************************************************************************************/
-			
 
+/****************************************************************************************
+*                             start: game instructions UI
+****************************************************************************************/	
+
+		Table teleportLabel = new Table().left().top();
+		teleportLabel.setFillParent(true);
+		teleportLabel.add(teleporterLabel1).padLeft(80).padTop(120).width(450).align(Align.center);
+		teleportLabel.row();
+		teleportLabel.add(teleporterLabel2).padLeft(80).width(450).align(Align.center);
+		
+/****************************************************************************************
+*                             end: game instructions UI
+****************************************************************************************/			
+		
 /****************************************************************************************
 *                             start: bottom bar UI
 ****************************************************************************************/	
@@ -341,7 +396,7 @@ public class MainGameScreen implements Screen{
 		chatRoomCol2.add(showOtherPlayerName).align(Align.left).pad(15);
 		chatRoomCol2.row();
 		chatRoomCol2.add(showOtherPlayerPC).align(Align.left).pad(15);
-		chatRoom.add(chatRoomCol2);
+		chatRoom.add(chatRoomCol2).fillY();
 		
 		Table chatRoomCol3 = new Table();
 		Table timerCell = new Table().pad(0);
@@ -350,17 +405,18 @@ public class MainGameScreen implements Screen{
 		if (timerBackground != null) {
 			timerCell.setBackground(timerBackground);
 		}
-		chatRoomCol3.add(timerCell).width(450).padBottom(10);
+		chatRoomCol3.add(timerCell).width(450).padBottom(10).minHeight(90);
 		chatRoomCol3.row();
-		chatRoomCol3.add(backButton).width(220).height(90);
+		chatRoomCol3.add(backButton).width(220).minHeight(90);
 		chatRoomCol3.row();
-		chatRoomCol3.add(exitButton).width(220).height(90);
-		chatRoom.add(chatRoomCol3);
+		chatRoomCol3.add(exitButton).width(220).minHeight(90);
+		chatRoom.add(chatRoomCol3).fillY();
 		
 /****************************************************************************************
 *                             end: bottom bar UI
 ****************************************************************************************/
 
+		stage.addActor(teleportLabel);
 		stage.addActor(chatRoom);
 		
 		//draw debugline to see the boundary of each actor
@@ -383,35 +439,27 @@ public class MainGameScreen implements Screen{
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);
+		teleporter.draw(game.batch);
 		game.batch.end();
-	
-		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-			shapeRenderer.begin(ShapeType.Line);
 		
+		//draw white grid
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(game.skin.getColor("white"));
+			
 		for(int i=450; i<=750;i+=100)
 		{
-			for( int j=1350; j<=1650;j+=100)
-			{
-				shapeRenderer.rect(j,i,100,100);
-			}
+		for( int j=1350; j<=1650;j+=100)
+		{
+			shapeRenderer.rect(j,i,100,100);
 		}
-		
+		}
+			
+		//deposit shapes
 		shapeRenderer.rect(700,450,400,400);
 		shapeRenderer.rect(350,650,200,200);
 		shapeRenderer.rect(350,350,200,200);
-
-  /*
-		shapeRenderer.begin(ShapeType.Line);
 		
-		for(int i=150; i<=450;i+=100)
-		{
-			for( int j=450; j<=750;j+=100)
-			{
-				shapeRenderer.rect(j,i,100,100);
-			}
-		}
-    */
-
 		shapeRenderer.end();
 		
 		//update and draw stage
@@ -419,19 +467,16 @@ public class MainGameScreen implements Screen{
 		stage.act(Gdx.graphics.getDeltaTime());
 		update();
 		stage.draw();
-		
-//		//draw background
-//		viewport.apply();
-//		game.batch.begin();
-//		background.draw(game.batch);
-//		game.batch.end();
-//		
-//		//draw stage
-//		stage.getViewport().apply();
-//		stage.act(Gdx.graphics.getDeltaTime());
-//		update();
-//		stage.draw();
-		
+
+		//draw green grid
+		greenGridRenderer.setProjectionMatrix(stage.getCamera().combined);
+		greenGridRenderer.begin(ShapeType.Line);
+		greenGridRenderer.setColor(game.skin.getColor("Teal"));
+		for (int i = 0; i < greenGrid.length; i++) {
+			greenGridRenderer.rect(greenGrid[i][0], greenGrid[i][1], greenGrid[i][2], greenGrid[i][2]);
+		}
+		greenGridRenderer.end();
+	
 	}
 
 	@Override
