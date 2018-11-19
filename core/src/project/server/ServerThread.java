@@ -229,7 +229,7 @@ public class ServerThread extends Thread{
 						        System.out.println("serverthread: checking if room " + code + " is available");
 						        
 						        //if find an available game room
-						        if(!server.isGameFull(code)){
+						        if(!server.isGameFull(code) && (!server.gameRoomMap.get(code).lock)){
 						        	//assign this serverthread to the gameroom
 						        	server.gameRoomMap.get(code).serverThreads.add(this);
 						        	gameRoomCode.code = code;
@@ -349,6 +349,10 @@ public class ServerThread extends Thread{
 	
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
+		if(server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).readyState && server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).readyState) {
+			server.gameRoomMap.get(gameRoomCode.code).lock = true;
+		}
+		
 		try {
 			oos.writeObject(otherPlayer);
 			oos.flush();

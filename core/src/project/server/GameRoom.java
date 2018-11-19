@@ -19,10 +19,13 @@ public class GameRoom {
 		
 		public HashSet<Integer> player0PieceSet = new HashSet<Integer>();
 		public HashSet<Integer> player1PieceSet = new HashSet<Integer>();
+		
+		public Boolean lock;
 	
 	GameRoom(String code){
 		
 		serverThreads = new Vector<ServerThread>();
+		lock = false;
 		
 		this.code = code;
 		//a vector to store Player objects
