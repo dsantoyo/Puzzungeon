@@ -25,8 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -44,8 +42,6 @@ public class MainGameScreen implements Screen{
 	Puzzungeon game; //reference to the game
 	private Stage stage;
 	FitViewport viewport;
-	private int count1 = 0;
-	private int count2 = 0;
 	
 	//background references
 	TextureAtlas atlas;
@@ -88,7 +84,7 @@ public class MainGameScreen implements Screen{
 	private int[][] greenGrid;
 	private int greenGridCounter;
 	
-	private ArrayList<Sprite> puzzleSprites;
+	//private ArrayList<Sprite> puzzleSprites;
 
 	public int puzzleID;
 
@@ -349,7 +345,7 @@ public class MainGameScreen implements Screen{
 					temp.addListener(new DragListener() {
 						public void drag(InputEvent event, float x, float y, int pointer) {
 							float distanceToMinY = temp.getY() - 300;
-							float distanceToMinX = temp.getX() - 0;
+							//float distanceToMinX = temp.getX() - 0;
 							
 							if(!temp.checkrightLocation()) {
 								if(distanceToMinY > 0) {
@@ -604,15 +600,12 @@ public class MainGameScreen implements Screen{
 				game.setScreen(new MainGameScreen(game, 1));
 			}
 		}
-				
-				
+					
 		if(update) {
 					
 			//update piececount display
 			showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
 			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
-			
-			
 			
 			//if local player finishes the puzzle
 			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
@@ -627,15 +620,12 @@ public class MainGameScreen implements Screen{
                 
 			}
 			
-			
 			//if both player finishes the puzzle
 			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
 				System.out.println("the game is finished");
 				gameFinished = true;
 				game.client.messageVec.remove(0);
 				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
-				
-				
 				
 				//if one of the player is a guest
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
@@ -646,9 +636,7 @@ public class MainGameScreen implements Screen{
 					update = false;
 					return;
 				}
-				
-			
-				
+					
 				//if both players are registered user
 				else {
 					System.out.println("both registered user");
@@ -656,10 +644,8 @@ public class MainGameScreen implements Screen{
 					displayDialog = true;
 				}
 				
-				
 			}
 			
-
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
 			showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());

@@ -2,14 +2,8 @@ package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-
 import project.puzzungeon.screens.LoadingScreen;
-import project.puzzungeon.screens.MainMenuScreen;
-
 
 //main game class
 public class Puzzungeon extends Game {

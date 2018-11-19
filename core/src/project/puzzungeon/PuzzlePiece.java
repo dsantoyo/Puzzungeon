@@ -14,7 +14,6 @@ public class PuzzlePiece extends Image{
 	private boolean inRightLocation;
 	private float pieceCorrectLocX;
 	private float pieceCorrectLocY;
-	private boolean visible;
 	
 	public PuzzlePiece(Texture texture, int pieceID, float pieceX, float pieceY, int playerID){
 
@@ -24,7 +23,6 @@ public class PuzzlePiece extends Image{
 		this.pieceCorrectLocY = pieceY;
 		inRightLocation=false;
 		//this.pieceCorrectLoc = pieceCorrectLoc;
-		visible=true;
 		this.playerID=playerID;
 	}
 	
@@ -34,7 +32,6 @@ public class PuzzlePiece extends Image{
 		this.pieceCorrectLocX = pieceX;
 		this.pieceCorrectLocY = pieceY;
 		inRightLocation = false;
-		visible = true;
 		this.playerID = playerID;
 	}
 
@@ -64,7 +61,6 @@ public class PuzzlePiece extends Image{
 	public void setrightLocation()
 	{
 		inRightLocation=true;
-	
 	}
 
 }

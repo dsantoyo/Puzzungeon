@@ -15,7 +15,6 @@ public class JDBCType {
 	
 	private String username;
 	private String password;
-	private String determine;
 	private int userID;
 	private int score;
 	//private boolean login = false;
@@ -24,7 +23,6 @@ public class JDBCType {
 	{
 		this.username = username;
 		this.password = password;
-		this.determine = determine;
 		this.userID = 0;
 		this.score = 0;
 	}

@@ -84,15 +84,7 @@ public class Server {
 				// start thread in its constructor
 				serverThreads.add(st); // we have a serverThread for every client
 				System.out.println("server: serverThreads size: " + serverThreads.size());
-				/*
-				if (serverThreads.size() > 2 && allConnected == false) {
-					System.out.println("Enough connections.");
-					allConnected = true;
-					for (int i = 0; i < serverThreads.size(); i++) {
-						serverThreads.get(i).sendConnNum(2);
-					}
-				}
-				*/
+
 			}
 		}catch (IOException ioe) {
 			System.out.println("ioe:"+ioe.getMessage());
@@ -123,7 +115,6 @@ public class Server {
 		
 		if(cm != null) {
 			
-			
 			gameRoomMap.get(roomCode).reLock.lock();
 			
 			try {
@@ -139,12 +130,9 @@ public class Server {
 					thread.sendMessage(gameRoomMap.get(roomCode).messageVec.get(3));
 				}
 			
-				
 			}finally {
 				gameRoomMap.get(roomCode).reLock.unlock();
 			}
-
-			
 			
 		}
 	}
@@ -161,12 +149,10 @@ public class Server {
 		}
 		if(player != null) {
 			
-			
 			gameRoomMap.get(roomCode).reLock.lock();
 			
 			try {
 				
-
 				//find an available spot in playerVec
 				for(int i = 0; i < 2; i++) {
 					if(gameRoomMap.get(roomCode).playerVec.get(i).playerID == -1) {
@@ -177,13 +163,10 @@ public class Server {
 				}
 				
 				System.out.println("server: room " + roomCode +"new player: username = " + player.playerName +", playerID = " + player.playerID);
-			
 				
 			}finally {
 				gameRoomMap.get(roomCode).reLock.unlock();
 			} 
-
-			
 			
 		}
 		return player.playerID;
@@ -195,14 +178,10 @@ public class Server {
 	 */
 	public void updateServerPlayer(int playerID, Player player, String roomCode) {
 		
-		
-		
 		gameRoomMap.get(roomCode).reLock.lock();
 		
 		try {
 		
-			
-
 			gameRoomMap.get(roomCode).playerVec.set(playerID,player);
 
 			System.out.println("server: server updated room "+roomCode+" player: username = " + player.playerName +", playerID = " + player.playerID);
@@ -211,9 +190,6 @@ public class Server {
 			gameRoomMap.get(roomCode).reLock.unlock();
 		} 
 
-		
-		
-		
 		//when a player is updated in server's playerVec,
 		//also update front-end's otherPlayer
 		sendServerOtherPlayer(roomCode);
@@ -224,12 +200,9 @@ public class Server {
 	 */
 	public void sendServerOtherPlayer(String roomCode) {
 		
-		
-		
 		gameRoomMap.get(roomCode).reLock.lock();
 		
 		try {
-			
 			
 			if(gameRoomMap.get(roomCode).playerVec.size() == 2) {
 				for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
@@ -243,20 +216,13 @@ public class Server {
 				}
 			}
 		
-			
 		}finally {
 			gameRoomMap.get(roomCode).reLock.unlock();
 		} 
 
-		
-		
-		
-		
 	}
 	
 	public Boolean isGameFull(String roomCode) {
-		
-		
 		
 		gameRoomMap.get(roomCode).reLock.lock();
 		
@@ -268,14 +234,10 @@ public class Server {
 			
 			return ((gameRoomMap.get(roomCode).playerVec.get(0).playerID != -1) && (gameRoomMap.get(roomCode).playerVec.get(1).playerID != -1));
 		
-			
 		}finally {
 			gameRoomMap.get(roomCode).reLock.unlock();
 		} 
 
-		
-		
-		
 	}
 	
 	public String generateGameRoomCode() {

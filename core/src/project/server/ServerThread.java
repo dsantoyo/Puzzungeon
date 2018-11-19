@@ -6,8 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Iterator;
-
 
 //a serverThread object(back-end) is connected to a client(front-end)
 public class ServerThread extends Thread{ 
@@ -43,7 +41,6 @@ public class ServerThread extends Thread{
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
-			
 			
 			try {
 				oos.writeObject("test");
@@ -97,7 +94,6 @@ public class ServerThread extends Thread{
 					System.out.println("serverthread: username = "+ usernameStr);
 					System.out.println("serverthread: password = "+ passswordStr);
 					System.out.println("serverthread: login/register = "+ loginRegisterStr);
-					
 					
 					//database validation
 					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);;
@@ -197,6 +193,7 @@ public class ServerThread extends Thread{
 						}
 					}
 				}
+				
 				if(object instanceof PieceID) {
 					PieceID pid = (PieceID)object;
 					if(serverThreadPlayerID == 0) {
@@ -222,7 +219,6 @@ public class ServerThread extends Thread{
 					}
 				}
 				
-				
 				if(object instanceof LobbyChoice) {
 					lobbyChoice = (LobbyChoice)object;
 					if(lobbyChoice != null) {
@@ -234,12 +230,8 @@ public class ServerThread extends Thread{
 							GameRoom gameroom = new GameRoom(gameRoomCode.code);
 							gameroom.serverThreads.add(this);
 							
-							
-							
 							server.gameRoomMap.put(gameRoomCode.code, gameroom);
-							
-							
-							
+	
 						}
 						if(lobbyChoice.choice.equals("random game")) {
 							System.out.println("serverthread: player asking from a random romm");
@@ -253,8 +245,7 @@ public class ServerThread extends Thread{
 						        //if find an available game room
 						        if(!server.isGameFull(code) && (!server.gameRoomMap.get(code).lock)){
 						        	//assign this serverthread to the gameroom
-						        	
-						        	
+						        							        	
 						        	server.gameRoomMap.get(code).reLock.lock();
 									
 									try {
@@ -264,10 +255,6 @@ public class ServerThread extends Thread{
 										server.gameRoomMap.get(code).reLock.unlock();
 									}
 
-						        	
-						        	
-						        	
-						        	
 						        	gameRoomCode.code = code;
 						        	//return game code to the client
 						        	foundAvailable = true;
@@ -289,7 +276,6 @@ public class ServerThread extends Thread{
 								if(!server.isGameFull(code)){
 						        	//assign this serverthread to the gameroom
 									
-									
 									server.gameRoomMap.get(code).reLock.lock();
 									
 									try {
@@ -299,13 +285,6 @@ public class ServerThread extends Thread{
 										server.gameRoomMap.get(code).reLock.unlock();
 									}
 
-									
-									
-						        	
-						        	
-						        	
-						        	
-						        	
 						        	gameRoomCode.code = code;
 						        	//return game code to the client
 						        	roomAvailable = true;
@@ -314,6 +293,7 @@ public class ServerThread extends Thread{
 								}
 						     
 							}
+							
 							if(!roomAvailable) {
 								sendGameRoomCode(new GameRoomCode("room not available"));
 							}
@@ -339,7 +319,6 @@ public class ServerThread extends Thread{
 			
 			if(serverThreadPlayerID == 0) {
 				
-				
 				server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
 				
 				try {
@@ -351,9 +330,8 @@ public class ServerThread extends Thread{
 				}finally {
 					server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 				}
-
-				
 			}
+			
 			else if(serverThreadPlayerID == 1) {
 				
 				server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
@@ -364,11 +342,9 @@ public class ServerThread extends Thread{
 						server.gameRoomMap.remove(gameRoomCode.code);
 					}
 				
-					
 				}finally {
 					server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 				}
-				
 			}
 			
 			server.serverThreads.remove(this);
@@ -381,7 +357,6 @@ public class ServerThread extends Thread{
 			System.out.println("sserverthread: run() sqle: " + sqle.getMessage());
 		}
 	}
-
 
 /*   methods below are called by the server on every serverThread
  *   to send updates from back-end(server/serverThreads) to front-end(client)
@@ -418,7 +393,6 @@ public class ServerThread extends Thread{
 				server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 			}
 			
-			
 			PlayerIDnPieceSet pips = new PlayerIDnPieceSet(ID, playerPieceSet);
 			oos.writeObject(pips);
 			oos.flush();
@@ -430,11 +404,9 @@ public class ServerThread extends Thread{
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
 		
-		
 		server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
 		
 		try {
-			
 			
 			if(server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).readyState && server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).readyState) {
 				server.gameRoomMap.get(gameRoomCode.code).lock = true;
@@ -445,10 +417,6 @@ public class ServerThread extends Thread{
 			server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 		}
 
-		
-		
-		
-		
 		try {
 			oos.writeObject(otherPlayer);
 			oos.flush();

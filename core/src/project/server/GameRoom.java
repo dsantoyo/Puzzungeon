@@ -33,7 +33,6 @@ public class GameRoom {
 		this.code = code;
 		//a vector to store Player objects
 		playerVec = new Vector<Player>();
-		ReentrantLock rel = new ReentrantLock(); 
 		
 		playerVec.add(new Player("default"));
 		playerVec.add(new Player("default"));
