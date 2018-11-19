@@ -76,6 +76,7 @@ public class MainGameScreen implements Screen{
 	private Boolean displayDialog;
 	private Dialog guestFinishDialog;
 	private Dialog registeredFinishDialog;
+	private Dialog waitPlayer2forNextPuzzleDialog;
 	private long startTime;
 	ShapeRenderer shapeRenderer;
 	ShapeRenderer greenGridRenderer;
@@ -245,15 +246,27 @@ public class MainGameScreen implements Screen{
 		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
 		guestFinishDialog.button("Got it", false); //sends "false" as the result
 		
-		
 		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
-		    	//backToLobby();
-		    	//game.setScreen(new GameLobbyScreen(game));
+		    	Boolean result = (Boolean)obj;
+		    	if(!result) {
+		    		backToLobby();
+			    	game.setScreen(new GameLobbyScreen(game));
+		    	}
+		    	else {
+		    		waitPlayer2forNextPuzzleDialog.show(stage);
+		    		
+		    	}
 		    }};
-		registeredFinishDialog.text("You finished the puzzle!\n Do you want to player the next puzzle?");
+		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
 		registeredFinishDialog.button("No", false);
+		
+		waitPlayer2forNextPuzzleDialog = new Dialog("", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    }};
+		waitPlayer2forNextPuzzleDialog.text("Wait for Player2...");
+		    //waitPlayer2forNextPuzzleDialog.button("Got it", false); //sends "false" as the result
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -587,7 +600,7 @@ public class MainGameScreen implements Screen{
 				else {
 					System.out.println("both registered user");
 					registeredFinishDialog.show(stage);
-					displayDialog = false;
+					displayDialog = true;
 				}
 			}
 			
