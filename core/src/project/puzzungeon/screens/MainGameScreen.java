@@ -597,8 +597,8 @@ public class MainGameScreen implements Screen{
 			game.client.localPlayer.isFinished = false;
 			game.client.updatePlayer();
 			
-			if(puzzleID == 1) {
-				game.setScreen(new MainGameScreen(game, 2));
+			if(puzzleID != 4) {
+				game.setScreen(new MainGameScreen(game, puzzleID+1));
 			}
 			else {
 				game.setScreen(new MainGameScreen(game, 1));
