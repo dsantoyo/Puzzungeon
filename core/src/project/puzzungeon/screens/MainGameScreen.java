@@ -81,6 +81,7 @@ public class MainGameScreen implements Screen{
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
+	private Dialog guestFinishDialog;
 	private long startTime;
 	ShapeRenderer shapeRenderer;
 	ShapeRenderer greenGridRenderer;
@@ -96,7 +97,7 @@ public class MainGameScreen implements Screen{
 	public int puzzleID = 1;
 
 	public Boolean update;
-	
+	public Boolean gameFinished; 
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
@@ -119,8 +120,12 @@ public class MainGameScreen implements Screen{
 		greenGridRenderer = new ShapeRenderer();
 		totalPieces = 16;
 		update = true;
+
+		gameFinished = false;
+
 		greenGrid = new int[16][3];
 		greenGridCounter = 0;
+
 	}
 
 	@Override
@@ -210,6 +215,15 @@ public class MainGameScreen implements Screen{
 		    }};
 		player2LeftDialog.text("Player2 has left.");
 		player2LeftDialog.button("Got it", false); //sends "false" as the result
+		
+		
+		guestFinishDialog = new Dialog("", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	backToLobby();
+		    	game.setScreen(new GameLobbyScreen(game));
+		    }};
+		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
+		guestFinishDialog.button("Got it", false); //sends "false" as the result
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -505,18 +519,34 @@ public class MainGameScreen implements Screen{
 	
 	public void update() {
 		if(update) {
-		
+					
 			//update piececount display
 			showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
 			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
 			
 			
 			//if local player finishes the puzzle
-			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			//if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
-				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
-                game.client.sendMessage(cm);
+				game.client.updatePlayer();
+				//ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+                //game.client.sendMessage(cm);
 			}
+			
+			
+			//if both player finishes the puzzle
+			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
+				gameFinished = true;
+				game.client.messageVec.remove(0);
+				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
+				guestFinishDialog.show(stage);
+				displayDialog = false;
+				
+				
+			}
+			
+			
 			
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
@@ -558,7 +588,9 @@ public class MainGameScreen implements Screen{
 			
 			//update elapsed time. should change this to be updated by the server.
 			Long currentTime = (System.nanoTime()-startTime)/1000000000;
-			showGameTime.setText("Time: " + Long.toString(currentTime));
+			if(!gameFinished) {
+				showGameTime.setText("Time: " + Long.toString(currentTime));
+			}
 			
 			//if connection is lost
 			if(!game.client.connectState & displayDialog) {
@@ -571,8 +603,10 @@ public class MainGameScreen implements Screen{
 			//if player2 has left
 			else if((game.client.otherPlayer.playerID == -1) & displayDialog) {
 				System.out.println("MainGameScreen: player2 has left.");
+				
 				player2LeftDialog.show(stage);
 				displayDialog = false;
+				
 				backToLobby();
 			}
 			if (game.client.incomingPieceID!=-1){
