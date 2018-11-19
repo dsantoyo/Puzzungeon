@@ -1,11 +1,11 @@
 sprites.png
-size: 160, 378
+size: 446, 341
 format: RGBA8888
 filter: Linear,Nearest
 repeat: none
 castle-small
   rotate: false
-  xy: 0, 48
+  xy: 146, 0
   size: 120, 60
   orig: 120, 60
   offset: 0, 0
@@ -19,23 +19,30 @@ dragon
   index: -1
 dungeon-hall
   rotate: false
-  xy: 0, 198
+  xy: 160, 90
   size: 160, 90
   orig: 160, 90
   offset: 0, 0
   index: -1
 dungeon-wall
   rotate: false
-  xy: 0, 288
+  xy: 0, 90
   size: 160, 90
   orig: 160, 90
   offset: 0, 0
   index: -1
 dungeon
   rotate: false
-  xy: 0, 108
+  xy: 0, 180
   size: 160, 90
   orig: 160, 90
+  offset: 0, 0
+  index: -1
+griffin
+  rotate: false
+  xy: 160, 180
+  size: 286, 161
+  orig: 286, 161
   offset: 0, 0
   index: -1
 mouse-cursor-icon
@@ -43,6 +50,13 @@ mouse-cursor-icon
   xy: 0, 0
   size: 12, 19
   orig: 12, 19
+  offset: 0, 0
+  index: -1
+sea-serpent
+  rotate: false
+  xy: 266, 0
+  size: 160, 90
+  orig: 160, 90
   offset: 0, 0
   index: -1
 teleporter
