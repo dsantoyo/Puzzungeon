@@ -1,6 +1,7 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class PuzzlePiece extends Image{
@@ -25,6 +26,16 @@ public class PuzzlePiece extends Image{
 		//this.pieceCorrectLoc = pieceCorrectLoc;
 		visible=true;
 		this.playerID=playerID;
+	}
+	
+	public PuzzlePiece(TextureRegion texture, int pieceID, float pieceX, float pieceY, int playerID) {
+		super(texture);
+		this.pieceID = pieceID;
+		this.pieceCorrectLocX = pieceX;
+		this.pieceCorrectLocY = pieceY;
+		inRightLocation = false;
+		visible = true;
+		this.playerID = playerID;
 	}
 
 	public float getPieceX() {
