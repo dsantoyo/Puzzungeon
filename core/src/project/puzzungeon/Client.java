@@ -188,6 +188,8 @@ public class Client {
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
 		            		ioe.printStackTrace();
+		            		
+		            		
 		            		System.out.println("client: Thread run() LOST CONNECTION.");
 		            		connectState = false;
 		            		try {

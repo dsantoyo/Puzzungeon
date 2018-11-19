@@ -573,8 +573,11 @@ public class MainGameScreen implements Screen{
 			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
 			
 			
+			
 			//if local player finishes the puzzle
 			//if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			
+			/*
 			if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
 				game.client.updatePlayer();
@@ -582,7 +585,8 @@ public class MainGameScreen implements Screen{
                 //game.client.sendMessage(cm);
 			}
 			
-			
+			*/
+			/*
 			//if both player finishes the puzzle
 			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
 				System.out.println("the game is finished");
@@ -601,16 +605,17 @@ public class MainGameScreen implements Screen{
 					return;
 				}
 				
-				/*
+			
+				
 				//if both players are registered user
 				else {
 					System.out.println("both registered user");
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
 				}
-				*/
+				
 			}
-			
+			*/
 			/*
 			
 			if(game.client.localPlayer.playNextPuzzle && game.client.otherPlayer.playNextPuzzle) {
