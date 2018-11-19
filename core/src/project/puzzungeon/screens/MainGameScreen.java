@@ -248,14 +248,14 @@ public class MainGameScreen implements Screen{
 		
 		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
-		    	Boolean result = (Boolean)obj;
-		    	if(!result) {
+		    	game.client.localPlayer.playNextPuzzle = (Boolean)obj;
+		    	game.client.updatePlayer();
+		    	if(!game.client.localPlayer.playNextPuzzle) {
 		    		backToLobby();
 			    	game.setScreen(new GameLobbyScreen(game));
 		    	}
 		    	else {
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
-		    		
 		    	}
 		    }};
 		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
@@ -265,8 +265,8 @@ public class MainGameScreen implements Screen{
 		waitPlayer2forNextPuzzleDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    }};
-		waitPlayer2forNextPuzzleDialog.text("Wait for Player2...");
-		    //waitPlayer2forNextPuzzleDialog.button("Got it", false); //sends "false" as the result
+		waitPlayer2forNextPuzzleDialog.text("Waiting for Player2...");
+		    
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -604,6 +604,9 @@ public class MainGameScreen implements Screen{
 				}
 			}
 			
+			if(game.client.localPlayer.playNextPuzzle && game.client.otherPlayer.playNextPuzzle) {
+				System.out.println("Play the next puzzle!");
+			}
 			
 			
 			//update chatroom
