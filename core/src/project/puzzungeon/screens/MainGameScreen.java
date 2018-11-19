@@ -575,18 +575,19 @@ public class MainGameScreen implements Screen{
 			
 			
 			//if local player finishes the puzzle
-			//if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			if(game.client.localPlayer.correctPieceCount == 1 && !game.client.localPlayer.isFinished) {
 			
-			/*
-			if(!game.client.localPlayer.isFinished) {
+			
+			//if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
+				System.out.println("game finished");
 				game.client.updatePlayer();
-				//ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
-                //game.client.sendMessage(cm);
+				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+                game.client.sendMessage(cm);
+                
 			}
 			
-			*/
-			/*
+			
 			//if both player finishes the puzzle
 			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
 				System.out.println("the game is finished");
@@ -595,9 +596,10 @@ public class MainGameScreen implements Screen{
 				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
 				
 				
+				
 				//if one of the player is a guest
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
-					backToLobby();
+					
 					System.out.println("at least one Guest");
 					guestFinishDialog.show(stage);
 					displayDialog = false;
@@ -606,16 +608,17 @@ public class MainGameScreen implements Screen{
 				}
 				
 			
-				
+				/*
 				//if both players are registered user
 				else {
 					System.out.println("both registered user");
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
 				}
+				*/
 				
 			}
-			*/
+			
 			/*
 			
 			if(game.client.localPlayer.playNextPuzzle && game.client.otherPlayer.playNextPuzzle) {
