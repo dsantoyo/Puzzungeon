@@ -25,6 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -49,7 +51,8 @@ public class MainGameScreen implements Screen{
 	TextureAtlas atlas;
 	Sprite background;
 	Sprite teleporter;
-	Sprite mockScreen;
+	Drawable puzzleBacking;
+	Drawable startBacking;
 	
 	//shared by different methods
 	private Label showMessage1;
@@ -90,6 +93,7 @@ public class MainGameScreen implements Screen{
 	//puzzle variables
 	int numTilesHorizontal = 4;
 	int numTilesVertical = 4;
+	int sideLength = 130;
 	
 	//deposit/recieve square variables
 	int sendX = 400;
@@ -100,9 +104,14 @@ public class MainGameScreen implements Screen{
 	int recieveLength = 200;
 	
 	//grid variables
-	int gridX = 450;
-	int gridY = 1350;
-	int gridSquareLength = 100;
+	int gridY = 500;
+	int gridX = 1300;
+	int gridLengthX = sideLength * numTilesHorizontal;
+	int gridLengthY = sideLength * numTilesVertical;
+	
+	//starting area variables
+	int startX = 685;
+	int startY = 500;
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
@@ -121,6 +130,8 @@ public class MainGameScreen implements Screen{
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
 		background.setScale(9f);
+		puzzleBacking = game.skin.getDrawable("window");
+		startBacking = game.skin.getDrawable("window");
 		
 		greenGridRenderer = new ShapeRenderer();
 		totalPieces = 16;
@@ -255,21 +266,21 @@ public class MainGameScreen implements Screen{
 		//generate all 32 puzzle pieces
 		shapeRenderer=new ShapeRenderer();
 		
-		int gridEndX = gridX + (gridSquareLength * (numTilesHorizontal - 1)) + (gridSquareLength / 2);
-		int gridEndY = gridY + (gridSquareLength * (numTilesVertical - 1)) + (gridSquareLength / 2);
-		int half = gridSquareLength / 2;
+		int gridEndX = gridY + (sideLength * (numTilesHorizontal - 1)) + (sideLength / 2);
+		int gridEndY = gridX + (sideLength * (numTilesVertical - 1)) + (sideLength / 2);
+		int half = sideLength / 2;
 		for(int id = 0; id < 2; id++) {
 			int k = (id*16) + 1;
 			int regionX = id * 4;
 			
-			for(int i = gridX + half, y = 3; (i <= (gridEndX + half)) && y >= 0; i+=gridSquareLength, y--) {
+			for(int i = gridY + half, y = 3; (i <= (gridEndX + half)) && y >= 0; i+=sideLength, y--) {
 				regionX = id * 4;
-				for(int j = gridY + half; j<= (gridEndY); j+=gridSquareLength, k++, regionX++) {
+				for(int j = gridX + half; j<= (gridEndY); j+=sideLength, k++, regionX++) {
 					final PuzzlePiece temp = new PuzzlePiece(pieceRegions[y][regionX], k, j , i, id);
 					pieceList.add(temp);
 			
-					temp.setPosition(new Random().nextInt((300)+1)+700,new Random().nextInt((300)+1)+450);
-					temp.setSize(100, 100);
+					temp.setPosition(new Random().nextInt((300)+1)+startX,new Random().nextInt((300)+1)+startY);
+					temp.setSize(sideLength, sideLength);
 					temp.addListener(new DragListener() {
 						public void drag(InputEvent event, float x, float y, int pointer) {
 							float distanceToMinY = temp.getY() - 300;
@@ -292,7 +303,7 @@ public class MainGameScreen implements Screen{
 							}
 						}
 						
-						int half = gridSquareLength / 2;
+						int half = sideLength / 2;
 						public void dragStop(InputEvent event, float x, float y, int pointer) {
 							if(((temp.getX()+half) >= (temp.getPieceCorrectLocX()-half) && (temp.getX()+half) <( temp.getPieceCorrectLocX() + half))
 									&& ((temp.getY()+half) >= (temp.getPieceCorrectLocY()-half) && (temp.playerID == game.client.localPlayer.playerID) &&
@@ -302,9 +313,9 @@ public class MainGameScreen implements Screen{
 								if(!temp.checkrightLocation()) {
 									game.client.localPlayer.correctPieceCount++;
 									if (greenGridCounter != 16) {
-										greenGrid[greenGridCounter][0] = temp.getPieceCorrectLocX()- 50;
-										greenGrid[greenGridCounter][1] = temp.getPieceCorrectLocY() - 50;
-										greenGrid[greenGridCounter][2] = 100;
+										greenGrid[greenGridCounter][0] = temp.getPieceCorrectLocX()- half;
+										greenGrid[greenGridCounter][1] = temp.getPieceCorrectLocY() - half;
+										greenGrid[greenGridCounter][2] = sideLength;
 										greenGridCounter++;
 									}
 								}
@@ -438,11 +449,14 @@ public class MainGameScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		//draw background
+		//draw background + puzzle backing
+		
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);
 		teleporter.draw(game.batch);
+		puzzleBacking.draw(game.batch, gridX - 350, startY - 160, gridLengthX - 80, gridLengthY - 100);
+		startBacking.draw(game.batch, startX - 200, startY - 160, gridLengthX - 80, gridLengthY - 100);
 		game.batch.end();
 		
 		//draw white grid
@@ -450,16 +464,16 @@ public class MainGameScreen implements Screen{
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(game.skin.getColor("white"));
 			
-		int gridEndX = gridX + (gridSquareLength * numTilesHorizontal);
-		int gridEndY = gridY + (gridSquareLength * numTilesVertical);
-		for(int i=gridX; i< gridEndX;i+=gridSquareLength) {
-			for( int j=gridY; j<gridEndY;j+=gridSquareLength) {
-				shapeRenderer.rect(j,i,gridSquareLength,gridSquareLength);
+		int gridEndX = gridY + (sideLength * numTilesHorizontal);
+		int gridEndY = gridX + (sideLength * numTilesVertical);
+		for(int i=gridY; i< gridEndX;i+=sideLength) {
+			for( int j=gridX; j<gridEndY;j+=sideLength) {
+				shapeRenderer.rect(j,i,sideLength,sideLength);
 			}
 		}
 			
 		//deposit shapes
-		shapeRenderer.rect(700,450,400,400);
+		shapeRenderer.rect(startX,startY,gridLengthX,gridLengthY);
 		shapeRenderer.setColor(game.skin.getColor("Red"));
 		shapeRenderer.rect(recieveX,recieveY,recieveLength,recieveLength);
 		shapeRenderer.setColor(game.skin.getColor("Teal"));
@@ -585,7 +599,7 @@ public class MainGameScreen implements Screen{
 				pieceList.get(game.client.incomingPieceID-1).setVisible(true);
 				int range = recieveLength / 2;
 				pieceList.get(game.client.incomingPieceID-1).setPosition(new Random().nextInt((range)+1)+recieveX,new Random().nextInt((range)+1)+recieveY);
-				pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
+				pieceList.get(game.client.incomingPieceID-1).setSize(sideLength, sideLength);
 				game.client.incomingPieceID = -1;
 			}
 		}
