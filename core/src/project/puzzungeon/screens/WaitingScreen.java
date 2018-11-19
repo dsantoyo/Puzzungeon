@@ -502,7 +502,7 @@ public class WaitingScreen implements Screen{
 		if(game.client.bothPlayerReady) {
 			game.client.messageVec.remove(0);
 			game.client.messageVec.add(new ChatMessage("The game is going to start!","", true));
-			game.setScreen(new MainGameScreen(game));
+			game.setScreen(new MainGameScreen(game,1));
 		}
 		
 		if(!game.client.connectState & displayDialog) {

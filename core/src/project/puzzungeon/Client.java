@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import project.server.ChatMessage;
@@ -15,7 +16,6 @@ import project.server.Password;
 import project.server.PieceID;
 import project.server.Player;
 import project.server.PlayerIDnPieceSet;
-import project.server.ReadyState;
 import project.server.Username;
 
 public class Client {
@@ -49,6 +49,9 @@ public class Client {
 	public String password;
 	public int incomingPieceID;
 	
+	public int gameCounter;
+	public Boolean playNextPuzzle;
+		
 	//constructor
 	public Client(String hostname, int port) {
 		this.hostname = hostname;
@@ -61,6 +64,8 @@ public class Client {
 		this.disconnect = false;
 		this.gameRoomCode = "";
 		this.incomingPieceID = -1;
+		gameCounter = 1;
+		playNextPuzzle = false;
 	}
 	
 	//setting up connection between a client and the server
@@ -131,12 +136,20 @@ public class Client {
 		            				if(object instanceof Player) {
 		            					otherPlayer = (Player)object;
 		            					System.out.println();
-		            					System.out.println("client: players updated by Server.");
+		            					//System.out.println("client: players updated by Server.");
+		            					/*
 		            					System.out.println("client: localPlayer is "+localPlayer.playerName);
 		            					System.out.println("client: localPlayer ready state is " + localPlayer.readyState);
 		            					System.out.println("client: otherPlayer is "+otherPlayer.playerName);
 		            					System.out.println("client: otherPlayer ready state is " + otherPlayer.readyState);
+		            					*/
 		            					bothPlayerReady = localPlayer.readyState && otherPlayer.readyState;
+		            					
+		            					if(localPlayer.gameCounter == gameCounter && otherPlayer.gameCounter == gameCounter) {
+		            						gameCounter++;
+		            						System.out.println("client: playNextPuzzle = true");
+		            						playNextPuzzle = true;
+		            					}
 		            					
 		            					if(disconnect) {
 		            						throw new IOException();
@@ -184,11 +197,24 @@ public class Client {
 		            					System.out.println("client: gameroom not available");
 		            				}
 		            			}
+		            					            				
+		            			
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
+		            		ioe.printStackTrace();
+		            		
+		            		
 		            		System.out.println("client: Thread run() LOST CONNECTION.");
 		            		connectState = false;
+		            		try {
+								oos.close();
+								ois.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		            		
 		            	}catch (ClassNotFoundException cnfe) {
 		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());
 		            	}

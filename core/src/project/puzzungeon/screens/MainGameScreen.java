@@ -75,6 +75,8 @@ public class MainGameScreen implements Screen{
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
 	private Dialog guestFinishDialog;
+	private Dialog registeredFinishDialog;
+	private Dialog waitPlayer2forNextPuzzleDialog;
 	private long startTime;
 	ShapeRenderer shapeRenderer;
 	ShapeRenderer greenGridRenderer;
@@ -87,9 +89,8 @@ public class MainGameScreen implements Screen{
 	private int greenGridCounter;
 	
 	private ArrayList<Sprite> puzzleSprites;
-	
-	//Currently 4 puzzle images
-	public int puzzleID = 1;
+
+	public int puzzleID;
 
 	public Boolean update;
 	
@@ -118,8 +119,10 @@ public class MainGameScreen implements Screen{
   
 	public Boolean gameFinished; 
 	
+	private int thisGameIndex;
+	
 	//constructor
-	public MainGameScreen(Puzzungeon game) {
+	public MainGameScreen(Puzzungeon game, int puzzleID) {
 		this.game = game;
 		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
@@ -127,6 +130,7 @@ public class MainGameScreen implements Screen{
 		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
 		
+		thisGameIndex = game.client.gameCounter;
 
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		teleporter = atlas.createSprite("teleporter");
@@ -141,11 +145,13 @@ public class MainGameScreen implements Screen{
 		greenGridRenderer = new ShapeRenderer();
 		totalPieces = 16;
 		update = true;
-
+		
 		gameFinished = false;
 
 		greenGrid = new int[16][3];
 		greenGridCounter = 0;
+		
+		this.puzzleID = puzzleID;
 
 	}
 
@@ -174,7 +180,7 @@ public class MainGameScreen implements Screen{
 		
 		showLocalPlayerPC = new Label(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16", game.skin);
 		showOtherPlayerPC = new Label(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16", game.skin);
-		showGameTime = new Label(" Time: 10:10", game.skin, "subtitle");
+		showGameTime = new Label(" Time: 0", game.skin, "subtitle");
 				
 		final TextArea inputBox = new TextArea("",game.skin);
 			//when ENTER key is pressed, send message to the serverthread
@@ -192,6 +198,13 @@ public class MainGameScreen implements Screen{
 		                	//remove newline character
 		                	messageStr = messageStr.replace("\n", "");
 		                }
+		                
+		                // cheat command for testing
+		                if(messageStr.equals("cheat")) {
+		                	game.client.localPlayer.correctPieceCount = 16;
+		                	game.client.updatePlayer();
+		                }
+		                
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
@@ -245,6 +258,36 @@ public class MainGameScreen implements Screen{
 		    }};
 		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
 		guestFinishDialog.button("Got it", false); //sends "false" as the result
+		
+		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	
+		    	
+		    	Boolean result = (Boolean)obj;
+		    	
+		    	if(!result) {
+		    		backToLobby();
+			    	game.setScreen(new GameLobbyScreen(game));
+		    	}
+		    	else {
+		    		
+		    		System.out.println("client: updating localPlayer game counter");
+		    		game.client.localPlayer.gameCounter++;
+		    		game.client.updatePlayer();
+		    		update = false;
+		    		waitPlayer2forNextPuzzleDialog.show(stage);
+		    	}
+		    	
+		    }};
+		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
+		registeredFinishDialog.button("Yes", true); 
+		registeredFinishDialog.button("No", false);
+		
+		waitPlayer2forNextPuzzleDialog = new Dialog("", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    }};
+		waitPlayer2forNextPuzzleDialog.text("Waiting for Player2...");
+		    
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -545,6 +588,24 @@ public class MainGameScreen implements Screen{
 	}
 	
 	public void update() {
+		
+		if(game.client.playNextPuzzle && thisGameIndex+1 == game.client.gameCounter) {
+			thisGameIndex--;
+			
+			game.client.playNextPuzzle = false;
+			game.client.localPlayer.correctPieceCount = 0;
+			game.client.localPlayer.isFinished = false;
+			game.client.updatePlayer();
+			
+			if(puzzleID == 1) {
+				game.setScreen(new MainGameScreen(game, 2));
+			}
+			else {
+				game.setScreen(new MainGameScreen(game, 1));
+			}
+		}
+				
+				
 		if(update) {
 					
 			//update piececount display
@@ -552,27 +613,53 @@ public class MainGameScreen implements Screen{
 			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
 			
 			
+			
 			//if local player finishes the puzzle
 			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			
+			
 			//if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
+				System.out.println("game finished");
 				game.client.updatePlayer();
-				//ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
-                //game.client.sendMessage(cm);
+				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+                game.client.sendMessage(cm);
+                
 			}
 			
 			
 			//if both player finishes the puzzle
 			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
+				System.out.println("the game is finished");
 				gameFinished = true;
 				game.client.messageVec.remove(0);
 				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
-				guestFinishDialog.show(stage);
-				displayDialog = false;
+				
+				
+				
+				//if one of the player is a guest
+				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
+					
+					System.out.println("at least one Guest");
+					guestFinishDialog.show(stage);
+					displayDialog = false;
+					update = false;
+					return;
+				}
+				
+			
+				
+				//if both players are registered user
+				else {
+					System.out.println("both registered user");
+					registeredFinishDialog.show(stage);
+					displayDialog = true;
+				}
+				
+				
 			}
 			
-			
-			
+
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
 			showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());
@@ -618,7 +705,7 @@ public class MainGameScreen implements Screen{
 			}
 			
 			//if connection is lost
-			if(!game.client.connectState & displayDialog) {
+			if(!game.client.connectState && displayDialog) {
 				update = false;
 				System.out.println("MainGameScreen: connection lost.");
 				connectionLostDialog.show(stage);

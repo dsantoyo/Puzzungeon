@@ -41,8 +41,9 @@ public class ServerThread extends Thread{
 		player = new Player("");
 		
 		try {
-			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			
 			try {
 				oos.writeObject("test");
 				oos.flush();
@@ -228,7 +229,7 @@ public class ServerThread extends Thread{
 						        System.out.println("serverthread: checking if room " + code + " is available");
 						        
 						        //if find an available game room
-						        if(!server.isGameFull(code)){
+						        if(!server.isGameFull(code) && (!server.gameRoomMap.get(code).lock)){
 						        	//assign this serverthread to the gameroom
 						        	server.gameRoomMap.get(code).serverThreads.add(this);
 						        	gameRoomCode.code = code;
@@ -293,6 +294,7 @@ public class ServerThread extends Thread{
 					server.gameRoomMap.remove(gameRoomCode.code);
 				}
 			}
+			
 			server.serverThreads.remove(this);
 			
 			//need to work on this
@@ -340,6 +342,10 @@ public class ServerThread extends Thread{
 	
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
+		if(server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).readyState && server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).readyState) {
+			server.gameRoomMap.get(gameRoomCode.code).lock = true;
+		}
+		
 		try {
 			oos.writeObject(otherPlayer);
 			oos.flush();
@@ -373,4 +379,5 @@ public class ServerThread extends Thread{
 			System.out.println("serverthread: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
+	
 }
