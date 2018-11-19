@@ -75,6 +75,7 @@ public class MainGameScreen implements Screen{
 	private Dialog connectionLostDialog;
 	private Dialog player2LeftDialog;
 	private Boolean displayDialog;
+	private Dialog guestFinishDialog;
 	private long startTime;
 	ShapeRenderer shapeRenderer;
 	
@@ -189,6 +190,15 @@ public class MainGameScreen implements Screen{
 		    }};
 		player2LeftDialog.text("Player2 has left.");
 		player2LeftDialog.button("Got it", false); //sends "false" as the result
+		
+		
+		guestFinishDialog = new Dialog("", game.skin, "dialog") {
+		    public void result(Object obj) {
+		    	backToLobby();
+		    	game.setScreen(new GameLobbyScreen(game));
+		    }};
+		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
+		guestFinishDialog.button("Got it", false); //sends "false" as the result
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
 			backButton.addListener(new ClickListener(){
@@ -461,7 +471,7 @@ public class MainGameScreen implements Screen{
 	
 	public void update() {
 		if(update) {
-		
+					
 			//update piececount display
 			showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
 			showOtherPlayerPC.setText(" Pieces Completed: " + game.client.otherPlayer.correctPieceCount + "/16");
@@ -472,8 +482,8 @@ public class MainGameScreen implements Screen{
 			if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
 				game.client.updatePlayer();
-				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
-                game.client.sendMessage(cm);
+				//ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+                //game.client.sendMessage(cm);
 			}
 			
 			
@@ -482,7 +492,13 @@ public class MainGameScreen implements Screen{
 				gameFinished = true;
 				game.client.messageVec.remove(0);
 				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
+				guestFinishDialog.show(stage);
+				displayDialog = false;
+				
+				
 			}
+			
+			
 			
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
@@ -539,8 +555,10 @@ public class MainGameScreen implements Screen{
 			//if player2 has left
 			else if((game.client.otherPlayer.playerID == -1) & displayDialog) {
 				System.out.println("MainGameScreen: player2 has left.");
+				
 				player2LeftDialog.show(stage);
 				displayDialog = false;
+				
 				backToLobby();
 			}
 			if (game.client.incomingPieceID!=-1){
