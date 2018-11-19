@@ -248,15 +248,18 @@ public class MainGameScreen implements Screen{
 		
 		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
-		    	game.client.localPlayer.playNextPuzzle = (Boolean)obj;
-		    	game.client.updatePlayer();
-		    	if(!game.client.localPlayer.playNextPuzzle) {
+		    	
+		    	/*
+		    	Boolean result = (Boolean)obj;
+		    	
+		    	if(!result) {
 		    		backToLobby();
 			    	game.setScreen(new GameLobbyScreen(game));
 		    	}
 		    	else {
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
 		    	}
+		    	*/
 		    }};
 		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
@@ -590,24 +593,31 @@ public class MainGameScreen implements Screen{
 				
 				//if one of the player is a guest
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
-					
+					backToLobby();
 					System.out.println("at least one Guest");
 					guestFinishDialog.show(stage);
 					displayDialog = false;
+					update = false;
+					return;
 				}
 				
+				/*
 				//if both players are registered user
 				else {
 					System.out.println("both registered user");
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
 				}
+				*/
 			}
+			
+			/*
 			
 			if(game.client.localPlayer.playNextPuzzle && game.client.otherPlayer.playNextPuzzle) {
 				System.out.println("Play the next puzzle!");
 			}
 			
+			*/
 			
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
@@ -654,7 +664,7 @@ public class MainGameScreen implements Screen{
 			}
 			
 			//if connection is lost
-			if(!game.client.connectState & displayDialog) {
+			if(!game.client.connectState && displayDialog) {
 				update = false;
 				System.out.println("MainGameScreen: connection lost.");
 				connectionLostDialog.show(stage);

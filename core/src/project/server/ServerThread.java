@@ -41,8 +41,9 @@ public class ServerThread extends Thread{
 		player = new Player("");
 		
 		try {
-			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			
 			try {
 				oos.writeObject("test");
 				oos.flush();
@@ -292,6 +293,14 @@ public class ServerThread extends Thread{
 				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).playerID == -1) {
 					server.gameRoomMap.remove(gameRoomCode.code);
 				}
+			}
+			
+			try {
+				oos.close();
+				ois.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			server.serverThreads.remove(this);
 			

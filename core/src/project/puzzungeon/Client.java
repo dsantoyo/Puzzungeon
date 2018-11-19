@@ -187,8 +187,17 @@ public class Client {
 		            		}
 		            	}catch(IOException ioe) {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
+		            		ioe.printStackTrace();
 		            		System.out.println("client: Thread run() LOST CONNECTION.");
 		            		connectState = false;
+		            		try {
+								oos.close();
+								ois.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		            		
 		            	}catch (ClassNotFoundException cnfe) {
 		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());
 		            	}
