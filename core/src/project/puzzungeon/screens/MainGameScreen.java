@@ -89,7 +89,7 @@ public class MainGameScreen implements Screen{
 	private ArrayList<Sprite> puzzleSprites;
 	
 	//Currently 4 puzzle images
-	public int puzzleID = 3;
+	public int puzzleID = 1;
 
 	public Boolean update;
 	
