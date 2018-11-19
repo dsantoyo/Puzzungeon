@@ -257,6 +257,8 @@ public class MainGameScreen implements Screen{
 			    	game.setScreen(new GameLobbyScreen(game));
 		    	}
 		    	else {
+		    		game.client.localPlayer.playNextPuzzle = true;
+		    		game.client.updatePlayer();
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
 		    	}
 		    	
@@ -575,7 +577,7 @@ public class MainGameScreen implements Screen{
 			
 			
 			//if local player finishes the puzzle
-			if(game.client.localPlayer.correctPieceCount == 1 && !game.client.localPlayer.isFinished) {
+			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
 			
 			
 			//if(!game.client.localPlayer.isFinished) {
@@ -619,13 +621,21 @@ public class MainGameScreen implements Screen{
 				
 			}
 			
-			/*
+			
 			
 			if(game.client.localPlayer.playNextPuzzle && game.client.otherPlayer.playNextPuzzle) {
 				System.out.println("Play the next puzzle!");
+				
+				game.client.localPlayer.correctPieceCount = 0;
+				game.client.localPlayer.isFinished = false;
+				game.client.localPlayer.playNextPuzzle = false;
+				game.client.updatePlayer();
+				game.setScreen(new MainGameScreen(game));
+				update = false;
+				return;
 			}
 			
-			*/
+			
 			
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
