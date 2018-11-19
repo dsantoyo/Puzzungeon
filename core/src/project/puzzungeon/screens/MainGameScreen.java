@@ -89,7 +89,7 @@ public class MainGameScreen implements Screen{
 	private int greenGridCounter;
 	
 	private ArrayList<Sprite> puzzleSprites;
-	public int puzzleID = 1;
+	public int puzzleID;
 
 	public Boolean update;
 	
@@ -118,8 +118,10 @@ public class MainGameScreen implements Screen{
   
 	public Boolean gameFinished; 
 	
+	private int thisGameIndex;
+	
 	//constructor
-	public MainGameScreen(Puzzungeon game) {
+	public MainGameScreen(Puzzungeon game, int puzzleID) {
 		this.game = game;
 		viewport = new FitViewport(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		stage = new Stage(viewport);
@@ -127,6 +129,7 @@ public class MainGameScreen implements Screen{
 		startTime = System.nanoTime();
 		Gdx.input.setInputProcessor(stage);
 		
+		thisGameIndex = game.client.gameCounter;
 
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		teleporter = atlas.createSprite("teleporter");
@@ -141,11 +144,13 @@ public class MainGameScreen implements Screen{
 		greenGridRenderer = new ShapeRenderer();
 		totalPieces = 16;
 		update = true;
-
+		
 		gameFinished = false;
 
 		greenGrid = new int[16][3];
 		greenGridCounter = 0;
+		
+		this.puzzleID = puzzleID;
 
 	}
 
@@ -264,8 +269,11 @@ public class MainGameScreen implements Screen{
 			    	game.setScreen(new GameLobbyScreen(game));
 		    	}
 		    	else {
-		    		game.client.localPlayer.playNextPuzzle = true;
+		    		
+		    		System.out.println("client: updating localPlayer game counter");
+		    		game.client.localPlayer.gameCounter++;
 		    		game.client.updatePlayer();
+		    		update = false;
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
 		    	}
 		    	
@@ -575,6 +583,24 @@ public class MainGameScreen implements Screen{
 	}
 	
 	public void update() {
+		
+		if(game.client.playNextPuzzle && thisGameIndex+1 == game.client.gameCounter) {
+			thisGameIndex--;
+			
+			game.client.playNextPuzzle = false;
+			game.client.localPlayer.correctPieceCount = 0;
+			game.client.localPlayer.isFinished = false;
+			game.client.updatePlayer();
+			
+			if(puzzleID == 1) {
+				game.setScreen(new MainGameScreen(game, 2));
+			}
+			else {
+				game.setScreen(new MainGameScreen(game, 1));
+			}
+		}
+				
+				
 		if(update) {
 					
 			//update piececount display
@@ -628,22 +654,7 @@ public class MainGameScreen implements Screen{
 				
 			}
 			
-			
-			
-			if(game.client.localPlayer.playNextPuzzle && game.client.otherPlayer.playNextPuzzle) {
-				System.out.println("Play the next puzzle!");
-				
-				game.client.localPlayer.correctPieceCount = 0;
-				game.client.localPlayer.isFinished = false;
-				game.client.localPlayer.playNextPuzzle = false;
-				game.client.updatePlayer();
-				game.setScreen(new MainGameScreen(game));
-				update = false;
-				return;
-			}
-			
-			
-			
+
 			//update chatroom
 			showMessage1.setText(game.client.messageVec.get(3).getUsername()+" " + game.client.messageVec.get(3).getMessage());
 			showMessage2.setText(game.client.messageVec.get(2).getUsername()+" " + game.client.messageVec.get(2).getMessage());

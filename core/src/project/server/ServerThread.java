@@ -295,13 +295,6 @@ public class ServerThread extends Thread{
 				}
 			}
 			
-			try {
-				oos.close();
-				ois.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			server.serverThreads.remove(this);
 			
 			//need to work on this
@@ -386,4 +379,5 @@ public class ServerThread extends Thread{
 			System.out.println("serverthread: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
+	
 }
