@@ -192,6 +192,13 @@ public class MainGameScreen implements Screen{
 		                	//remove newline character
 		                	messageStr = messageStr.replace("\n", "");
 		                }
+		                
+		                // cheat command for testing
+		                if(messageStr.equals("cheat")) {
+		                	game.client.localPlayer.correctPieceCount = 16;
+		                	game.client.updatePlayer();
+		                }
+		                
 		                //clear inputbox after new message is sent
 		                inputBox.setText("");
 		                ChatMessage cm = new ChatMessage(game.client.clientUsername+":", messageStr, false);
