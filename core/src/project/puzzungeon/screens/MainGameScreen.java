@@ -87,6 +87,10 @@ public class MainGameScreen implements Screen{
 
 	public Boolean update;
 	
+	//puzzle variables
+	int numTilesHorizontal = 4;
+	int numTilesVertical = 4;
+	
 	//deposit/recieve square variables
 	int sendX = 400;
 	int sendY = 650;
@@ -94,6 +98,11 @@ public class MainGameScreen implements Screen{
 	int recieveX = 100;
 	int recieveY = 650;
 	int recieveLength = 200;
+	
+	//grid variables
+	int gridX = 450;
+	int gridY = 1350;
+	int gridSquareLength = 100;
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
@@ -236,11 +245,9 @@ public class MainGameScreen implements Screen{
 		} else {
 			puzzle = atlas.findRegion("castle-small");
 		}
-		int numTilesHorizontal = 8;
-		int numTilesVertical = 4;
-		int imageWidth = puzzle.getRegionWidth() ;
-	    int imageHeight = puzzle.getRegionHeight() ;
-	    int pieceWidth = imageWidth / numTilesHorizontal;
+		int imageWidth = puzzle.getRegionWidth();
+	    int imageHeight = puzzle.getRegionHeight();
+	    int pieceWidth = imageWidth / (numTilesHorizontal * 2);
 	    int pieceHeight = imageHeight / numTilesVertical;
 		TextureRegion[][] pieceRegions = puzzle.split(pieceWidth, pieceHeight);
 		
@@ -248,13 +255,16 @@ public class MainGameScreen implements Screen{
 		//generate all 32 puzzle pieces
 		shapeRenderer=new ShapeRenderer();
 		
+		int gridEndX = gridX + (gridSquareLength * (numTilesHorizontal)) + (gridSquareLength / 2);
+		int gridEndY = gridY + (gridSquareLength * (numTilesVertical)) + (gridSquareLength / 2);
+		
 		for(int id = 0; id < 2; id++) {
 			int k = (id*16) + 1;
 			int regionX = id * 4;
 			
-			for(int i = 500, y = 3; i <= 800 && y >= 0; i+=100, y--) {
+			for(int i = gridX, y = 3; i < gridEndX && y >= 0; i+=gridSquareLength, y--) {
 				regionX = id * 4;
-				for(int j = 1400; j<= 1700; j+=100, k++, regionX++) {
+				for(int j = gridY; j< gridEndY; j+=gridSquareLength, k++, regionX++) {
 					final PuzzlePiece temp = new PuzzlePiece(pieceRegions[y][regionX], k, j , i, id);
 					pieceList.add(temp);
 			
@@ -282,12 +292,12 @@ public class MainGameScreen implements Screen{
 							}
 						}
 						
-						
+						int half = gridSquareLength / 2;
 						public void dragStop(InputEvent event, float x, float y, int pointer) {
-							if(((temp.getX()+50) >= (temp.getPieceCorrectLocX()-50) && (temp.getX()+50) <( temp.getPieceCorrectLocX() + 50))
-									&& ((temp.getY()+50) >= (temp.getPieceCorrectLocY()-50) && (temp.playerID == game.client.localPlayer.playerID) &&
-							(temp.getY()+50) < (temp.getPieceCorrectLocY() + 50))){
-								temp.setPosition(temp.getPieceCorrectLocX()-50 , temp.getPieceCorrectLocY()-50);
+							if(((temp.getX()+half) >= (temp.getPieceCorrectLocX()-half) && (temp.getX()+half) <( temp.getPieceCorrectLocX() + half))
+									&& ((temp.getY()+half) >= (temp.getPieceCorrectLocY()-half) && (temp.playerID == game.client.localPlayer.playerID) &&
+							(temp.getY()+half) < (temp.getPieceCorrectLocY() + half))){
+								temp.setPosition(temp.getPieceCorrectLocX()-half, temp.getPieceCorrectLocY()-half);
 								
 								if(!temp.checkrightLocation()) {
 									game.client.localPlayer.correctPieceCount++;
@@ -440,12 +450,12 @@ public class MainGameScreen implements Screen{
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(game.skin.getColor("white"));
 			
-		for(int i=450; i<=750;i+=100)
-		{
-		for( int j=1350; j<=1650;j+=100)
-		{
-			shapeRenderer.rect(j,i,100,100);
-		}
+		int gridEndX = gridX + (gridSquareLength * numTilesHorizontal);
+		int gridEndY = gridY + (gridSquareLength * numTilesVertical);
+		for(int i=gridX; i< gridEndX;i+=gridSquareLength) {
+			for( int j=gridY; j<gridEndY;j+=gridSquareLength) {
+				shapeRenderer.rect(j,i,gridSquareLength,gridSquareLength);
+			}
 		}
 			
 		//deposit shapes
