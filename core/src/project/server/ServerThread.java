@@ -41,8 +41,9 @@ public class ServerThread extends Thread{
 		player = new Player("");
 		
 		try {
-			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			
 			
 			try {
 				oos.writeObject("test");
