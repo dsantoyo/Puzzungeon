@@ -123,16 +123,29 @@ public class Server {
 		
 		if(cm != null) {
 			
-			//remove the oldest message
-			gameRoomMap.get(roomCode).messageVec.remove(0);
 			
-			// add the newest message
-			gameRoomMap.get(roomCode).messageVec.add(cm);
-			System.out.println("server: server new message for room "+roomCode+" : " + cm.getUsername()+" "+cm.getMessage());
-			//send the newest message to every serverThread
-			for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
-				thread.sendMessage(gameRoomMap.get(roomCode).messageVec.get(3));
+			gameRoomMap.get(roomCode).reLock.lock();
+			
+			try {
+				
+				//remove the oldest message
+				gameRoomMap.get(roomCode).messageVec.remove(0);
+				
+				// add the newest message
+				gameRoomMap.get(roomCode).messageVec.add(cm);
+				System.out.println("server: server new message for room "+roomCode+" : " + cm.getUsername()+" "+cm.getMessage());
+				//send the newest message to every serverThread
+				for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
+					thread.sendMessage(gameRoomMap.get(roomCode).messageVec.get(3));
+				}
+			
+				
+			}finally {
+				gameRoomMap.get(roomCode).reLock.unlock();
 			}
+
+			
+			
 		}
 	}
 	
@@ -148,16 +161,30 @@ public class Server {
 		}
 		if(player != null) {
 			
-			//find an available spot in playerVec
-			for(int i = 0; i < 2; i++) {
-				if(gameRoomMap.get(roomCode).playerVec.get(i).playerID == -1) {
-					player.playerID = i;
-					gameRoomMap.get(roomCode).playerVec.set(i, player);
-					break;
-				}
-			}
 			
-			System.out.println("server: room " + roomCode +"new player: username = " + player.playerName +", playerID = " + player.playerID);
+			gameRoomMap.get(roomCode).reLock.lock();
+			
+			try {
+				
+
+				//find an available spot in playerVec
+				for(int i = 0; i < 2; i++) {
+					if(gameRoomMap.get(roomCode).playerVec.get(i).playerID == -1) {
+						player.playerID = i;
+						gameRoomMap.get(roomCode).playerVec.set(i, player);
+						break;
+					}
+				}
+				
+				System.out.println("server: room " + roomCode +"new player: username = " + player.playerName +", playerID = " + player.playerID);
+			
+				
+			}finally {
+				gameRoomMap.get(roomCode).reLock.unlock();
+			} 
+
+			
+			
 		}
 		return player.playerID;
 	}
@@ -167,9 +194,25 @@ public class Server {
 	 * User playerID to acees its counterpart in server's playerVec
 	 */
 	public void updateServerPlayer(int playerID, Player player, String roomCode) {
-		gameRoomMap.get(roomCode).playerVec.set(playerID,player);
+		
+		
+		
+		gameRoomMap.get(roomCode).reLock.lock();
+		
+		try {
+		
+			
 
-		System.out.println("server: server updated room "+roomCode+" player: username = " + player.playerName +", playerID = " + player.playerID);
+			gameRoomMap.get(roomCode).playerVec.set(playerID,player);
+
+			System.out.println("server: server updated room "+roomCode+" player: username = " + player.playerName +", playerID = " + player.playerID);
+			
+		}finally {
+			gameRoomMap.get(roomCode).reLock.unlock();
+		} 
+
+		
+		
 		
 		//when a player is updated in server's playerVec,
 		//also update front-end's otherPlayer
@@ -180,26 +223,59 @@ public class Server {
 	 * Send corresponding player object in server's playerVec to each serverThread
 	 */
 	public void sendServerOtherPlayer(String roomCode) {
-		if(gameRoomMap.get(roomCode).playerVec.size() == 2) {
-			for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
-				int localPlayerID = thread.getServerThreadPlayerID();
-				if(localPlayerID == 0) {
-					thread.updateOtherPlayer(gameRoomMap.get(roomCode).playerVec.get(1));
-				}
-				else {
-					thread.updateOtherPlayer(gameRoomMap.get(roomCode).playerVec.get(0));
+		
+		
+		
+		gameRoomMap.get(roomCode).reLock.lock();
+		
+		try {
+			
+			
+			if(gameRoomMap.get(roomCode).playerVec.size() == 2) {
+				for(ServerThread thread : gameRoomMap.get(roomCode).serverThreads) {
+					int localPlayerID = thread.getServerThreadPlayerID();
+					if(localPlayerID == 0) {
+						thread.updateOtherPlayer(gameRoomMap.get(roomCode).playerVec.get(1));
+					}
+					else {
+						thread.updateOtherPlayer(gameRoomMap.get(roomCode).playerVec.get(0));
+					}
 				}
 			}
-		}
+		
+			
+		}finally {
+			gameRoomMap.get(roomCode).reLock.unlock();
+		} 
+
+		
+		
+		
+		
 	}
 	
 	public Boolean isGameFull(String roomCode) {
 		
-		System.out.println("server: isGameFull() called on room " + roomCode);
-		System.out.println(gameRoomMap.get(roomCode).playerVec.get(0).playerID);
-		System.out.println(gameRoomMap.get(roomCode).playerVec.get(1).playerID);
 		
-		return ((gameRoomMap.get(roomCode).playerVec.get(0).playerID != -1) && (gameRoomMap.get(roomCode).playerVec.get(1).playerID != -1));
+		
+		gameRoomMap.get(roomCode).reLock.lock();
+		
+		try {
+			
+			System.out.println("server: isGameFull() called on room " + roomCode);
+			System.out.println(gameRoomMap.get(roomCode).playerVec.get(0).playerID);
+			System.out.println(gameRoomMap.get(roomCode).playerVec.get(1).playerID);
+			
+			return ((gameRoomMap.get(roomCode).playerVec.get(0).playerID != -1) && (gameRoomMap.get(roomCode).playerVec.get(1).playerID != -1));
+		
+			
+		}finally {
+			gameRoomMap.get(roomCode).reLock.unlock();
+		} 
+
+		
+		
+		
 	}
 	
 	public String generateGameRoomCode() {

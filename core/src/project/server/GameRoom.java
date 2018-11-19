@@ -3,6 +3,7 @@ package project.server;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GameRoom {
 	
@@ -21,6 +22,8 @@ public class GameRoom {
 		public HashSet<Integer> player1PieceSet = new HashSet<Integer>();
 		
 		public Boolean lock;
+		
+		public final ReentrantLock reLock = new ReentrantLock();
 	
 	GameRoom(String code){
 		
@@ -30,6 +33,8 @@ public class GameRoom {
 		this.code = code;
 		//a vector to store Player objects
 		playerVec = new Vector<Player>();
+		ReentrantLock rel = new ReentrantLock(); 
+		
 		playerVec.add(new Player("default"));
 		playerVec.add(new Player("default"));
 		

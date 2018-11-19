@@ -200,7 +200,7 @@ public class MainGameScreen implements Screen{
 		                }
 		                
 		                // cheat command for testing
-		                if(messageStr.equals("cheat")) {
+		                if(messageStr.equals("c")) {
 		                	game.client.localPlayer.correctPieceCount = 16;
 		                	game.client.updatePlayer();
 		                }

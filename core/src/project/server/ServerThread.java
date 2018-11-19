@@ -41,8 +41,9 @@ public class ServerThread extends Thread{
 		player = new Player("");
 		
 		try {
-			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			
 			
 			try {
 				oos.writeObject("test");
@@ -199,10 +200,25 @@ public class ServerThread extends Thread{
 				if(object instanceof PieceID) {
 					PieceID pid = (PieceID)object;
 					if(serverThreadPlayerID == 0) {
-						server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(1).sendPiece(pid);
+						
+						server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
+						
+						try {
+						
+							server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(1).sendPiece(pid);
+						}finally {
+							server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
+						}
 					}
 					if(serverThreadPlayerID == 1) {
-						server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(0).sendPiece(pid);
+						server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
+						
+						try {
+							server.gameRoomMap.get(gameRoomCode.code).serverThreads.get(0).sendPiece(pid);
+						}
+						finally {
+							server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
+						}
 					}
 				}
 				
@@ -217,7 +233,13 @@ public class ServerThread extends Thread{
 							
 							GameRoom gameroom = new GameRoom(gameRoomCode.code);
 							gameroom.serverThreads.add(this);
+							
+							
+							
 							server.gameRoomMap.put(gameRoomCode.code, gameroom);
+							
+							
+							
 						}
 						if(lobbyChoice.choice.equals("random game")) {
 							System.out.println("serverthread: player asking from a random romm");
@@ -231,7 +253,21 @@ public class ServerThread extends Thread{
 						        //if find an available game room
 						        if(!server.isGameFull(code) && (!server.gameRoomMap.get(code).lock)){
 						        	//assign this serverthread to the gameroom
-						        	server.gameRoomMap.get(code).serverThreads.add(this);
+						        	
+						        	
+						        	server.gameRoomMap.get(code).reLock.lock();
+									
+									try {
+										server.gameRoomMap.get(code).serverThreads.add(this);
+										
+									}finally {
+										server.gameRoomMap.get(code).reLock.unlock();
+									}
+
+						        	
+						        	
+						        	
+						        	
 						        	gameRoomCode.code = code;
 						        	//return game code to the client
 						        	foundAvailable = true;
@@ -252,7 +288,24 @@ public class ServerThread extends Thread{
 							if(server.gameRoomMap.containsKey(code)) {
 								if(!server.isGameFull(code)){
 						        	//assign this serverthread to the gameroom
-						        	server.gameRoomMap.get(code).serverThreads.add(this);
+									
+									
+									server.gameRoomMap.get(code).reLock.lock();
+									
+									try {
+										server.gameRoomMap.get(code).serverThreads.add(this);
+										
+									}finally {
+										server.gameRoomMap.get(code).reLock.unlock();
+									}
+
+									
+									
+						        	
+						        	
+						        	
+						        	
+						        	
 						        	gameRoomCode.code = code;
 						        	//return game code to the client
 						        	roomAvailable = true;
@@ -285,14 +338,37 @@ public class ServerThread extends Thread{
 			}
 			
 			if(serverThreadPlayerID == 0) {
-				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).playerID == -1) {
-					server.gameRoomMap.remove(gameRoomCode.code);
+				
+				
+				server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
+				
+				try {
+				
+					if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).playerID == -1) {
+						server.gameRoomMap.remove(gameRoomCode.code);
+					}
+					
+				}finally {
+					server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 				}
+
+				
 			}
 			else if(serverThreadPlayerID == 1) {
-				if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).playerID == -1) {
-					server.gameRoomMap.remove(gameRoomCode.code);
+				
+				server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
+				
+				try {
+					
+					if (server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).playerID == -1) {
+						server.gameRoomMap.remove(gameRoomCode.code);
+					}
+				
+					
+				}finally {
+					server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 				}
+				
 			}
 			
 			server.serverThreads.remove(this);
@@ -326,12 +402,23 @@ public class ServerThread extends Thread{
 	public void setLocalPlayerID(int ID) {
 		try {
 			HashSet<Integer> playerPieceSet;
-			if(ID == 0) {
-				playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player0PieceSet;
+			
+			server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
+			
+			try {
+
+				if(ID == 0) {
+					playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player0PieceSet;
+				}
+				else {
+					playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player1PieceSet;
+				}
+			
+			}finally {
+				server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 			}
-			else {
-				playerPieceSet = server.gameRoomMap.get(gameRoomCode.code).player1PieceSet;
-			}
+			
+			
 			PlayerIDnPieceSet pips = new PlayerIDnPieceSet(ID, playerPieceSet);
 			oos.writeObject(pips);
 			oos.flush();
@@ -342,9 +429,25 @@ public class ServerThread extends Thread{
 	
 	//send otherPlayer from back-end to front-end
 	public void updateOtherPlayer(Player otherPlayer) {
-		if(server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).readyState && server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).readyState) {
-			server.gameRoomMap.get(gameRoomCode.code).lock = true;
+		
+		
+		server.gameRoomMap.get(gameRoomCode.code).reLock.lock();
+		
+		try {
+			
+			
+			if(server.gameRoomMap.get(gameRoomCode.code).playerVec.get(1).readyState && server.gameRoomMap.get(gameRoomCode.code).playerVec.get(0).readyState) {
+				server.gameRoomMap.get(gameRoomCode.code).lock = true;
+			}
+		
+			
+		}finally {
+			server.gameRoomMap.get(gameRoomCode.code).reLock.unlock();
 		}
+
+		
+		
+		
 		
 		try {
 			oos.writeObject(otherPlayer);
