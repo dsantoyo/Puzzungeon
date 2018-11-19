@@ -87,7 +87,7 @@ public class MainGameScreen implements Screen{
 	
 
 	public Boolean update;
-	
+	public Boolean gameFinished; 
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
@@ -105,6 +105,7 @@ public class MainGameScreen implements Screen{
 		background.setScale(9f);
 		totalPieces = 4;
 		update = true;
+		gameFinished = false;
 	}
 
 	@Override
@@ -467,10 +468,20 @@ public class MainGameScreen implements Screen{
 			
 			
 			//if local player finishes the puzzle
-			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			//if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
+				game.client.updatePlayer();
 				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
                 game.client.sendMessage(cm);
+			}
+			
+			
+			//if both player finishes the puzzle
+			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
+				gameFinished = true;
+				game.client.messageVec.remove(0);
+				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
 			}
 			
 			//update chatroom
@@ -513,7 +524,9 @@ public class MainGameScreen implements Screen{
 			
 			//update elapsed time. should change this to be updated by the server.
 			Long currentTime = (System.nanoTime()-startTime)/1000000000;
-			showGameTime.setText("Time: " + Long.toString(currentTime));
+			if(!gameFinished) {
+				showGameTime.setText("Time: " + Long.toString(currentTime));
+			}
 			
 			//if connection is lost
 			if(!game.client.connectState & displayDialog) {
