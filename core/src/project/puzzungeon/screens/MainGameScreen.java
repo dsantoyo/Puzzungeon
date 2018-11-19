@@ -255,16 +255,16 @@ public class MainGameScreen implements Screen{
 		//generate all 32 puzzle pieces
 		shapeRenderer=new ShapeRenderer();
 		
-		int gridEndX = gridX + (gridSquareLength * (numTilesHorizontal)) + (gridSquareLength / 2);
-		int gridEndY = gridY + (gridSquareLength * (numTilesVertical)) + (gridSquareLength / 2);
-		
+		int gridEndX = gridX + (gridSquareLength * (numTilesHorizontal - 1)) + (gridSquareLength / 2);
+		int gridEndY = gridY + (gridSquareLength * (numTilesVertical - 1)) + (gridSquareLength / 2);
+		int half = gridSquareLength / 2;
 		for(int id = 0; id < 2; id++) {
 			int k = (id*16) + 1;
 			int regionX = id * 4;
 			
-			for(int i = gridX, y = 3; i < gridEndX && y >= 0; i+=gridSquareLength, y--) {
+			for(int i = gridX + half, y = 3; (i <= (gridEndX + half)) && y >= 0; i+=gridSquareLength, y--) {
 				regionX = id * 4;
-				for(int j = gridY; j< gridEndY; j+=gridSquareLength, k++, regionX++) {
+				for(int j = gridY + half; j<= (gridEndY); j+=gridSquareLength, k++, regionX++) {
 					final PuzzlePiece temp = new PuzzlePiece(pieceRegions[y][regionX], k, j , i, id);
 					pieceList.add(temp);
 			
