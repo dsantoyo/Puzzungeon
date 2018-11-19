@@ -249,7 +249,7 @@ public class MainGameScreen implements Screen{
 		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	
-		    	/*
+		    	
 		    	Boolean result = (Boolean)obj;
 		    	
 		    	if(!result) {
@@ -259,7 +259,7 @@ public class MainGameScreen implements Screen{
 		    	else {
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
 		    	}
-		    	*/
+		    	
 		    }};
 		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
@@ -608,14 +608,14 @@ public class MainGameScreen implements Screen{
 				}
 				
 			
-				/*
+				
 				//if both players are registered user
 				else {
 					System.out.println("both registered user");
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
 				}
-				*/
+				
 				
 			}
 			
