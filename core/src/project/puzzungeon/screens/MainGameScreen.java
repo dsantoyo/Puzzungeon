@@ -547,8 +547,8 @@ public class MainGameScreen implements Screen{
 			
 			
 			//if local player finishes the puzzle
-			if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
-			//if(!game.client.localPlayer.isFinished) {
+			//if(game.client.localPlayer.correctPieceCount == 16 && !game.client.localPlayer.isFinished) {
+			if(!game.client.localPlayer.isFinished) {
 				game.client.localPlayer.isFinished = true;
 				game.client.updatePlayer();
 				//ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
@@ -558,11 +558,24 @@ public class MainGameScreen implements Screen{
 			
 			//if both player finishes the puzzle
 			if(game.client.localPlayer.isFinished && game.client.otherPlayer.isFinished && !gameFinished) {
+				System.out.println("the game is finished");
 				gameFinished = true;
 				game.client.messageVec.remove(0);
 				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
-				guestFinishDialog.show(stage);
-				displayDialog = false;
+				
+				
+				//if one of the player is a guest
+				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
+					
+					System.out.println("at least one Guest");
+					guestFinishDialog.show(stage);
+					displayDialog = false;
+				}
+				
+				//if both players are registered user
+				else {
+					System.out.println("both registered user");
+				}
 			}
 			
 			
