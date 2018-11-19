@@ -1,7 +1,6 @@
 package project.puzzungeon.screens;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -9,32 +8,23 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -97,6 +87,13 @@ public class MainGameScreen implements Screen{
 
 	public Boolean update;
 	
+	//deposit/recieve square variables
+	int sendX = 400;
+	int sendY = 650;
+	int sendLength = 200;
+	int recieveX = 100;
+	int recieveY = 650;
+	int recieveLength = 200;
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game) {
@@ -110,7 +107,7 @@ public class MainGameScreen implements Screen{
 
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		teleporter = atlas.createSprite("teleporter");
-		teleporter.setPosition(200, 420);
+		teleporter.setPosition(250, 420);
 		teleporter.setScale(9f);
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
@@ -305,9 +302,9 @@ public class MainGameScreen implements Screen{
 								game.client.updatePlayer();
 							}
 							
-							if((((temp.getX()+50) >= 350) && (temp.getX()+50)<550) 
-									&& (((temp.getY()+50) >= 350) &&
-										(temp.getY()+50) < 550)){
+							if((((temp.getX()+50) >= sendX) && (temp.getX()+50)<sendX + sendLength) 
+									&& (((temp.getY()+50) >= sendY) &&
+										(temp.getY()+50) < sendY + sendLength)){
 								//temp.setrightLocation();
 								game.client.sendPiece(temp.getPieceID());
 								temp.setVisible(false);				
@@ -317,13 +314,9 @@ public class MainGameScreen implements Screen{
 				}
 			}
 		}
-		int number = 0;
 		for(int i = 0; i < 32; i++) {
 			if(!game.client.localPlayer.playerPieceSet.contains(pieceList.get(i).pieceID)) {
 				pieceList.get(i).setVisible(false);
-			} else {
-				System.out.println(i);
-				number++;
 			}
 			stage.addActor(pieceList.get(i));
 		}
@@ -345,9 +338,9 @@ public class MainGameScreen implements Screen{
 
 		Table teleportLabel = new Table().left().top();
 		teleportLabel.setFillParent(true);
-		teleportLabel.add(teleporterLabel1).padLeft(80).padTop(120).width(450).align(Align.center);
+		teleportLabel.add(teleporterLabel1).padLeft(130).padTop(120).width(450).align(Align.center);
 		teleportLabel.row();
-		teleportLabel.add(teleporterLabel2).padLeft(80).width(450).align(Align.center);
+		teleportLabel.add(teleporterLabel2).padLeft(130).width(450).align(Align.center);
 		
 /****************************************************************************************
 *                             end: game instructions UI
@@ -457,8 +450,10 @@ public class MainGameScreen implements Screen{
 			
 		//deposit shapes
 		shapeRenderer.rect(700,450,400,400);
-		shapeRenderer.rect(350,650,200,200);
-		shapeRenderer.rect(350,350,200,200);
+		shapeRenderer.setColor(game.skin.getColor("Red"));
+		shapeRenderer.rect(recieveX,recieveY,recieveLength,recieveLength);
+		shapeRenderer.setColor(game.skin.getColor("Teal"));
+		shapeRenderer.rect(sendX,sendY,sendLength,sendLength);
 		
 		shapeRenderer.end();
 		
@@ -578,7 +573,8 @@ public class MainGameScreen implements Screen{
 			if (game.client.incomingPieceID!=-1){
 				System.out.println("receiving a piece id = " + game.client.incomingPieceID);
 				pieceList.get(game.client.incomingPieceID-1).setVisible(true);
-				pieceList.get(game.client.incomingPieceID-1).setPosition(new Random().nextInt((100)+1)+350,new Random().nextInt((100)+1)+650);
+				int range = recieveLength / 2;
+				pieceList.get(game.client.incomingPieceID-1).setPosition(new Random().nextInt((range)+1)+recieveX,new Random().nextInt((range)+1)+recieveY);
 				pieceList.get(game.client.incomingPieceID-1).setSize(100, 100);
 				game.client.incomingPieceID = -1;
 			}
