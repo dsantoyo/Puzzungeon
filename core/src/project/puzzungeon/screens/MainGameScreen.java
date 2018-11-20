@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -97,10 +98,10 @@ public class MainGameScreen implements Screen{
 	
 	//deposit/recieve square variables
 	int sendX = 400;
-	int sendY = 650;
+	int sendY = 620;
 	int sendLength = 200;
 	int recieveX = 100;
-	int recieveY = 650;
+	int recieveY = 620;
 	int recieveLength = 200;
 	
 	//grid variables
@@ -128,13 +129,14 @@ public class MainGameScreen implements Screen{
 		
 		thisGameIndex = game.client.gameCounter;
 
+		
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		teleporter = atlas.createSprite("teleporter");
-		teleporter.setPosition(250, 420);
-		teleporter.setScale(9f);
+		teleporter.setPosition(320, 550);
+		teleporter.setScale(12f);
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
-		background.setScale(9f);
+		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		puzzleBacking = game.skin.getDrawable("window");
 		startBacking = game.skin.getDrawable("window");
 		
@@ -511,13 +513,13 @@ public class MainGameScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		//draw background + puzzle backing
-		
+		game.batch.setProjectionMatrix(stage.getCamera().combined);
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);
 		teleporter.draw(game.batch);
-		puzzleBacking.draw(game.batch, gridX - 350, startY - 160, gridLengthX - 80, gridLengthY - 100);
-		startBacking.draw(game.batch, startX - 200, startY - 160, gridLengthX - 80, gridLengthY - 100);
+		puzzleBacking.draw(game.batch, startX - 20, startY - 20, gridLengthX + 40, gridLengthY + 40);
+		startBacking.draw(game.batch, gridX - 20, gridY - 20, gridLengthX + 40, gridLengthY + 40);
 		game.batch.end();
 		
 		//draw white grid
@@ -561,6 +563,7 @@ public class MainGameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
+	    game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 		stage.getViewport().update(width, height);
 	}
 

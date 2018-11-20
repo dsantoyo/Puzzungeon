@@ -71,7 +71,7 @@ public class WaitingScreen implements Screen{
 		teleporterSprite = atlas.createSprite("teleporter");
 		background = atlas.createSprite("dungeon-wall");
 		background.setOrigin(0, 0);
-		background.setScale(9f);
+		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		
 		Gdx.input.setInputProcessor(stage);
 		displayDialog = true;
@@ -389,6 +389,7 @@ public class WaitingScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		//draw background
+		game.batch.setProjectionMatrix(stage.getCamera().combined);
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);

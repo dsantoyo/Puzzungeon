@@ -56,7 +56,7 @@ public class RegisterScreen implements Screen{
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		background = atlas.createSprite("dungeon");
 		background.setOrigin(0, 0);
-		background.setScale(9f);
+		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 	}
 	
 	@Override
@@ -353,6 +353,7 @@ public class RegisterScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		//draw background
+		game.batch.setProjectionMatrix(stage.getCamera().combined);
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);
