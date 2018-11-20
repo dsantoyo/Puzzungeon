@@ -270,10 +270,10 @@ public class MainGameScreen implements Screen{
 		} else {
 			finishedRegion = atlas.findRegion("sea-serpent");
 		}
-		Image finishedPuzzle = new Image(finishedRegion);
-		finishedPuzzle.setScaling(Scaling.fit);
-		guestFinishDialog.getContentTable().add(finishedPuzzle).align(Align.center).fill().pad(15);
-		guestFinishDialog.getContentTable().getCell(finishedPuzzle).height(480).minWidth(950);
+		Image finishedPuzzleGuest = new Image(finishedRegion);
+		finishedPuzzleGuest.setScaling(Scaling.fit);
+		guestFinishDialog.getContentTable().add(finishedPuzzleGuest).align(Align.center).fill().pad(15);
+		guestFinishDialog.getContentTable().getCell(finishedPuzzleGuest).height(480).minWidth(950);
 		guestFinishDialog.getContentTable().row();
 		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
 		guestFinishDialog.button("Got it", false); //sends "false" as the result
@@ -302,8 +302,9 @@ public class MainGameScreen implements Screen{
 		    	}
 		    	
 		    }};
-		registeredFinishDialog.getContentTable().add(finishedPuzzle).align(Align.center).fill().pad(15);
-		registeredFinishDialog.getContentTable().getCell(finishedPuzzle).height(480).minWidth(950);
+		Image finishedPuzzleReg = new Image(finishedRegion);
+		registeredFinishDialog.getContentTable().add(finishedPuzzleReg).align(Align.center).fill().pad(15);
+		registeredFinishDialog.getContentTable().getCell(finishedPuzzleReg).height(480).minWidth(950);
 		registeredFinishDialog.getContentTable().row();
 		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
@@ -736,11 +737,7 @@ public class MainGameScreen implements Screen{
 				//showMessage4.setAlignment(Align.left);
 			}
 			
-			//update elapsed time. should change this to be updated by the server.
-			Long currentTime = (System.nanoTime()-startTime)/1000000000;
-			if(!gameFinished) {
-				showGameTime.setText("Time: " + Long.toString(currentTime));
-			}
+			//update elapsed time. should change this to be updated by the server
 			
 			//if connection is lost
 			if(!game.client.connectState && displayDialog) {
