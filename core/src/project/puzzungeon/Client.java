@@ -225,10 +225,13 @@ public class Client {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
 		            		ioe.printStackTrace();
 		            		
+		            		connectState = false;
+		            		/*
 		            		
 		            		if(disconnect) {
 		            			System.out.println("client: Thread run() LOST CONNECTION.");
 		            			connectState = false;
+		            			
 		            			try {
 		            				oos.close();
 		            				ois.close();
@@ -237,6 +240,8 @@ public class Client {
 		            				e.printStackTrace();
 		            			}
 		            		}
+		            		
+		            		*/
 		            		
 		            	}catch (ClassNotFoundException cnfe) {
 		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());

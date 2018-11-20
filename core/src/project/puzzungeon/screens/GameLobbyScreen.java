@@ -150,24 +150,32 @@ public class GameLobbyScreen implements Screen{
 		
 		
 		noEmptyRoomDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		noEmptyRoomDialog.text("We don't have any rooms available");
 		noEmptyRoomDialog.button("Got it", false); //sends "false" as the result
 		
 		
 		roomNotAvailableDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		roomNotAvailableDialog.text("The room is not available");
 		roomNotAvailableDialog.button("Got it", false); //sends "false" as the result
 		
 
 		didntEnterCodeDialog = new Dialog("", game.skin, "dialog") {
-			public void result(Object obj) {}};
+			public void result(Object obj) {
+				buttonpress.play();
+			}};
 		didntEnterCodeDialog.text("Please enter a code!");
 		didntEnterCodeDialog.button("Got it", false);
 
 		connectionLostDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
+		    	buttonpress.play();
+		    	game.client = new Client(game.serverAddress, game.serverPort);
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
 		connectionLostDialog.text("Connection lost.");

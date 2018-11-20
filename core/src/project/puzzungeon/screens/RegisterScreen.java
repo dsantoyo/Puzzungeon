@@ -91,6 +91,7 @@ public class RegisterScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						buttonpress.play();
 						String usernameInputStr = new String();
 		                if(usernameInput.getText().length() == 0) {
 		                	usernameInputStr = "";
@@ -114,6 +115,7 @@ public class RegisterScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						buttonpress.play();
 						String passwordInputStr = new String();
 		                if(passwordInput.getText().length() == 0) {
 		                	passwordInputStr = "";
@@ -275,22 +277,30 @@ public class RegisterScreen implements Screen{
 			});
 			
 		registerFailDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		registerFailDialog.text("Use other username/password");
 		registerFailDialog.button("Got it", false); //sends "false" as the result
 		
 		gameFullDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
 		connectionFailDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
 		
 		databaseFailDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		databaseFailDialog.text("Couldn't connect to the database");
 		databaseFailDialog.button("Got it", false); //sends "false" as the result
 		

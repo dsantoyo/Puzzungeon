@@ -127,7 +127,7 @@ public class WaitingScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
-						game.buttonpress.play();
+						buttonpress.play();
 						String messageStr = new String();
 		                //allow to send empty message
 		                if(inputBox.getText().length() == 0) {
@@ -215,6 +215,8 @@ public class WaitingScreen implements Screen{
 
 		connectionLostDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
+		    	buttonpress.play();
+		    	game.client = new Client(game.serverAddress, game.serverPort);
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
 		connectionLostDialog.text("Connection lost.");

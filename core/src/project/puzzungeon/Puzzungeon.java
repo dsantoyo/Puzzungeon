@@ -27,7 +27,7 @@ public class Puzzungeon extends Game {
 	public int serverPort = 6789;
 	
 	public Boolean showDebugLine = false;
-	public Boolean playMusic = true;
+	public Boolean playMusic = false;
 
 	public Boolean randomPuzzle = false;
 	
@@ -48,7 +48,6 @@ public class Puzzungeon extends Game {
 		assetLoader.loadSoundEffects();
 		assetLoader.loadMusic();
 		this.setScreen(new LoadingScreen(this));
-
 	}
 
 	@Override
