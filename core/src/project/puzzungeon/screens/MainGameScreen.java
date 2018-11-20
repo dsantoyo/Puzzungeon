@@ -209,7 +209,7 @@ public class MainGameScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
-						game.buttonpress.play();
+						buttonpress.play();
 						String messageStr = new String();
 		                //allow to send empty message
 		                if(inputBox.getText().length() == 0) {
@@ -605,15 +605,16 @@ public class MainGameScreen implements Screen{
 		update();
 		stage.draw();
 
-		//draw green grid
-		greenGridRenderer.setProjectionMatrix(stage.getCamera().combined);
-		greenGridRenderer.begin(ShapeType.Line);
-		greenGridRenderer.setColor(game.skin.getColor("Teal"));
-		for (int i = 0; i < greenGrid.length; i++) {
-			greenGridRenderer.rect(greenGrid[i][0], greenGrid[i][1], greenGrid[i][2], greenGrid[i][2]);
+		//draw green grid (if game still going on)
+		if (game.client.localPlayer.isFinished == false) {
+			greenGridRenderer.setProjectionMatrix(stage.getCamera().combined);
+			greenGridRenderer.begin(ShapeType.Line);
+			greenGridRenderer.setColor(game.skin.getColor("Teal"));
+			for (int i = 0; i < greenGrid.length; i++) {
+				greenGridRenderer.rect(greenGrid[i][0], greenGrid[i][1], greenGrid[i][2], greenGrid[i][2]);
+			}
+			greenGridRenderer.end();
 		}
-		greenGridRenderer.end();
-	
 	}
 
 	@Override
