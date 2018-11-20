@@ -15,17 +15,14 @@ public class JDBCType {
 	
 	private String username;
 	private String password;
-	private String determine;
-	private int userID;
+
 	//private int score;
 	//private boolean login = false;
 	
-	public JDBCType(String username, String password, String determine) 
+	public JDBCType(String username, String password) 
 	{
 		this.username = username;
 		this.password = password;
-		this.determine = determine;
-		this.userID = 0;
 	//	this.score = 0;
 	}
 	
@@ -128,29 +125,16 @@ public class JDBCType {
 		
 		try {
 			
-			ps = conn.prepareStatement("INSERT INTO highscore_table (score, user1, user2)" + " VALUES (?, ?, ?)");
-			ps.setInt(1, score);
-			ps.setInt(2, user1);
-			ps.setInt(3, user2);
+			ps = conn.prepareStatement("INSERT INTO highscore_table (user1, user2, score)" + " VALUES (?, ?, ?)");
+			ps.setInt(1, user1);
+			ps.setInt(2, user2);
+			ps.setInt(3, score);
 			ps.execute();
 		
 		} catch (SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());
 		}
 		
-
-//		
-//		try {
-//			
-//			ps = conn.prepareStatement("INSERT INTO highscore_table (score)" + " VALUES (?)");
-//			ps.setInt(1, score);
-//			ps.execute();
-//		
-//			} catch (SQLException sqle) {
-//			System.out.println ("SQLException: " + sqle.getMessage());
-//		}
-//		
-		//return 0;
 	}
 
 
