@@ -11,6 +11,9 @@ Yi(Ian) Sui: ysui@usc.edu  USC ID: 2961712187
 Ekta Gogri: egogri@usc.edu  USC ID: 9607321862
 
 
+Everything should work.
+
+
 HOW RUN THE CODE IN ECLIPSE
 
 Step 1: Download Java8 or newer JRE/JDK. 
