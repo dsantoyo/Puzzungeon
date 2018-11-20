@@ -1,3 +1,15 @@
+/*CSCI201 Final Project
+
+Project Name: Puzzungeon
+Project Number: 7
+Project Category: Game
+
+Daniel Santoyo: dsantoyo@usc.edu USC ID: 6926712177
+Hayley Pike: hpike@usc.edu USC ID: 8568149839
+Yi(Ian) Sui: ysui@usc.edu USC ID: 2961712187
+Ekta Gogri: egogri@usc.edu USC ID: 9607321862
+*/
+
 package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
@@ -90,6 +102,7 @@ public class LoginScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						buttonpress.play();
 						String usernameInputStr = new String();
 		                if(usernameInput.getText().length() == 0) {
 		                	usernameInputStr = "";
@@ -113,6 +126,7 @@ public class LoginScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						buttonpress.play();
 						String passwordInputStr = new String();
 		                if(passwordInput.getText().length() == 0) {
 		                	passwordInputStr = "";
@@ -173,22 +187,30 @@ public class LoginScreen implements Screen{
 			});
 		
 		loginFailDialog = new Dialog("Error", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		loginFailDialog.text("Check username/password.");
 		loginFailDialog.button("Got it", false); //sends "false" as the result
 		
 		gameFullDialog = new Dialog("Error", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
 		connectionFailDialog = new Dialog("Error", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
 		
 		databaseFailDialog = new Dialog("Error", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		databaseFailDialog.text("Couldn't connect to the database");
 		databaseFailDialog.button("Got it", false); //sends "false" as the result
 		

@@ -1,3 +1,15 @@
+/*CSCI201 Final Project
+
+Project Name: Puzzungeon
+Project Number: 7
+Project Category: Game
+
+Daniel Santoyo: dsantoyo@usc.edu USC ID: 6926712177
+Hayley Pike: hpike@usc.edu USC ID: 8568149839
+Yi(Ian) Sui: ysui@usc.edu USC ID: 2961712187
+Ekta Gogri: egogri@usc.edu USC ID: 9607321862
+*/
+
 package project.puzzungeon;
 
 import java.io.IOException;
@@ -225,10 +237,13 @@ public class Client {
 		            		System.out.println("client: Thread run() ioe: " + ioe.getMessage());
 		            		ioe.printStackTrace();
 		            		
+		            		connectState = false;
+		            		/*
 		            		
 		            		if(disconnect) {
 		            			System.out.println("client: Thread run() LOST CONNECTION.");
 		            			connectState = false;
+		            			
 		            			try {
 		            				oos.close();
 		            				ois.close();
@@ -237,6 +252,8 @@ public class Client {
 		            				e.printStackTrace();
 		            			}
 		            		}
+		            		
+		            		*/
 		            		
 		            	}catch (ClassNotFoundException cnfe) {
 		            		System.out.println("client: Thread run() cnfe: " + cnfe.getMessage());

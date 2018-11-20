@@ -1,3 +1,15 @@
+/*CSCI201 Final Project
+
+Project Name: Puzzungeon
+Project Number: 7
+Project Category: Game
+
+Daniel Santoyo: dsantoyo@usc.edu USC ID: 6926712177
+Hayley Pike: hpike@usc.edu USC ID: 8568149839
+Yi(Ian) Sui: ysui@usc.edu USC ID: 2961712187
+Ekta Gogri: egogri@usc.edu USC ID: 9607321862
+*/
+
 package project.puzzungeon.screens;
 
 import java.util.ArrayList;
@@ -258,6 +270,8 @@ public class MainGameScreen implements Screen{
 			
 		connectionLostDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
+		    	buttonpress.play();
+		    	game.client = new Client(game.serverAddress, game.serverPort);
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
 		connectionLostDialog.text("Connection lost.");
@@ -265,6 +279,7 @@ public class MainGameScreen implements Screen{
 		
 		player2LeftDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
+		    	buttonpress.play();
 		    	//game.client.localPlayer.readyState = false;
 		    	//game.client.updatePlayer();
 		    	game.setScreen(new GameLobbyScreen(game));
@@ -276,6 +291,7 @@ public class MainGameScreen implements Screen{
 		
 		guestFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
+		    	buttonpress.play();
 		    	backToLobby();
 		    	game.setScreen(new GameLobbyScreen(game));
 		    }};
@@ -304,7 +320,7 @@ public class MainGameScreen implements Screen{
 		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	
-		    	
+		    	buttonpress.play();
 		    	Boolean result = (Boolean)obj;
 		    	
 		    	if(!result) {

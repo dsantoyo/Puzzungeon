@@ -1,3 +1,15 @@
+/*CSCI201 Final Project
+
+Project Name: Puzzungeon
+Project Number: 7
+Project Category: Game
+
+Daniel Santoyo: dsantoyo@usc.edu USC ID: 6926712177
+Hayley Pike: hpike@usc.edu USC ID: 8568149839
+Yi(Ian) Sui: ysui@usc.edu USC ID: 2961712187
+Ekta Gogri: egogri@usc.edu USC ID: 9607321862
+*/
+
 package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
@@ -150,24 +162,32 @@ public class GameLobbyScreen implements Screen{
 		
 		
 		noEmptyRoomDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		noEmptyRoomDialog.text("We don't have any rooms available");
 		noEmptyRoomDialog.button("Got it", false); //sends "false" as the result
 		
 		
 		roomNotAvailableDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		roomNotAvailableDialog.text("The room is not available");
 		roomNotAvailableDialog.button("Got it", false); //sends "false" as the result
 		
 
 		didntEnterCodeDialog = new Dialog("", game.skin, "dialog") {
-			public void result(Object obj) {}};
+			public void result(Object obj) {
+				buttonpress.play();
+			}};
 		didntEnterCodeDialog.text("Please enter a code!");
 		didntEnterCodeDialog.button("Got it", false);
 
 		connectionLostDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
+		    	buttonpress.play();
+		    	game.client = new Client(game.serverAddress, game.serverPort);
 		    	game.setScreen(new MainMenuScreen(game));
 		    }};
 		connectionLostDialog.text("Connection lost.");

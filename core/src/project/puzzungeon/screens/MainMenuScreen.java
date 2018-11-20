@@ -1,9 +1,20 @@
+/*CSCI201 Final Project
+
+Project Name: Puzzungeon
+Project Number: 7
+Project Category: Game
+
+Daniel Santoyo: dsantoyo@usc.edu USC ID: 6926712177
+Hayley Pike: hpike@usc.edu USC ID: 8568149839
+Yi(Ian) Sui: ysui@usc.edu USC ID: 2961712187
+Ekta Gogri: egogri@usc.edu USC ID: 9607321862
+*/
+
 package project.puzzungeon.screens;
 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -201,18 +212,24 @@ public class MainMenuScreen implements Screen{
 				}
 			});			
 		gameFullDialog = new Dialog("", game.skin, "dialog") {
-			public void result(Object obj) {}};
+			public void result(Object obj) {
+				buttonpress.play();
+			}};
 		gameFullDialog.text("We already have 2 players.");
 		gameFullDialog.button("Got it", false); //sends "false" as the result
 		
 		connectionFailDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		connectionFailDialog.text("Couldn't connect to the server");
 		connectionFailDialog.button("Got it", false); //sends "false" as the result
 		
 		
 		databaseFailDialog = new Dialog("", game.skin, "dialog") {
-		    public void result(Object obj) {}};
+		    public void result(Object obj) {
+		    	buttonpress.play();
+		    }};
 		databaseFailDialog.text("Couldn't connect to the database");
 		databaseFailDialog.button("Got it", false); //sends "false" as the result
 			
