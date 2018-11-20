@@ -240,6 +240,24 @@ public class ServerThread extends Thread{
 					}
 				}
 				
+				if(object instanceof PieceSetRequest) {
+					PieceSetRequest psr = (PieceSetRequest)object;
+					String code = psr.code;
+					
+					server.gameRoomMap.get(code).reLock.lock();
+					try {						
+						server.gameRoomMap.get(code).generatePieceSets();
+						HashSet<Integer> player0PieceSet = server.gameRoomMap.get(code).player0PieceSet;
+						HashSet<Integer> player1PieceSet = server.gameRoomMap.get(code).player1PieceSet;
+						server.gameRoomMap.get(code).serverThreads.get(0).sendPieceSet(player0PieceSet, player1PieceSet);
+						server.gameRoomMap.get(code).serverThreads.get(1).sendPieceSet(player0PieceSet, player1PieceSet);
+					}
+					
+					finally {
+						server.gameRoomMap.get(code).reLock.unlock();
+					}
+				}
+				
 				if(object instanceof LobbyChoice) {
 					lobbyChoice = (LobbyChoice)object;
 					if(lobbyChoice != null) {
@@ -466,6 +484,17 @@ public class ServerThread extends Thread{
 	public void sendPiece(PieceID pieceID) {
 		try {
 			oos.writeObject(pieceID);
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("serverthread: sendPiece() ioe: " + ioe.getMessage());
+		}
+	}
+	
+	public void sendPieceSet(HashSet<Integer> pieceset0, HashSet<Integer> pieceset1) {
+		try {
+			PieceSetResponse psrp = new PieceSetResponse(pieceset0, pieceset1);
+			oos.writeObject(psrp);
 			oos.flush();
 			oos.reset();
 		} catch (IOException ioe) {

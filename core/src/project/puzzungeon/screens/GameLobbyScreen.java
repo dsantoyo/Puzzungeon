@@ -61,7 +61,7 @@ public class GameLobbyScreen implements Screen{
 		atlas = game.assetLoader.manager.get("sprites.txt");
 		background = atlas.createSprite("dungeon-hall");
 		background.setOrigin(0, 0);
-		background.setScale(9f);
+		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 	}
 	
 	//construct stage
@@ -220,6 +220,7 @@ public class GameLobbyScreen implements Screen{
 		update();
 		
 		//draw background
+		game.batch.setProjectionMatrix(stage.getCamera().combined);
 		viewport.apply();
 		game.batch.begin();
 		background.draw(game.batch);

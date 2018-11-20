@@ -13,6 +13,8 @@ import project.server.LoginRegister;
 import project.server.LoginResult;
 import project.server.Password;
 import project.server.PieceID;
+import project.server.PieceSetRequest;
+import project.server.PieceSetResponse;
 import project.server.Player;
 import project.server.PlayerIDnPieceSet;
 import project.server.Score;
@@ -200,6 +202,17 @@ public class Client {
 		            					System.out.println("client: gameroom not available");
 		            				}
 		            			}
+		            			
+		            			if(object instanceof PieceSetResponse) {
+		            				PieceSetResponse psrp = (PieceSetResponse)object;
+		            				
+		            				if(localPlayer.playerID == 0) {
+		            					localPlayer.playerPieceSet = psrp.player0PieceSet;
+		            				}
+		            				if(localPlayer.playerID == 1) {
+		            					localPlayer.playerPieceSet = psrp.player1PieceSet;
+		            				}
+		            			}
 		            					            				
 		            			
 		            		}
@@ -304,7 +317,7 @@ public class Client {
 			System.out.println("client: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
-	
+  
 	public void sendScore(int time) {
 		try {
 			System.out.println("client: sendScore() ");
@@ -313,6 +326,16 @@ public class Client {
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: sendPsendScoreiece() ioe: " + ioe.getMessage());
+
+	public void requestNewPieceSet() {
+		try {
+			System.out.println("client: requestNewPieceSet()");
+			oos.writeObject(new PieceSetRequest(gameRoomCode));
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("client: sendPiece() ioe: " + ioe.getMessage());
+
 		}
 	}
 }
