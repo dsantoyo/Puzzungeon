@@ -46,56 +46,40 @@ public class JDBCType {
 	}
 	
 	public int getScore() throws SQLException {
-		int score1 = 0;
-		int score2 = 0;
-		ps = conn.prepareStatement("SELECT * from highscore_table where user1='" + username + "'");
-		rs = ps.executeQuery();
-		
-		if(rs != null) {
-			try {
-				while(rs.next()) {
-					if(username.equals(rs.getString("user1"))) {
-						score1 = rs.getInt("score");
-					}
-					if(username.equals(rs.getString("user1"))) {
-						if(rs.getInt("score") < score1) {
-							score1 = rs.getInt("score");
-						}
-					}
-				}
-			} catch(SQLException sqle) {
-				System.out.println("slqe:" + sqle.getMessage());
-			}
-		}
-		
-		ps = conn.prepareStatement("SELECT * from highscore_table where user2='" + username + "'");
-		rs = ps.executeQuery();
-		if(rs != null) {
-			try {
-				while(rs.next()) {
-					if(username.equals(rs.getString("user2"))) {
-						score2 = rs.getInt("score");
-					}
-					if(username.equals(rs.getString("user2"))) {
-						if(rs.getInt("score") < score2) {
-							score2 = rs.getInt("score");
-						}
-					}
-				}
-			} catch(SQLException sqle) {
-				System.out.println("slqe: " + sqle.getMessage());
-			}
-		}
-		
-		if(score1 < score2) {
-			return score1;
-		}
-		else if (score1 > score2){
-			return score2;
-		}
-		
-		return 0;
-	}
+        int user1 = 0;
+        int score1 = 0;
+        int score2 = 0;
+        
+        ps = conn.prepareStatement("SELECT * FROM user_table WHERE username = ?");
+        ps.setString(1, username);
+        rs= ps.executeQuery();
+        
+        while(rs.next()) {
+            user1 = rs.getInt("userID");
+        }
+        
+        ps = conn.prepareStatement("SELECT * FROM highscore_table WHERE user1=" + user1);
+        //ps.setInt(1, user1);
+        rs = ps.executeQuery();
+        
+        while(rs.next()) {
+            if(user1 == rs.getInt("user1")) {
+                score1 = rs.getInt("score");
+            }
+            
+            if(user1 == (rs.getInt("user1"))) {
+                if(rs.getInt("score") < score1) {
+                    score1 = rs.getInt("score");
+                }
+            }
+        }
+        
+        if(score1 != 0) {
+            return score1;
+        }
+        
+        return 0;
+    }
 
 	public void setScore(int score, String username1, String username2) throws Exception {
 		//int pastScore = database.getScore();
