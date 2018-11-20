@@ -326,7 +326,8 @@ public class Client {
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: sendPsendScoreiece() ioe: " + ioe.getMessage());
-
+		}
+	}
 	public void requestNewPieceSet() {
 		try {
 			System.out.println("client: requestNewPieceSet()");
