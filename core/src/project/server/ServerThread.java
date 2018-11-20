@@ -202,7 +202,7 @@ public class ServerThread extends Thread{
 				if(object instanceof Score) {
 					Score score = (Score)object;
 					
-					int pastScore = database.getScore();
+					//int pastScore = database.getScore();
 					
 					try {
 						database.setScore(score.time, score.username1, score.username2);
@@ -210,10 +210,7 @@ public class ServerThread extends Thread{
 					}catch(Exception e){
 						System.out.println("serverthread: e message: " + e.getMessage());
 					}
-					
-					
 				}
-				
 				
 				if(object instanceof PieceID) {
 					PieceID pid = (PieceID)object;
@@ -249,8 +246,9 @@ public class ServerThread extends Thread{
 						server.gameRoomMap.get(code).generatePieceSets();
 						HashSet<Integer> player0PieceSet = server.gameRoomMap.get(code).player0PieceSet;
 						HashSet<Integer> player1PieceSet = server.gameRoomMap.get(code).player1PieceSet;
-						server.gameRoomMap.get(code).serverThreads.get(0).sendPieceSet(player0PieceSet, player1PieceSet);
-						server.gameRoomMap.get(code).serverThreads.get(1).sendPieceSet(player0PieceSet, player1PieceSet);
+						int randomPuzzleID = server.gameRoomMap.get(code).randomPuzzleID;
+						server.gameRoomMap.get(code).serverThreads.get(0).sendPieceSet(player0PieceSet, player1PieceSet, randomPuzzleID);
+						server.gameRoomMap.get(code).serverThreads.get(1).sendPieceSet(player0PieceSet, player1PieceSet, randomPuzzleID);
 					}
 					
 					finally {
@@ -491,9 +489,9 @@ public class ServerThread extends Thread{
 		}
 	}
 	
-	public void sendPieceSet(HashSet<Integer> pieceset0, HashSet<Integer> pieceset1) {
+	public void sendPieceSet(HashSet<Integer> pieceset0, HashSet<Integer> pieceset1, int randomPuzzleID) {
 		try {
-			PieceSetResponse psrp = new PieceSetResponse(pieceset0, pieceset1);
+			PieceSetResponse psrp = new PieceSetResponse(pieceset0, pieceset1, randomPuzzleID);
 			oos.writeObject(psrp);
 			oos.flush();
 			oos.reset();

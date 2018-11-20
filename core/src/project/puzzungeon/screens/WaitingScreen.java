@@ -127,6 +127,7 @@ public class WaitingScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						game.buttonpress.play();
 						String messageStr = new String();
 		                //allow to send empty message
 		                if(inputBox.getText().length() == 0) {

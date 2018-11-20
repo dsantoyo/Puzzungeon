@@ -23,6 +23,8 @@ public class GameRoom {
 		
 		public Boolean lock;
 		
+		public int randomPuzzleID;
+		
 		public final ReentrantLock reLock = new ReentrantLock();
 	
 	GameRoom(String code){
@@ -43,6 +45,7 @@ public class GameRoom {
 		messageVec.add(new ChatMessage("", "",false));
 		messageVec.add(new ChatMessage("", "",false));
 		messageVec.add(new ChatMessage("", "",false));
+		randomPuzzleID = 1;
 		
 		generatePieceSets();
 
@@ -86,6 +89,8 @@ public class GameRoom {
 				}
 				player0PieceSet.addAll(pieceSet0);
 				player1PieceSet.addAll(pieceSet1);
+				
+				randomPuzzleID = new Random().nextInt(4) + 1;
 				//System.out.println("player0PieceSet = " + player0PieceSet);
 				//System.out.println("player1PieceSet = " + player1PieceSet);
 	}

@@ -12,7 +12,7 @@ Hayley Pike: hpike@usc.edu  USC ID: 8568149839
 
 Yi(Ian) Sui: ysui@usc.edu  USC ID: 2961712187
 
-Ekta Gogri: egogri@usc.edu  
+Ekta Gogri: egogri@usc.edu  USC ID: 9607321862
 
 ## Resources
 link to our google drive folder:  

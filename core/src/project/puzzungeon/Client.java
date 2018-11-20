@@ -53,6 +53,8 @@ public class Client {
 	
 	public int gameCounter;
 	public Boolean playNextPuzzle;
+	
+	public int randomPuzzleID;
 		
 	//constructor
 	public Client(String hostname, int port) {
@@ -68,6 +70,7 @@ public class Client {
 		this.incomingPieceID = -1;
 		gameCounter = 1;
 		playNextPuzzle = false;
+		randomPuzzleID = 1;
 	}
 	
 	//setting up connection between a client and the server
@@ -206,6 +209,8 @@ public class Client {
 		            			if(object instanceof PieceSetResponse) {
 		            				PieceSetResponse psrp = (PieceSetResponse)object;
 		            				
+		            				
+		            				randomPuzzleID = psrp.randomPuzzleID;
 		            				if(localPlayer.playerID == 0) {
 		            					localPlayer.playerPieceSet = psrp.player0PieceSet;
 		            				}

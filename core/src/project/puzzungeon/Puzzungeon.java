@@ -28,7 +28,8 @@ public class Puzzungeon extends Game {
 	
 	public Boolean showDebugLine = false;
 	public Boolean playMusic = true;
-	
+
+	public Boolean randomPuzzle = false;
 	
 	//loads assets and calls first screen
 	@Override

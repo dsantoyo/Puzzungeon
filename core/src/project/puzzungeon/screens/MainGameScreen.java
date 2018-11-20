@@ -209,6 +209,7 @@ public class MainGameScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						game.buttonpress.play();
 						String messageStr = new String();
 		                //allow to send empty message
 		                if(inputBox.getText().length() == 0) {
@@ -269,7 +270,7 @@ public class MainGameScreen implements Screen{
 		    	game.setScreen(new GameLobbyScreen(game));
 		    	//game.setScreen(new WaitingScreen(game));
 		    }};
-		player2LeftDialog.text("Player2 has left.");
+		player2LeftDialog.text("The other player has left.");
 		player2LeftDialog.button("Got it", false); //sends "false" as the result
 		
 		
@@ -293,7 +294,7 @@ public class MainGameScreen implements Screen{
 		guestFinishDialog.getContentTable().add(finishedPuzzleGuest).align(Align.center).fill().pad(15);
 		guestFinishDialog.getContentTable().getCell(finishedPuzzleGuest).height(480).minWidth(950);
 		guestFinishDialog.getContentTable().row();
-		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
+		guestFinishDialog.text("You solved the puzzle!\nGuest can't play the next puzzle.");
 		guestFinishDialog.button("Got it", false); //sends "false" as the result
 		guestFinishDialog.padBottom(15);
 		
@@ -315,7 +316,7 @@ public class MainGameScreen implements Screen{
 		    		System.out.println("client: updating localPlayer game counter");
 		    		game.client.localPlayer.gameCounter++;
 		    		game.client.updatePlayer();
-		    		update = false;
+		    		//update = false;
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
 		    	}
 		    	
@@ -324,7 +325,7 @@ public class MainGameScreen implements Screen{
 		registeredFinishDialog.getContentTable().add(finishedPuzzleReg).align(Align.center).fill().pad(15);
 		registeredFinishDialog.getContentTable().getCell(finishedPuzzleReg).height(480).minWidth(950);
 		registeredFinishDialog.getContentTable().row();
-		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
+		registeredFinishDialog.text("You solved the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
 		registeredFinishDialog.button("No", false);
 		registeredFinishDialog.padBottom(15);
@@ -332,7 +333,7 @@ public class MainGameScreen implements Screen{
 		waitPlayer2forNextPuzzleDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    }};
-		waitPlayer2forNextPuzzleDialog.text("Waiting for Player2...");
+		waitPlayer2forNextPuzzleDialog.text("Waiting for the other player...");
 		    
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
@@ -649,12 +650,22 @@ public class MainGameScreen implements Screen{
 			game.client.localPlayer.correctPieceCount = 0;
 			game.client.localPlayer.isFinished = false;
 			game.client.updatePlayer();
-			
-			if(puzzleID != 4) {
-				game.setScreen(new MainGameScreen(game, puzzleID+1));
+
+			if(game.randomPuzzle) {
+				
+				//get a random puzzle id
+				
+				game.setScreen(new MainGameScreen(game, game.client.randomPuzzleID));
+
 			}
+				
 			else {
-				game.setScreen(new MainGameScreen(game, 1));
+				if(puzzleID != 4) {
+					game.setScreen(new MainGameScreen(game, puzzleID+1));
+				}
+				else {
+					game.setScreen(new MainGameScreen(game, 1));
+				}
 			}
 		}
 					
@@ -678,7 +689,7 @@ public class MainGameScreen implements Screen{
 				game.client.localPlayer.isFinished = true;
 				System.out.println("game finished");
 				game.client.updatePlayer();
-				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+				ChatMessage cm = new ChatMessage(game.client.clientUsername, "solved half of the puzzle!", true);
                 game.client.sendMessage(cm);
                 
 			}
@@ -688,7 +699,7 @@ public class MainGameScreen implements Screen{
 				System.out.println("the game is finished");
 				gameFinished = true;
 				game.client.messageVec.remove(0);
-				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
+				game.client.messageVec.add(new ChatMessage("The puzzle is solved!", "", true));
 				
 				if (game.gameMusic.isPlaying()) {
 					game.gameMusic.stop();
@@ -717,7 +728,6 @@ public class MainGameScreen implements Screen{
 					game.client.sendScore(time);
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
-					update = false;
 				}
 				
 			}
@@ -758,10 +768,7 @@ public class MainGameScreen implements Screen{
 			else {
 				showMessage4.setColor(Color.WHITE);
 				//showMessage4.setAlignment(Align.left);
-			}
-			
-			//update elapsed time. should change this to be updated by the server
-			
+			}	
 			//if connection is lost
 			if(!game.client.connectState && displayDialog) {
 				update = false;
