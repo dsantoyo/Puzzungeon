@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
@@ -40,12 +41,14 @@ public class MainMenuScreen implements Screen{
 	private TextButton newUserButton;
 	private TextButton guestButton;
 	private TextButton exitButton;
+	private TextButton creditsButton;
 	
 	//shared by different methods
 	private Boolean displayDialog;
 	private Dialog gameFullDialog;
 	private Dialog connectionFailDialog;
 	private Dialog databaseFailDialog;
+	private Dialog creditsDialog;
 	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
@@ -135,7 +138,38 @@ public class MainMenuScreen implements Screen{
 					Gdx.app.exit();
 				}
 			});
-					
+			
+		//credits 
+		String authorCreditStr = "By Ekta Gogri, Hayley Pike, Daniel Santoyo, and Ian Sui.";
+		String skinCreditStr = "UI Styling derived from Libgdx Skin by Raymond \"Raeleus\" Buckley" + 
+				"under Creative Commons 4.0, http://creativecommons.org/licenses/by/4.0/";
+		
+		Label creditHeading = new Label("Credits", game.skin, "subtitle");
+		creditHeading.setAlignment(Align.center);
+		Label authorCredit = new Label(authorCreditStr, game.skin);
+		authorCredit.setAlignment(Align.center);
+		Label skinCredit = new Label(skinCreditStr, game.skin);
+		skinCredit.setAlignment(Align.center);
+		skinCredit.setWrap(true);
+		
+		creditsDialog = new Dialog("", game.skin, "dialog") {
+			public void result(Object obj) {}};
+		Table creditsTable = creditsDialog.getContentTable();
+		creditsTable.add(creditHeading).padBottom(15);
+		creditsTable.row();
+		creditsTable.add(authorCredit).padBottom(10);
+		creditsTable.row();
+		creditsTable.add(skinCredit).fillX().padBottom(10);
+		creditsTable.row();
+		creditsDialog.button("Back", false);
+		
+		creditsButton = new TextButton("Credits", game.skin, "default");
+			creditsButton.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					creditsDialog.show(stage);
+				}
+			});			
 		gameFullDialog = new Dialog("", game.skin, "dialog") {
 			public void result(Object obj) {}};
 		gameFullDialog.text("We already have 2 players.");
@@ -188,6 +222,7 @@ public class MainMenuScreen implements Screen{
 ****************************************************************************************/
 		Table exitButtonTable = new Table().bottom().right();
 		exitButtonTable.setFillParent(true);
+		exitButtonTable.add(creditsButton).width(Puzzungeon.WIDTH * 0.2f).pad(10);
 		exitButtonTable.add(exitButton).width(Puzzungeon.WIDTH*0.2f).pad(10);
 		
 /****************************************************************************************
@@ -259,9 +294,7 @@ public class MainMenuScreen implements Screen{
 			
 			if(game.client.loginState) {
 				game.setScreen(new GameLobbyScreen(game));
-			}
-			
-			if(!game.client.loginState) {
+			} else {
 				System.out.println(game.client.loginStateMessage);
 				if(game.client.loginStateMessage.equals("Game is Full.")) {
 					game.client.loginStateMessage = "";
