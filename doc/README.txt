@@ -13,6 +13,9 @@ Ekta Gogri: egogri@usc.edu  USC ID: 9607321862
 
 Everything should work.
 
+Project requirements, specifications, detailed design document,
+testing, deployment documents are in doc/Puzzungeon.pdf
+
 
 HOW RUN THE CODE IN ECLIPSE
 
@@ -34,16 +37,16 @@ Step 6: Find the database.sql script in the core/src/project/server folder
 Run this sql file on mySQL to create the database.
 default username and password combination is root/root;
 
-Step 7: On Eclipse, right click on Puzzengeon-core->Properties->Java Build Path->Libraries-> Add External Jars-> 
+Step 7: In Eclipse, right click on Puzzengeon-core->Properties->Java Build Path->Libraries-> Add External Jars-> 
 browse and add the mysql-connector driver jar file.
 (in /core/src/project/server)
 
-Step 8. On Eclipse, right click Puzzengeon-core->src->project.puzzungeon.desktop->Desktoplauncher. 
+Step 8. In Eclipse, right click Puzzengeon-core->src->project.puzzungeon.desktop->Desktoplauncher. 
 Right click and run it as a java application. IT WILL FAIL FOR THE FIRST TIME and we need this step to do the next step.
 
-Step 9:  On Eclipse, go to Run->Run Configurations->Arguments and make sure that the Working Directory is set to /core/assets folder for DesktopLaucher.
+Step 9:  In Eclipse, go to Run->Run Configurations->Arguments and make sure that the Working Directory is set to /core/assets folder for DesktopLaucher.
 
-Step 10: On Eclipse, run Desktoplauncher.java as a java application again. This time it should be able to find the correct Working Directory.
+Step 10: In Eclipse, run Desktoplauncher.java as a java application again. This time it should be able to find the correct Working Directory.
 
 If you want both players to play on the same computer, run the desktop application twice. If you want both players to play on different computers, repeat 
 all the steps on the other computer. Set up the server ip in  Puzzengeon-core/src/project/puzzungeon/Puzzungeon.java 
