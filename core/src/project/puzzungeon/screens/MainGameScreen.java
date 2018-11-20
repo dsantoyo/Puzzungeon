@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import project.puzzungeon.Client;
@@ -254,9 +256,28 @@ public class MainGameScreen implements Screen{
 		    	backToLobby();
 		    	game.setScreen(new GameLobbyScreen(game));
 		    }};
+		TextureRegion finishedRegion;
+		if (puzzleID == 1) {
+			finishedRegion = atlas.findRegion("dragon");
+		} else if (puzzleID == 2) {
+			finishedRegion = atlas.findRegion("castle-small");
+		} else if (puzzleID == 3) {
+			finishedRegion = atlas.findRegion("griffin");
+		} else {
+			finishedRegion = atlas.findRegion("sea-serpent");
+		}
+		Image finishedPuzzle = new Image(finishedRegion);
+		finishedPuzzle.setScaling(Scaling.fit);
+		guestFinishDialog.getContentTable().add(finishedPuzzle).align(Align.center).fill().pad(15);
+		guestFinishDialog.getContentTable().getCell(finishedPuzzle).height(480).minWidth(950);
+		guestFinishDialog.getContentTable().row();
 		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
 		guestFinishDialog.button("Got it", false); //sends "false" as the result
+		guestFinishDialog.padBottom(15);
 		
+		if (game.showDebugLine == true) {
+			guestFinishDialog.getContentTable().debug();
+		}
 		registeredFinishDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    	
@@ -277,9 +298,13 @@ public class MainGameScreen implements Screen{
 		    	}
 		    	
 		    }};
+		registeredFinishDialog.getContentTable().add(finishedPuzzle).align(Align.center).fill().pad(15);
+		registeredFinishDialog.getContentTable().getCell(finishedPuzzle).height(480).minWidth(950);
+		registeredFinishDialog.getContentTable().row();
 		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
 		registeredFinishDialog.button("No", false);
+		registeredFinishDialog.padBottom(15);
 		
 		waitPlayer2forNextPuzzleDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
