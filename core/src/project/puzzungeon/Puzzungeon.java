@@ -13,9 +13,7 @@ Ekta Gogri: egogri@usc.edu USC ID: 9607321862
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import project.puzzungeon.screens.LoadingScreen;
