@@ -50,6 +50,10 @@ public class GameRoom {
 	
 	public void generatePieceSets() {
 		//pieceSet0 = 1 to 16, pieceSet1 = 17 to 32
+		
+				player0PieceSet.clear();
+				player1PieceSet.clear();
+		
 				HashSet<Integer> pieceSet0 = new HashSet<Integer>();
 				HashSet<Integer> pieceSet1 = new HashSet<Integer>();
 				
