@@ -59,7 +59,7 @@ public class JDBCType {
 	
 	public int getScore() throws SQLException {
         int user1 = 0;
-        int score1 = 0;
+        int score1 = Integer.MAX_VALUE;
         //int score2 = 0;
         
         ps = conn.prepareStatement("SELECT * FROM user_table WHERE username = ?");
@@ -70,27 +70,24 @@ public class JDBCType {
             user1 = rs.getInt("userID");
         }
         
-        ps = conn.prepareStatement("SELECT * FROM highscore_table WHERE user1=" + user1);
+        ps = conn.prepareStatement("SELECT * FROM highscore_table WHERE user1=" + user1 + " OR user2=" + user1);
         //ps.setInt(1, user1);
         rs = ps.executeQuery();
         
         while(rs.next()) {
-            if(user1 == rs.getInt("user1")) {
-                score1 = rs.getInt("score");
-            }
+        	int temp = rs.getInt("score");
             
-            if(user1 == (rs.getInt("user1"))) {
-                if(rs.getInt("score") < score1) {
-                    score1 = rs.getInt("score");
-                }
+        	if(temp < score1) {
+        		score1 = temp;
             }
         }
         
-        if(score1 != 0) {
+        if(score1 != Integer.MAX_VALUE) {
             return score1;
         }
-        
-        return 0;
+        else {
+        	return 0;
+        }
     }
 
 	public void setScore(int score, String username1, String username2) throws Exception {
