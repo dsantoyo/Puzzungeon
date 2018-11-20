@@ -24,6 +24,8 @@ public class Puzzungeon extends Game {
 	
 	public Boolean showDebugLine = false;
 	
+	public Boolean randomPuzzle = false;
+	
 	//soundeffects
 	 
 	public Sound buttonpress;

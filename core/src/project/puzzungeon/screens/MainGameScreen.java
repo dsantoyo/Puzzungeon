@@ -631,12 +631,22 @@ public class MainGameScreen implements Screen{
 			game.client.localPlayer.correctPieceCount = 0;
 			game.client.localPlayer.isFinished = false;
 			game.client.updatePlayer();
-			
-			if(puzzleID != 4) {
-				game.setScreen(new MainGameScreen(game, puzzleID+1));
+
+			if(game.randomPuzzle) {
+				
+				//get a random puzzle id
+				int newPuzzleID = new Random().nextInt(4) + 1;
+				game.setScreen(new MainGameScreen(game, newPuzzleID));
+
 			}
+				
 			else {
-				game.setScreen(new MainGameScreen(game, 1));
+				if(puzzleID != 4) {
+					game.setScreen(new MainGameScreen(game, puzzleID+1));
+				}
+				else {
+					game.setScreen(new MainGameScreen(game, 1));
+				}
 			}
 		}
 					
