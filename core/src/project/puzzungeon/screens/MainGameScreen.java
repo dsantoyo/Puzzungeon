@@ -8,7 +8,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -191,6 +190,7 @@ public class MainGameScreen implements Screen{
 				@Override
 				public void keyTyped(TextField textField, char c) {
 					if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+						game.buttonpress.play();
 						String messageStr = new String();
 		                //allow to send empty message
 		                if(inputBox.getText().length() == 0) {
@@ -735,10 +735,7 @@ public class MainGameScreen implements Screen{
 			else {
 				showMessage4.setColor(Color.WHITE);
 				//showMessage4.setAlignment(Align.left);
-			}
-			
-			//update elapsed time. should change this to be updated by the server
-			
+			}	
 			//if connection is lost
 			if(!game.client.connectState && displayDialog) {
 				update = false;
