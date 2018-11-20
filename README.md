@@ -1,3 +1,6 @@
+#Required README.txt is in the doc/ folder. Not this file.  
+
+
 # Puzzungeon
 CSCI201 Final Project
 
