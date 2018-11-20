@@ -297,7 +297,7 @@ public class MainGameScreen implements Screen{
 		    		System.out.println("client: updating localPlayer game counter");
 		    		game.client.localPlayer.gameCounter++;
 		    		game.client.updatePlayer();
-		    		update = false;
+		    		//update = false;
 		    		waitPlayer2forNextPuzzleDialog.show(stage);
 		    	}
 		    	
@@ -635,8 +635,8 @@ public class MainGameScreen implements Screen{
 			if(game.randomPuzzle) {
 				
 				//get a random puzzle id
-				int newPuzzleID = new Random().nextInt(4) + 1;
-				game.setScreen(new MainGameScreen(game, newPuzzleID));
+				
+				game.setScreen(new MainGameScreen(game, game.client.randomPuzzleID));
 
 			}
 				
@@ -704,7 +704,7 @@ public class MainGameScreen implements Screen{
 					game.client.sendScore(time);
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
-					update = false;
+					//update = false;
 				}
 				
 			}
