@@ -2,6 +2,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -60,6 +61,12 @@ public class WaitingScreen implements Screen{
 	//global Table variable
 	private Table waitingTable;
 	
+	//sound variables
+	public Sound buttonpress;
+	public Sound correctplace;
+	public Sound swoosh;
+	public Sound alert;
+	
 	//constructor
 	public WaitingScreen(Puzzungeon game) {
 		this.game = game;
@@ -77,6 +84,17 @@ public class WaitingScreen implements Screen{
 		displayDialog = true;
 		ChatMessage cm = new ChatMessage(game.client.clientUsername+" ", "has joined the chat.", true);
 		game.client.sendMessage(cm);
+		
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		
+		if (game.gameMusic.isPlaying()) {
+			game.gameMusic.stop();
+		}
+		if (!game.menuMusic.isPlaying() && game.playMusic == true) {
+			game.menuMusic.play();
+			game.menuMusic.setVolume(0.2f);
+			game.menuMusic.setLooping(true);
+		}
 	}
 	
 	@Override
@@ -133,7 +151,7 @@ public class WaitingScreen implements Screen{
 			sendButton.addListener(new ClickListener(){
 	            @Override 
 	            public void clicked(InputEvent event, float x, float y){
-	            	game.buttonpress.play();
+	            	buttonpress.play();
 	                String messageStr = new String();
 	                //allow to send empty message
 	                if(inputBox.getText().length() == 0) {
@@ -155,7 +173,7 @@ public class WaitingScreen implements Screen{
 			readyButton.addListener(new ClickListener(){
 	            @Override 
 	            public void clicked(InputEvent event, float x, float y){
-	            	game.buttonpress.play();
+	            	buttonpress.play();
 	            	
 	            	if(game.client.localPlayer.readyState == false) {
 	            		game.client.localPlayer.readyState = true;
@@ -208,7 +226,7 @@ public class WaitingScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					String username = new String(game.client.username);
 					String password = new String(game.client.password);
 					game.client.disconnect = true;
@@ -265,7 +283,7 @@ public class WaitingScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});

@@ -3,6 +3,8 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -50,6 +52,10 @@ public class MainMenuScreen implements Screen{
 	private Dialog databaseFailDialog;
 	private Dialog creditsDialog;
 	
+	//sound variables
+	public Sound buttonpress;
+	
+	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
@@ -63,29 +69,38 @@ public class MainMenuScreen implements Screen{
 		background = atlas.createSprite("dungeon");
 		background.setOrigin(0, 0);
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		if (game.menuMusic == null) {
+			game.menuMusic = game.assetLoader.manager.get("music/Inside-The-Tower.mp3");
+		}
+		if (game.gameMusic == null) {
+			game.gameMusic = game.assetLoader.manager.get("music/Final_Sacrifice.mp3");
+		}
+		if (game.gameMusic.isPlaying()) {
+			game.gameMusic.stop();
+		}
+		if (!game.menuMusic.isPlaying() && game.playMusic == true) {
+			game.menuMusic.play();
+			game.menuMusic.setVolume(0.2f);
+			game.menuMusic.setLooping(true);
+		}
 	}
 	
 	//construct stage
 	@Override
 	public void show() {
+		
 /****************************************************************************************
 *                             start: actors functionality
-****************************************************************************************/
-
-		/*
-		gameTitle = new Image(atlas.createSprite("title"));
-		gameTitle.setScaling(Scaling.fit);
-		gameTitle.setOrigin(0,0);
-		gameTitle.setScale(6f);
-		*/
-		
+****************************************************************************************/		
 		gameTitle = new Label("Puzzungeon", game.skin, "title");
 		
 		loginButton = new TextButton("Login", game.skin, "default");
 			loginButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 						game.setScreen(new LoginScreen(game));
 		            }
 		        });
@@ -94,7 +109,7 @@ public class MainMenuScreen implements Screen{
 			newUserButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
@@ -103,7 +118,7 @@ public class MainMenuScreen implements Screen{
 			guestButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					game.buttonpress.play();
+					buttonpress.play();
 							game.client.clientUsername = "Guest";
 					if(!game.client.connectState) {
 						//set up connection to the server
@@ -138,15 +153,17 @@ public class MainMenuScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});
 			
 		//credits 
 		String authorCreditStr = "By Ekta Gogri, Hayley Pike, Daniel Santoyo, and Ian Sui.";
-		String skinCreditStr = "UI Styling derived from Libgdx Skin by Raymond \"Raeleus\" Buckley" + 
-				"under Creative Commons 4.0, http://creativecommons.org/licenses/by/4.0/";
+		String skinCreditStr = "UI Styling derived from Libgdx Skin by Raymond \"Raeleus\" Buckley";
+		String musicCreditStr = "Music by Visager";
+		String ccLicenseStr = "Both are under a Creative Commons 4.0 license, "
+				+ "http://creativecommons.org/licenses/by/4.0/";
 		
 		Label creditHeading = new Label("Credits", game.skin, "subtitle");
 		creditHeading.setAlignment(Align.center);
@@ -155,16 +172,24 @@ public class MainMenuScreen implements Screen{
 		Label skinCredit = new Label(skinCreditStr, game.skin);
 		skinCredit.setAlignment(Align.center);
 		skinCredit.setWrap(true);
+		Label musicCredit = new Label(musicCreditStr, game.skin);
+		musicCredit.setAlignment(Align.center);
+		Label ccLicense = new Label(ccLicenseStr, game.skin);
+		ccLicense.setAlignment(Align.center);
+		ccLicense.setWrap(true);
 		
 		creditsDialog = new Dialog("", game.skin, "dialog") {
 			public void result(Object obj) {}};
 		Table creditsTable = creditsDialog.getContentTable();
-		creditsTable.add(creditHeading).padBottom(15);
+		creditsTable.add(creditHeading).padBottom(15).padTop(15);
 		creditsTable.row();
-		creditsTable.add(authorCredit).padBottom(10);
+		creditsTable.add(authorCredit).padBottom(10).padLeft(15).padRight(15);
 		creditsTable.row();
 		creditsTable.add(skinCredit).fillX().padBottom(10);
 		creditsTable.row();
+		creditsTable.add(musicCredit).padBottom(10);
+		creditsTable.row();
+		creditsTable.add(ccLicense).fillX().padBottom(10);
 		creditsDialog.button("Back", false);
 		
 		creditsButton = new TextButton("Credits", game.skin, "default");
@@ -172,6 +197,7 @@ public class MainMenuScreen implements Screen{
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					creditsDialog.show(stage);
+					buttonpress.play();
 				}
 			});			
 		gameFullDialog = new Dialog("", game.skin, "dialog") {

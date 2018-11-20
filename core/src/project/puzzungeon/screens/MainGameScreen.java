@@ -6,6 +6,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -120,7 +121,11 @@ public class MainGameScreen implements Screen{
 	private int thisGameIndex;
 	
 	//sound effects
-	
+	private Sound buttonpress;
+	private Sound correctplace;
+	private Sound swoosh;
+	private Sound alert; 
+	private Sound win;
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game, int puzzleID) {
@@ -155,6 +160,20 @@ public class MainGameScreen implements Screen{
 		
 		this.puzzleID = puzzleID;
 
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		correctplace = game.assetLoader.manager.get("sound/buton1.mp3");
+		swoosh = game.assetLoader.manager.get("sound/swoosh1.mp3");
+		alert = game.assetLoader.manager.get("sound/alert1.mp3");
+		win = game.assetLoader.manager.get("sound/good-end.mp3");
+
+		if (game.menuMusic.isPlaying()) {
+			game.menuMusic.stop();
+		}
+		if (!game.gameMusic.isPlaying() && game.playMusic == true) {
+			game.gameMusic.play();
+			game.gameMusic.setVolume(0.2f);
+			game.gameMusic.setLooping(true);
+		}
 	}
 
 	@Override
@@ -221,7 +240,7 @@ public class MainGameScreen implements Screen{
 			sendButton.addListener(new ClickListener(){
 	            @Override 
 	            public void clicked(InputEvent event, float x, float y){
-	            	game.buttonpress.play();
+	            	buttonpress.play();
 	                String messageStr = new String();
 	                //allow to send empty message
 	                if(inputBox.getText().length() == 0) {
@@ -321,7 +340,7 @@ public class MainGameScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					backToLobby();
 					game.setScreen(new GameLobbyScreen(game));
 				}
@@ -331,7 +350,7 @@ public class MainGameScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});
@@ -406,7 +425,7 @@ public class MainGameScreen implements Screen{
 								temp.setPosition(temp.getPieceCorrectLocX()-half, temp.getPieceCorrectLocY()-half);
 								
 								if(!temp.checkrightLocation()) {
-									game.correctplace.play();
+									correctplace.play();
 									game.client.localPlayer.correctPieceCount++;
 									if (greenGridCounter != 16) {
 										greenGrid[greenGridCounter][0] = temp.getPieceCorrectLocX()- half;
@@ -424,7 +443,7 @@ public class MainGameScreen implements Screen{
 										(temp.getY()+50) < sendY + sendLength)){
 								//temp.setrightLocation();
 								game.client.sendPiece(temp.getPieceID());
-								game.swoosh.play(1.0f);
+								swoosh.play(1.0f);
 								temp.setVisible(false);				
 							}
 						}
@@ -682,6 +701,11 @@ public class MainGameScreen implements Screen{
 				game.client.messageVec.remove(0);
 				game.client.messageVec.add(new ChatMessage("The puzzle is solved!", "", true));
 				
+				if (game.gameMusic.isPlaying()) {
+					game.gameMusic.stop();
+				}
+				win.play();
+				
 				//if one of the player is a guest
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
 					
@@ -764,7 +788,7 @@ public class MainGameScreen implements Screen{
 			}
 			if (game.client.incomingPieceID!=-1){
 				System.out.println("receiving a piece id = " + game.client.incomingPieceID);
-				game.alert.play();
+				alert.play();
 				pieceList.get(game.client.incomingPieceID-1).setVisible(true);
 				int range = sideLength / 2;
 				System.out.println(range + " " + recieveX + " " + recieveY);

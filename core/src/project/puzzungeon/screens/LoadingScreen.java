@@ -25,6 +25,8 @@ public class LoadingScreen implements Screen {
 		loading = new Label("Loading...", game.skin);
 		loading.setPosition(Puzzungeon.WIDTH / 2, Puzzungeon.HEIGHT / 2);
 		loading_stage.addActor(loading);
+		
+		
 	}
 
 	@Override

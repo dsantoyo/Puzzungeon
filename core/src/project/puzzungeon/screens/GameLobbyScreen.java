@@ -2,6 +2,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -48,6 +49,8 @@ public class GameLobbyScreen implements Screen{
 	//shared by different methods
 	private Boolean displayDialog;
 
+	//sound variables
+	public Sound buttonpress;
 	
 	//constructor
 	public GameLobbyScreen(Puzzungeon game) {
@@ -62,6 +65,17 @@ public class GameLobbyScreen implements Screen{
 		background = atlas.createSprite("dungeon-hall");
 		background.setOrigin(0, 0);
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		
+		if (game.gameMusic.isPlaying()) {
+			game.gameMusic.stop();
+		}
+		if (!game.menuMusic.isPlaying() && game.playMusic == true) {
+			game.menuMusic.play();
+			game.menuMusic.setVolume(0.2f);
+			game.menuMusic.setLooping(true);
+		}
 	}
 	
 	//construct stage
@@ -77,7 +91,7 @@ public class GameLobbyScreen implements Screen{
 		newGameButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();	
+					buttonpress.play();	
 					game.client.sendLobbyChoice(new LobbyChoice("new game", ""));
 						displayDialog = true;
 		            }
@@ -87,7 +101,7 @@ public class GameLobbyScreen implements Screen{
 		existGameButton.addListener(new ClickListener(){
 				@Override 
 	            public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					String code = codeInputField.getText();
 						if (code.trim().isEmpty()) {
 							game.client.gameRoomCode = "didnt enter room";
@@ -105,7 +119,7 @@ public class GameLobbyScreen implements Screen{
 		randomGameButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					game.buttonpress.play();
+					buttonpress.play();
 					game.client.sendLobbyChoice(new LobbyChoice("random game", ""));
 					displayDialog = true;
 				}
@@ -116,7 +130,7 @@ public class GameLobbyScreen implements Screen{
 			
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});
@@ -125,7 +139,7 @@ public class GameLobbyScreen implements Screen{
 		backButton.addListener(new ClickListener(){
 			@Override 
 			public void clicked(InputEvent event, float x, float y){
-				game.buttonpress.play();
+				buttonpress.play();
 				game.client.disconnect = true;
 				game.client.localPlayer.disconnect = true;
 				game.client.updatePlayer();

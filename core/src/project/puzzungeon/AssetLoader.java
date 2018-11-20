@@ -2,6 +2,8 @@ package project.puzzungeon;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -9,10 +11,36 @@ public class AssetLoader {
 	public final AssetManager manager = new AssetManager();
 	
 	//skin
-	public final String skin = "pixungeon.json";
+	private final String skin = "pixungeon.json";
 	
 	//images pack
-	public final String imgs = "sprites.txt";
+	private final String imgs = "sprites.txt";
+	
+	//sound effects
+	private final String buttonPress = "sound/rightlocation.mp3";
+	private final String rightLoc = "sound/buton1.mp3";
+	private final String swoosh = "sound/swoosh1.mp3";
+	private final String alert = "sound/alert1.mp3";
+	private final String win = "sound/good-end.mp3";
+	
+	//music
+	private final String menuMusic = "music/Inside-The-Tower.mp3";
+	private final String gameMusic1 = "music/Final_Sacrifice.mp3";
+	private final String gameMusic2 = "music/Epilogue.mp3";
+	
+	public void loadSoundEffects() {
+		manager.load(buttonPress, Sound.class);
+		manager.load(rightLoc, Sound.class);
+		manager.load(swoosh, Sound.class);
+		manager.load(alert, Sound.class);
+		manager.load(win, Sound.class);
+	}
+	
+	public void loadMusic() {
+		manager.load(menuMusic, Music.class);
+		manager.load(gameMusic1, Music.class);
+		manager.load(gameMusic2, Music.class);
+	}
 	
 	public void loadSkin() {
 		SkinParameter params = new SkinParameter("pixungeon.atlas");
