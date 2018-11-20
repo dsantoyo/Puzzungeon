@@ -251,7 +251,7 @@ public class MainGameScreen implements Screen{
 		    	game.setScreen(new GameLobbyScreen(game));
 		    	//game.setScreen(new WaitingScreen(game));
 		    }};
-		player2LeftDialog.text("Player2 has left.");
+		player2LeftDialog.text("The other player has left.");
 		player2LeftDialog.button("Got it", false); //sends "false" as the result
 		
 		
@@ -275,7 +275,7 @@ public class MainGameScreen implements Screen{
 		guestFinishDialog.getContentTable().add(finishedPuzzleGuest).align(Align.center).fill().pad(15);
 		guestFinishDialog.getContentTable().getCell(finishedPuzzleGuest).height(480).minWidth(950);
 		guestFinishDialog.getContentTable().row();
-		guestFinishDialog.text("You finished the puzzle!\nGuest can't play the next puzzle.");
+		guestFinishDialog.text("You solved the puzzle!\nGuest can't play the next puzzle.");
 		guestFinishDialog.button("Got it", false); //sends "false" as the result
 		guestFinishDialog.padBottom(15);
 		
@@ -306,7 +306,7 @@ public class MainGameScreen implements Screen{
 		registeredFinishDialog.getContentTable().add(finishedPuzzleReg).align(Align.center).fill().pad(15);
 		registeredFinishDialog.getContentTable().getCell(finishedPuzzleReg).height(480).minWidth(950);
 		registeredFinishDialog.getContentTable().row();
-		registeredFinishDialog.text("You finished the puzzle!\n Do you want to play the next puzzle?");
+		registeredFinishDialog.text("You solved the puzzle!\n Do you want to play the next puzzle?");
 		registeredFinishDialog.button("Yes", true); 
 		registeredFinishDialog.button("No", false);
 		registeredFinishDialog.padBottom(15);
@@ -314,7 +314,7 @@ public class MainGameScreen implements Screen{
 		waitPlayer2forNextPuzzleDialog = new Dialog("", game.skin, "dialog") {
 		    public void result(Object obj) {
 		    }};
-		waitPlayer2forNextPuzzleDialog.text("Waiting for Player2...");
+		waitPlayer2forNextPuzzleDialog.text("Waiting for the other player...");
 		    
 		
 		TextButton backButton = new TextButton("Back", game.skin, "default");
@@ -670,7 +670,7 @@ public class MainGameScreen implements Screen{
 				game.client.localPlayer.isFinished = true;
 				System.out.println("game finished");
 				game.client.updatePlayer();
-				ChatMessage cm = new ChatMessage(game.client.clientUsername, "has finished half of puzzle!", true);
+				ChatMessage cm = new ChatMessage(game.client.clientUsername, "solved half of the puzzle!", true);
                 game.client.sendMessage(cm);
                 
 			}
@@ -680,7 +680,7 @@ public class MainGameScreen implements Screen{
 				System.out.println("the game is finished");
 				gameFinished = true;
 				game.client.messageVec.remove(0);
-				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
+				game.client.messageVec.add(new ChatMessage("The puzzle is solved!", "", true));
 				
 				//if one of the player is a guest
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
@@ -704,7 +704,6 @@ public class MainGameScreen implements Screen{
 					game.client.sendScore(time);
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
-					//update = false;
 				}
 				
 			}
