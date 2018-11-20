@@ -7,8 +7,11 @@ When you find a bug or see something that needs to be done, open a new issue and
 
 ## Team Members:  
 Daniel Santoyo: dsantoyo@usc.edu  USC ID: 6926712177  
+
 Hayley Pike: hpike@usc.edu  USC ID: 8568149839
-Yi(Ian) Sui: ysui@usc.edu  USC ID: 2961712187  
+
+Yi(Ian) Sui: ysui@usc.edu  USC ID: 2961712187
+
 Ekta Gogri: egogri@usc.edu  
 
 ## Resources
