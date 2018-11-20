@@ -119,7 +119,15 @@ public class WaitingScreen implements Screen{
 		Label gameTitle = new Label("Waiting Room", game.skin, "subtitle");
 		Label localPlayerUsername = new Label("Player1: " + game.client.clientUsername, game.skin, "subtitle");
 		localPlayerUsername.setColor(game.skin.getColor("Teal"));
-		Label localPlayerPastScore = new Label("Best Time: " + Integer.toString(game.client.localPlayer.pastScore), game.skin, "subtitle");
+		Label localPlayerPastScore;
+		
+		int score = game.client.localPlayer.pastScore;
+		if(score == 0) {
+			localPlayerPastScore = new Label("Best Time: N/A", game.skin, "subtitle");
+		}
+		else {
+			localPlayerPastScore = new Label("Best Time: " + Integer.toString(score), game.skin, "subtitle");
+		}
 		otherPlayerPastScore = new Label("", game.skin, "subtitle");
 		otherPlayerUsername = new Label("", game.skin, "subtitle");
 		otherPlayerUsername.setColor(game.skin.getColor("Red"));
@@ -476,8 +484,17 @@ public class WaitingScreen implements Screen{
 			//update waiting state
 			waitingState.setText("");
 			waitingTable.getCell(waitingState).height(0);
+			
 			otherPlayerUsername.setText("Player2: " + game.client.otherPlayer.playerName);
-			otherPlayerPastScore.setText("Best time: " + Integer.toString(game.client.otherPlayer.pastScore));
+			
+			int otherplayerpastscore = game.client.otherPlayer.pastScore;
+			if(otherplayerpastscore == 0) {
+				otherPlayerPastScore.setText("Best time: N/A");
+			}
+			else {
+				otherPlayerPastScore.setText("Best time: " + Integer.toString(otherplayerpastscore));
+			}
+			
 		}
 		
 		if(game.client.otherPlayer.playerID == -1) {
