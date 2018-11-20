@@ -77,7 +77,8 @@ public class GameLobbyScreen implements Screen{
 		newGameButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-						game.client.sendLobbyChoice(new LobbyChoice("new game", ""));
+					game.buttonpress.play();	
+					game.client.sendLobbyChoice(new LobbyChoice("new game", ""));
 						displayDialog = true;
 		            }
 		        });
@@ -86,6 +87,7 @@ public class GameLobbyScreen implements Screen{
 		existGameButton.addListener(new ClickListener(){
 				@Override 
 	            public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					String code = codeInputField.getText();
 						if (code.trim().isEmpty()) {
 							game.client.gameRoomCode = "didnt enter room";
@@ -103,6 +105,7 @@ public class GameLobbyScreen implements Screen{
 		randomGameButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
+					game.buttonpress.play();
 					game.client.sendLobbyChoice(new LobbyChoice("random game", ""));
 					displayDialog = true;
 				}
@@ -110,8 +113,10 @@ public class GameLobbyScreen implements Screen{
 
 		exitButton = new TextButton("Exit", game.skin, "default");
 		exitButton.addListener(new ClickListener(){
+			
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					Gdx.app.exit();
 				}
 			});
@@ -120,6 +125,7 @@ public class GameLobbyScreen implements Screen{
 		backButton.addListener(new ClickListener(){
 			@Override 
 			public void clicked(InputEvent event, float x, float y){
+				game.buttonpress.play();
 				game.client.disconnect = true;
 				game.client.localPlayer.disconnect = true;
 				game.client.updatePlayer();

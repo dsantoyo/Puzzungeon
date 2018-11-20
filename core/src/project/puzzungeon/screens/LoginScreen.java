@@ -181,6 +181,7 @@ public class LoginScreen implements Screen{
 			loginButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
 					
@@ -233,6 +234,7 @@ public class LoginScreen implements Screen{
 				guestButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
+						game.buttonpress.play();
 						game.client.clientUsername = "Guest";
 						if(!game.client.connectState) {
 							//set up connection to the server
@@ -266,14 +268,17 @@ public class LoginScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					game.setScreen(new MainMenuScreen(game));
 				}
 			});
 			
 		TextButton exitButton = new TextButton("Exit", game.skin, "default");
 			exitButton.addListener(new ClickListener(){
+				
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					Gdx.app.exit();
 				}
 			});

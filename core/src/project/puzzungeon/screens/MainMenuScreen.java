@@ -82,6 +82,7 @@ public class MainMenuScreen implements Screen{
 			loginButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 						game.setScreen(new LoginScreen(game));
 		            }
 		        });
@@ -90,6 +91,7 @@ public class MainMenuScreen implements Screen{
 			newUserButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
@@ -98,6 +100,7 @@ public class MainMenuScreen implements Screen{
 			guestButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
+					game.buttonpress.play();
 							game.client.clientUsername = "Guest";
 					if(!game.client.connectState) {
 						//set up connection to the server
@@ -132,6 +135,7 @@ public class MainMenuScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					Gdx.app.exit();
 				}
 			});

@@ -132,6 +132,7 @@ public class WaitingScreen implements Screen{
 			sendButton.addListener(new ClickListener(){
 	            @Override 
 	            public void clicked(InputEvent event, float x, float y){
+	            	game.buttonpress.play();
 	                String messageStr = new String();
 	                //allow to send empty message
 	                if(inputBox.getText().length() == 0) {
@@ -153,6 +154,7 @@ public class WaitingScreen implements Screen{
 			readyButton.addListener(new ClickListener(){
 	            @Override 
 	            public void clicked(InputEvent event, float x, float y){
+	            	game.buttonpress.play();
 	            	
 	            	if(game.client.localPlayer.readyState == false) {
 	            		game.client.localPlayer.readyState = true;
@@ -205,6 +207,7 @@ public class WaitingScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					String username = new String(game.client.username);
 					String password = new String(game.client.password);
 					game.client.disconnect = true;
@@ -261,6 +264,7 @@ public class WaitingScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
+					game.buttonpress.play();
 					Gdx.app.exit();
 				}
 			});
@@ -499,7 +503,7 @@ public class WaitingScreen implements Screen{
 		if(game.client.bothPlayerReady) {
 			game.client.messageVec.remove(0);
 			game.client.messageVec.add(new ChatMessage("The game is going to start!","", true));
-			game.setScreen(new MainGameScreen(game,2));
+			game.setScreen(new MainGameScreen(game,1));
 		}
 		
 		if(!game.client.connectState & displayDialog) {

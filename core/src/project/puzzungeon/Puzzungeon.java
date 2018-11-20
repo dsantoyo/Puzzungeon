@@ -1,6 +1,8 @@
 package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import project.puzzungeon.screens.LoadingScreen;
@@ -21,10 +23,23 @@ public class Puzzungeon extends Game {
 	public int serverPort = 6789;
 	
 	public Boolean showDebugLine = false;
+	
+	//soundeffects
+	 
+	public Sound buttonpress;
+	public Sound correctplace;
+	public Sound swoosh;
+	public Sound alert; 
 
+	
 	//loads assets and calls first screen
 	@Override
 	public void create () {
+		buttonpress = Gdx.audio.newSound(Gdx.files.internal("sound/rightlocation.mp3"));
+		correctplace= Gdx.audio.newSound(Gdx.files.internal("sound/buton1.mp3"));
+		swoosh = Gdx.audio.newSound(Gdx.files.internal("sound/swoosh1.mp3"));
+		alert= Gdx.audio.newSound(Gdx.files.internal("sound/alert1.mp3"));
+		
 		assetLoader = new AssetLoader();
 		client = new Client(serverAddress, serverPort);
 		batch = new SpriteBatch();
@@ -37,7 +52,7 @@ public class Puzzungeon extends Game {
 		//queue loading for other assets
 		assetLoader.loadAtlas();
 		this.setScreen(new LoadingScreen(this));
-	
+
 	}
 
 	@Override
