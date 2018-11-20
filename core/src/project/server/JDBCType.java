@@ -48,7 +48,7 @@ public class JDBCType {
 	public int getScore() throws SQLException {
         int user1 = 0;
         int score1 = 0;
-        int score2 = 0;
+        //int score2 = 0;
         
         ps = conn.prepareStatement("SELECT * FROM user_table WHERE username = ?");
         ps.setString(1, username);

@@ -202,7 +202,7 @@ public class ServerThread extends Thread{
 				if(object instanceof Score) {
 					Score score = (Score)object;
 					
-					int pastScore = database.getScore();
+					//int pastScore = database.getScore();
 					
 					try {
 						database.setScore(score.time, score.username1, score.username2);
@@ -210,10 +210,7 @@ public class ServerThread extends Thread{
 					}catch(Exception e){
 						System.out.println("serverthread: e message: " + e.getMessage());
 					}
-					
-					
 				}
-				
 				
 				if(object instanceof PieceID) {
 					PieceID pid = (PieceID)object;
