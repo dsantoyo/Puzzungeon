@@ -2,6 +2,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import project.puzzungeon.AssetLoader;
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.LoginRegister;
@@ -44,6 +46,8 @@ public class RegisterScreen implements Screen{
 	private Dialog databaseFailDialog;
 	private TextArea passwordInput;
 	
+	public Sound buttonpress;
+	
 	//constructor
 	public RegisterScreen(Puzzungeon game) {
 		this.game = game;
@@ -57,6 +61,8 @@ public class RegisterScreen implements Screen{
 		background = atlas.createSprite("dungeon");
 		background.setOrigin(0, 0);
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
 	}
 	
 	@Override
@@ -163,7 +169,7 @@ public class RegisterScreen implements Screen{
 			registerButton.addListener(new ClickListener(){
 					@Override 
 					public void clicked(InputEvent event, float x, float y){
-						game.buttonpress.play();
+						buttonpress.play();
 						String usernameStr = usernameInput.getText();
 						String passwordStr = passwordInput.getText();
 						
@@ -216,7 +222,7 @@ public class RegisterScreen implements Screen{
 		guestButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.buttonpress.play();
+				buttonpress.play();
 				game.client.clientUsername = "Guest";
 				if(!game.client.connectState) {
 					//set up connection to the server
@@ -246,7 +252,7 @@ public class RegisterScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					game.setScreen(new MainMenuScreen(game));
 				}
 			});
@@ -255,7 +261,7 @@ public class RegisterScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});

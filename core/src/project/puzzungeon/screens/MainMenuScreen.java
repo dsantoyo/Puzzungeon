@@ -3,6 +3,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -50,6 +51,9 @@ public class MainMenuScreen implements Screen{
 	private Dialog databaseFailDialog;
 	private Dialog creditsDialog;
 	
+	//sound variables
+	public Sound buttonpress;
+	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
@@ -63,6 +67,8 @@ public class MainMenuScreen implements Screen{
 		background = atlas.createSprite("dungeon");
 		background.setOrigin(0, 0);
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
 	}
 	
 	//construct stage
@@ -85,7 +91,7 @@ public class MainMenuScreen implements Screen{
 			loginButton.addListener(new ClickListener(){
 				@Override 
 		            public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 						game.setScreen(new LoginScreen(game));
 		            }
 		        });
@@ -94,7 +100,7 @@ public class MainMenuScreen implements Screen{
 			newUserButton.addListener(new ClickListener(){
 				@Override 
 	            	public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 						game.setScreen(new RegisterScreen(game));
 	            	}
 	        	});
@@ -103,7 +109,7 @@ public class MainMenuScreen implements Screen{
 			guestButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					game.buttonpress.play();
+					buttonpress.play();
 							game.client.clientUsername = "Guest";
 					if(!game.client.connectState) {
 						//set up connection to the server
@@ -138,7 +144,7 @@ public class MainMenuScreen implements Screen{
 			exitButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});

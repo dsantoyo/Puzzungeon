@@ -2,6 +2,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -44,6 +45,9 @@ public class LoginScreen implements Screen{
 	private Dialog databaseFailDialog;
 	private TextArea passwordInput;
 	
+	//sound variables
+	public Sound buttonpress;
+	
 	//constructor
 	public LoginScreen(Puzzungeon game) {
 		this.game = game;
@@ -57,6 +61,8 @@ public class LoginScreen implements Screen{
 		background = atlas.createSprite("dungeon");
 		background.setOrigin(0, 0);
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
+		
+		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
 	}
 	@Override
 	public void show() {
@@ -181,7 +187,7 @@ public class LoginScreen implements Screen{
 			loginButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					String usernameStr = usernameInput.getText();
 					String passwordStr = passwordInput.getText();
 					
@@ -234,7 +240,7 @@ public class LoginScreen implements Screen{
 				guestButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						game.buttonpress.play();
+						buttonpress.play();
 						game.client.clientUsername = "Guest";
 						if(!game.client.connectState) {
 							//set up connection to the server
@@ -268,7 +274,7 @@ public class LoginScreen implements Screen{
 			backButton.addListener(new ClickListener(){
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					game.setScreen(new MainMenuScreen(game));
 				}
 			});
@@ -278,7 +284,7 @@ public class LoginScreen implements Screen{
 				
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
-					game.buttonpress.play();
+					buttonpress.play();
 					Gdx.app.exit();
 				}
 			});
