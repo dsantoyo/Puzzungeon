@@ -2,6 +2,7 @@ package project.puzzungeon;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,12 +19,16 @@ public class Puzzungeon extends Game {
 	public AssetLoader assetLoader;
 	
 	public SpriteBatch batch;
+	
+	public Music menuMusic;
+	public Music gameMusic;
 
 	public String serverAddress = "localhost";
 	public int serverPort = 6789;
 	
 	public Boolean showDebugLine = false;
-
+	public Boolean playMusic = false;
+	
 	
 	//loads assets and calls first screen
 	@Override
@@ -40,6 +45,7 @@ public class Puzzungeon extends Game {
 		//queue loading for other assets
 		assetLoader.loadAtlas();
 		assetLoader.loadSoundEffects();
+		assetLoader.loadMusic();
 		this.setScreen(new LoadingScreen(this));
 
 	}

@@ -86,6 +86,15 @@ public class WaitingScreen implements Screen{
 		game.client.sendMessage(cm);
 		
 		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		
+		if (game.gameMusic.isPlaying()) {
+			game.gameMusic.stop();
+		}
+		if (!game.menuMusic.isPlaying() && game.playMusic == true) {
+			game.menuMusic.play();
+			game.menuMusic.setVolume(0.2f);
+			game.menuMusic.setLooping(true);
+		}
 	}
 	
 	@Override

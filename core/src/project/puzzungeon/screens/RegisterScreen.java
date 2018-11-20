@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import project.puzzungeon.AssetLoader;
 import project.puzzungeon.Client;
 import project.puzzungeon.Puzzungeon;
 import project.server.LoginRegister;
@@ -63,6 +62,15 @@ public class RegisterScreen implements Screen{
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		
 		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		
+		if (game.gameMusic.isPlaying()) {
+			game.gameMusic.stop();
+		}
+		if (!game.menuMusic.isPlaying() && game.playMusic == true) {
+			game.menuMusic.play();
+			game.menuMusic.setVolume(0.2f);
+			game.menuMusic.setLooping(true);
+		}
 	}
 	
 	@Override

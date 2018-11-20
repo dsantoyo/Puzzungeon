@@ -9,7 +9,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -122,10 +121,11 @@ public class MainGameScreen implements Screen{
 	private int thisGameIndex;
 	
 	//sound effects
-	public Sound buttonpress;
-	public Sound correctplace;
-	public Sound swoosh;
-	public Sound alert; 
+	private Sound buttonpress;
+	private Sound correctplace;
+	private Sound swoosh;
+	private Sound alert; 
+	private Sound win;
 	
 	//constructor
 	public MainGameScreen(Puzzungeon game, int puzzleID) {
@@ -164,6 +164,16 @@ public class MainGameScreen implements Screen{
 		correctplace = game.assetLoader.manager.get("sound/buton1.mp3");
 		swoosh = game.assetLoader.manager.get("sound/swoosh1.mp3");
 		alert = game.assetLoader.manager.get("sound/alert1.mp3");
+		win = game.assetLoader.manager.get("sound/good-end.mp3");
+
+		if (game.menuMusic.isPlaying()) {
+			game.menuMusic.stop();
+		}
+		if (!game.gameMusic.isPlaying() && game.playMusic == true) {
+			game.gameMusic.play();
+			game.gameMusic.setVolume(0.2f);
+			game.gameMusic.setLooping(true);
+		}
 	}
 
 	@Override
@@ -679,6 +689,11 @@ public class MainGameScreen implements Screen{
 				gameFinished = true;
 				game.client.messageVec.remove(0);
 				game.client.messageVec.add(new ChatMessage("The puzzle is finished", "", true));
+				
+				if (game.gameMusic.isPlaying()) {
+					game.gameMusic.stop();
+				}
+				win.play();
 				
 				//if one of the player is a guest
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {

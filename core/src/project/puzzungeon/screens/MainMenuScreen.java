@@ -3,6 +3,7 @@ package project.puzzungeon.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -54,6 +55,7 @@ public class MainMenuScreen implements Screen{
 	//sound variables
 	public Sound buttonpress;
 	
+	
 	//constructor
 	public MainMenuScreen(Puzzungeon game) {
 		this.game = game;
@@ -69,22 +71,29 @@ public class MainMenuScreen implements Screen{
 		background.setSize(Puzzungeon.WIDTH, Puzzungeon.HEIGHT);
 		
 		buttonpress = game.assetLoader.manager.get("sound/rightlocation.mp3");
+		if (game.menuMusic == null) {
+			game.menuMusic = game.assetLoader.manager.get("music/Inside-The-Tower.mp3");
+		}
+		if (game.gameMusic == null) {
+			game.gameMusic = game.assetLoader.manager.get("music/Final_Sacrifice.mp3");
+		}
+		if (game.gameMusic.isPlaying()) {
+			game.gameMusic.stop();
+		}
+		if (!game.menuMusic.isPlaying() && game.playMusic == true) {
+			game.menuMusic.play();
+			game.menuMusic.setVolume(0.2f);
+			game.menuMusic.setLooping(true);
+		}
 	}
 	
 	//construct stage
 	@Override
 	public void show() {
+		
 /****************************************************************************************
 *                             start: actors functionality
-****************************************************************************************/
-
-		/*
-		gameTitle = new Image(atlas.createSprite("title"));
-		gameTitle.setScaling(Scaling.fit);
-		gameTitle.setOrigin(0,0);
-		gameTitle.setScale(6f);
-		*/
-		
+****************************************************************************************/		
 		gameTitle = new Label("Puzzungeon", game.skin, "title");
 		
 		loginButton = new TextButton("Login", game.skin, "default");
