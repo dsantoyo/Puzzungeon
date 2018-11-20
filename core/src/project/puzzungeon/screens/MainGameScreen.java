@@ -423,6 +423,8 @@ public class MainGameScreen implements Screen{
 				}
 			}
 		}
+		
+		System.out.println("MainGameScreen: using pieceset - " + game.client.localPlayer.playerPieceSet);
 		for(int i = 0; i < 32; i++) {
 			if(!game.client.localPlayer.playerPieceSet.contains(pieceList.get(i).pieceID)) {
 				pieceList.get(i).setVisible(false);
@@ -667,6 +669,9 @@ public class MainGameScreen implements Screen{
 					
 				//if both players are registered user
 				else {
+					if(game.client.localPlayer.playerID == 0) {
+						game.client.requestNewPieceSet();
+					}
 					System.out.println("both registered user");
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
