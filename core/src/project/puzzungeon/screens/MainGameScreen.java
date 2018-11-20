@@ -625,11 +625,7 @@ public class MainGameScreen implements Screen{
 		stage.draw();
 
 		//draw green grid (if game still going on)
-		if(game.client.localPlayer == null) {
-			System.out.println("client is null");
-		}
-		
-		else {
+		if(game.client.localPlayer != null) {
 			if (game.client.localPlayer.isFinished == false) {
 				greenGridRenderer.setProjectionMatrix(stage.getCamera().combined);
 				greenGridRenderer.begin(ShapeType.Line);
