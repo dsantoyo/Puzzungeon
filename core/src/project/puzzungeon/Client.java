@@ -17,6 +17,7 @@ import project.server.PieceSetRequest;
 import project.server.PieceSetResponse;
 import project.server.Player;
 import project.server.PlayerIDnPieceSet;
+import project.server.Score;
 import project.server.Username;
 
 public class Client {
@@ -179,6 +180,9 @@ public class Client {
 		            					localPlayer = new Player(clientUsername);
 		            					System.out.println("client: localPlayer highest score = " + Integer.toString(rs.pastScore));
 		            					localPlayer.pastScore = rs.pastScore;
+		            					
+		            					System.out.println("score send from backend:" + localPlayer.pastScore);
+		            					
 		            					otherPlayer = new Player("default");
 		            					System.out.println("client: logged in ");
 		            				}
@@ -313,7 +317,16 @@ public class Client {
 			System.out.println("client: sendPiece() ioe: " + ioe.getMessage());
 		}
 	}
-	
+  
+	public void sendScore(int time) {
+		try {
+			System.out.println("client: sendScore() ");
+			oos.writeObject(new Score(time, localPlayer.playerName, otherPlayer.playerName));
+			oos.flush();
+			oos.reset();
+		} catch (IOException ioe) {
+			System.out.println("client: sendPsendScoreiece() ioe: " + ioe.getMessage());
+
 	public void requestNewPieceSet() {
 		try {
 			System.out.println("client: requestNewPieceSet()");
@@ -322,6 +335,7 @@ public class Client {
 			oos.reset();
 		} catch (IOException ioe) {
 			System.out.println("client: sendPiece() ioe: " + ioe.getMessage());
+
 		}
 	}
 }

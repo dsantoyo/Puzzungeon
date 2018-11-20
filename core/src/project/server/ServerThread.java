@@ -21,6 +21,8 @@ public class ServerThread extends Thread{
 	private LobbyChoice lobbyChoice;
 	private GameRoomCode gameRoomCode;
 	
+	private JDBCType database;
+	
 	/* the localPlayerID of this serverThread's client's localPlayer
 	 * server uses this to know which player in server's playerVec is 
 	 * this client's otherPlayer
@@ -96,7 +98,7 @@ public class ServerThread extends Thread{
 					System.out.println("serverthread: login/register = "+ loginRegisterStr);
 					
 					//database validation
-					JDBCType database = new JDBCType(usernameStr, passswordStr, loginRegisterStr);;
+					database = new JDBCType(usernameStr, passswordStr);
 
 					Boolean databaseConnectionResult = database.connectionSet();
 					
@@ -148,7 +150,8 @@ public class ServerThread extends Thread{
 					else { // allow the client to login
 						
 						//read past score from the database
-						int pastScore = database.getHighScore();
+						int pastScore = database.getScore();
+						System.out.println("back-end get score from db:" + pastScore);
 						System.out.println("serverthread: past score = " + pastScore);	
 						try {
 							System.out.println("serverthread: logged in.");
@@ -163,7 +166,7 @@ public class ServerThread extends Thread{
 							System.out.println("serverthread: check db ioe: " + ioe.getMessage());
 						}
 					}
-					database.close();
+					
 				}
 				
 				//if a Player object is sent to this serverthread
@@ -193,6 +196,24 @@ public class ServerThread extends Thread{
 						}
 					}
 				}
+				
+				
+				
+				if(object instanceof Score) {
+					Score score = (Score)object;
+					
+					int pastScore = database.getScore();
+					
+					try {
+						database.setScore(score.time, score.username1, score.username2);
+						
+					}catch(Exception e){
+						System.out.println("serverthread: e message: " + e.getMessage());
+					}
+					
+					
+				}
+				
 				
 				if(object instanceof PieceID) {
 					PieceID pid = (PieceID)object;
@@ -365,6 +386,7 @@ public class ServerThread extends Thread{
 				}
 			}
 			
+			database.close();
 			server.serverThreads.remove(this);
 			
 			//need to work on this

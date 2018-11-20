@@ -632,6 +632,12 @@ public class MainGameScreen implements Screen{
 		}
 					
 		if(update) {
+			
+			//update elapsed time. should change this to be updated by the server.
+			Long currentTime = (System.nanoTime()-startTime)/1000000000;
+			if(!gameFinished) {
+				showGameTime.setText("Time: " + Long.toString(currentTime));
+			}
 					
 			//update piececount display
 			showLocalPlayerPC.setText(" Pieces Completed: " + game.client.localPlayer.correctPieceCount + "/16");
@@ -661,6 +667,8 @@ public class MainGameScreen implements Screen{
 				if((game.client.localPlayer.playerName.equals("Guest"))||(game.client.otherPlayer.playerName.equals("Guest"))) {
 					
 					System.out.println("at least one Guest");
+					int time = Math.toIntExact(currentTime);
+					game.client.sendScore(time);
 					guestFinishDialog.show(stage);
 					displayDialog = false;
 					update = false;
@@ -673,8 +681,11 @@ public class MainGameScreen implements Screen{
 						game.client.requestNewPieceSet();
 					}
 					System.out.println("both registered user");
+					int time = Math.toIntExact(currentTime);
+					game.client.sendScore(time);
 					registeredFinishDialog.show(stage);
 					displayDialog = true;
+					update = false;
 				}
 				
 			}
@@ -717,11 +728,7 @@ public class MainGameScreen implements Screen{
 				//showMessage4.setAlignment(Align.left);
 			}
 			
-			//update elapsed time. should change this to be updated by the server.
-			Long currentTime = (System.nanoTime()-startTime)/1000000000;
-			if(!gameFinished) {
-				showGameTime.setText("Time: " + Long.toString(currentTime));
-			}
+			
 			
 			//if connection is lost
 			if(!game.client.connectState && displayDialog) {

@@ -8,15 +8,13 @@ CREATE TABLE user_table (
   userID int(11) NOT NULL AUTO_INCREMENT,
   username varchar(45) NOT NULL,
   userpassword varchar(45) NOT NULL,
-  PRIMARY KEY (userID,username,userpassword)
+  PRIMARY KEY (userID)
 );
 
 CREATE TABLE highscore_table (
-  user1 varchar(45) NOT NULL,
-  user2 varchar(45) NOT NULL,
+  user1 int(11) NOT NULL,
+  user2 int(11) NOT NULL,
   score int(11) NOT NULL,
-  PRIMARY KEY (user1,user2,score)
+  FOREIGN KEY (user1) REFERENCES user_table(userID),
+  FOREIGN KEY (user2) REFERENCES user_table(userID)
 ) ;
-
-
-

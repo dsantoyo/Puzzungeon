@@ -15,16 +15,15 @@ public class JDBCType {
 	
 	private String username;
 	private String password;
-	private int userID;
-	private int score;
+
+	//private int score;
 	//private boolean login = false;
 	
-	public JDBCType(String username, String password, String determine) 
+	public JDBCType(String username, String password) 
 	{
 		this.username = username;
 		this.password = password;
-		this.userID = 0;
-		this.score = 0;
+	//	this.score = 0;
 	}
 	
 	public Boolean connectionSet() {
@@ -46,18 +45,81 @@ public class JDBCType {
 		return true;
 	}
 	
-	public int getHighScore() throws SQLException {
-		rs = st.executeQuery("SELECT * from highscore_table where user1 ='"+username+"' OR user2= '"+username+"'" );
+	public int getScore() throws SQLException {
+        int user1 = 0;
+        int score1 = 0;
+        int score2 = 0;
+        
+        ps = conn.prepareStatement("SELECT * FROM user_table WHERE username = ?");
+        ps.setString(1, username);
+        rs= ps.executeQuery();
+        
+        while(rs.next()) {
+            user1 = rs.getInt("userID");
+        }
+        
+        ps = conn.prepareStatement("SELECT * FROM highscore_table WHERE user1=" + user1);
+        //ps.setInt(1, user1);
+        rs = ps.executeQuery();
+        
+        while(rs.next()) {
+            if(user1 == rs.getInt("user1")) {
+                score1 = rs.getInt("score");
+            }
+            
+            if(user1 == (rs.getInt("user1"))) {
+                if(rs.getInt("score") < score1) {
+                    score1 = rs.getInt("score");
+                }
+            }
+        }
+        
+        if(score1 != 0) {
+            return score1;
+        }
+        
+        return 0;
+    }
+
+	public void setScore(int score, String username1, String username2) throws Exception {
+		//int pastScore = database.getScore();
+		//username = username1;
+		//int score1 = getScore();
+		
+//		ps = conn.prepareStatement("SELECT * from highscore_table where user1='" + username1 + "' AND user2= '"+username2+"'");
+//		rs = ps.executeQuery();
+		int user1 = 0;
+		int user2 = 0;
+		
+		ps = conn.prepareStatement("SELECT * FROM user_table WHERE username = ?");
+		ps.setString(1, username1);
+		rs= ps.executeQuery();
 		
 		while(rs.next()) {
-			//String user2 = rs.getString("user2");
-			
-			score = rs.getInt("score");
+			user1 = rs.getInt("userID");
 		}
 		
-		return score;
+		ps = conn.prepareStatement("SELECT * FROM user_table WHERE username = ?");
+		ps.setString(1, username2);
+		rs= ps.executeQuery();
+		
+		while(rs.next()) {
+			user2 = rs.getInt("userID");
+		}
+		
+		try {
+			
+			ps = conn.prepareStatement("INSERT INTO highscore_table (user1, user2, score)" + " VALUES (?, ?, ?)");
+			ps.setInt(1, user1);
+			ps.setInt(2, user2);
+			ps.setInt(3, score);
+			ps.execute();
+		
+		} catch (SQLException sqle) {
+			System.out.println ("SQLException: " + sqle.getMessage());
+		}
+		
 	}
-
 
 
 	public boolean PlayerValidation(String username, String password) throws SQLException {
@@ -97,11 +159,11 @@ public class JDBCType {
 		} catch (SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());
 		}
-		++userID;
-		ps = conn.prepareStatement("INSERT INTO user_table (userID, username, userpassword)" + " VALUES (?, ?, ?)");
-		ps.setInt(1, userID);
-		ps.setString(2, username);
-		ps.setString(3, password);
+		//++userID;
+		ps = conn.prepareStatement("INSERT INTO user_table (username, userpassword)" + " VALUES (?, ?)");
+		//ps.setInt(1, userID);
+		ps.setString(1, username);
+		ps.setString(2, password);
 		ps.execute();
 		
 		return false;
