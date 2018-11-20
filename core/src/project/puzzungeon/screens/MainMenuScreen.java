@@ -160,8 +160,10 @@ public class MainMenuScreen implements Screen{
 			
 		//credits 
 		String authorCreditStr = "By Ekta Gogri, Hayley Pike, Daniel Santoyo, and Ian Sui.";
-		String skinCreditStr = "UI Styling derived from Libgdx Skin by Raymond \"Raeleus\" Buckley" + 
-				"under Creative Commons 4.0, http://creativecommons.org/licenses/by/4.0/";
+		String skinCreditStr = "UI Styling derived from Libgdx Skin by Raymond \"Raeleus\" Buckley";
+		String musicCreditStr = "Music by Visager";
+		String ccLicenseStr = "Both are under a Creative Commons 4.0 license, "
+				+ "http://creativecommons.org/licenses/by/4.0/";
 		
 		Label creditHeading = new Label("Credits", game.skin, "subtitle");
 		creditHeading.setAlignment(Align.center);
@@ -170,16 +172,24 @@ public class MainMenuScreen implements Screen{
 		Label skinCredit = new Label(skinCreditStr, game.skin);
 		skinCredit.setAlignment(Align.center);
 		skinCredit.setWrap(true);
+		Label musicCredit = new Label(musicCreditStr, game.skin);
+		musicCredit.setAlignment(Align.center);
+		Label ccLicense = new Label(ccLicenseStr, game.skin);
+		ccLicense.setAlignment(Align.center);
+		ccLicense.setWrap(true);
 		
 		creditsDialog = new Dialog("", game.skin, "dialog") {
 			public void result(Object obj) {}};
 		Table creditsTable = creditsDialog.getContentTable();
-		creditsTable.add(creditHeading).padBottom(15);
+		creditsTable.add(creditHeading).padBottom(15).padTop(15);
 		creditsTable.row();
-		creditsTable.add(authorCredit).padBottom(10);
+		creditsTable.add(authorCredit).padBottom(10).padLeft(15).padRight(15);
 		creditsTable.row();
 		creditsTable.add(skinCredit).fillX().padBottom(10);
 		creditsTable.row();
+		creditsTable.add(musicCredit).padBottom(10);
+		creditsTable.row();
+		creditsTable.add(ccLicense).fillX().padBottom(10);
 		creditsDialog.button("Back", false);
 		
 		creditsButton = new TextButton("Credits", game.skin, "default");
@@ -187,6 +197,7 @@ public class MainMenuScreen implements Screen{
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					creditsDialog.show(stage);
+					buttonpress.play();
 				}
 			});			
 		gameFullDialog = new Dialog("", game.skin, "dialog") {
