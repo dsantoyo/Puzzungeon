@@ -27,7 +27,7 @@ public class Puzzungeon extends Game {
 	public int serverPort = 6789;
 	
 	public Boolean showDebugLine = false;
-	public Boolean playMusic = false;
+	public Boolean playMusic = true;
 
 	public Boolean randomPuzzle = false;
 	
