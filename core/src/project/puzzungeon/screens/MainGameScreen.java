@@ -635,8 +635,8 @@ public class MainGameScreen implements Screen{
 			if(game.randomPuzzle) {
 				
 				//get a random puzzle id
-				int newPuzzleID = new Random().nextInt(4) + 1;
-				game.setScreen(new MainGameScreen(game, newPuzzleID));
+				
+				game.setScreen(new MainGameScreen(game, game.client.randomPuzzleID));
 
 			}
 				
