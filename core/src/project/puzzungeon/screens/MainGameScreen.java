@@ -367,6 +367,9 @@ public class MainGameScreen implements Screen{
 				@Override 
 				public void clicked(InputEvent event, float x, float y){
 					buttonpress.play();
+					game.client.disconnect = true;
+					game.client.localPlayer.disconnect = true;
+					game.client.updatePlayer();
 					Gdx.app.exit();
 				}
 			});
@@ -622,14 +625,20 @@ public class MainGameScreen implements Screen{
 		stage.draw();
 
 		//draw green grid (if game still going on)
-		if (game.client.localPlayer.isFinished == false) {
-			greenGridRenderer.setProjectionMatrix(stage.getCamera().combined);
-			greenGridRenderer.begin(ShapeType.Line);
-			greenGridRenderer.setColor(game.skin.getColor("Teal"));
-			for (int i = 0; i < greenGrid.length; i++) {
-				greenGridRenderer.rect(greenGrid[i][0], greenGrid[i][1], greenGrid[i][2], greenGrid[i][2]);
+		if(game.client.localPlayer == null) {
+			System.out.println("client is null");
+		}
+		
+		else {
+			if (game.client.localPlayer.isFinished == false) {
+				greenGridRenderer.setProjectionMatrix(stage.getCamera().combined);
+				greenGridRenderer.begin(ShapeType.Line);
+				greenGridRenderer.setColor(game.skin.getColor("Teal"));
+				for (int i = 0; i < greenGrid.length; i++) {
+					greenGridRenderer.rect(greenGrid[i][0], greenGrid[i][1], greenGrid[i][2], greenGrid[i][2]);
+				}
+				greenGridRenderer.end();
 			}
-			greenGridRenderer.end();
 		}
 	}
 
