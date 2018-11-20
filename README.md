@@ -8,7 +8,7 @@ When you find a bug or see something that needs to be done, open a new issue and
 ## Team Members:  
 Hayley Pike: hpike@usc.edu  
 Daniel Santoyo: dsantoyo@usc.edu  
-Yi(Ian) Sui: ysui@usc.edu  
+Yi(Ian) Sui: ysui@usc.edu  2961712187
 Ekta Gogri: egogri@usc.edu  
 
 ## Resources
